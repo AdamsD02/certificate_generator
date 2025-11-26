@@ -48,7 +48,7 @@ try {
         }
     }
 
-} catch (Throwable $th) {
+} catch (\Throwable $th) {
 
     header("Content-Type: application/json");
     echo json_encode([
@@ -94,7 +94,7 @@ function login_user($conn) {
 
         echo json_encode([
             "status" => "error",
-            "message" => "Invalid credentials <br> Plain:" . $plain 
+            "message" => "Invalid credentials"
         ]);
     }
     exit();

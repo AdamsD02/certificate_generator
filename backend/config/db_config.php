@@ -9,7 +9,7 @@ try {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-} catch (Throwable $th) {
+} catch (\Throwable $th) {
     echo "Connection Failed." . $th->getMessage();
 }
 ?>

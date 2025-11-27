@@ -77,13 +77,13 @@ h2{margin:0 0 6px;font-size:20px}
         </div>
       </div><nav>
     <div class="nav-item active"><span class="icon">🏠</span><span>Dashboard</span></div>
-    <div class="nav-item"><span class="icon">📈</span><span>Analytics</span></div>
-    <div class="nav-item"><span class="icon">📄</span><span>Templates</span></div>
-    <div class="nav-item"><span class="icon">⚙️</span><span>Settings</span></div>
+    <div class="nav-item"><span class="icon">📄</span><span>Create Templates</span></div>
+    <div class="nav-item"><span class="icon">📜</span><span>Certificates</span></div>
   </nav>
-
-  <div class="sidebar-bottom">Logged in as <strong style="margin-left:6px">Admin</strong></div>
+    <div class="sidebar-bottom"><span class="icon">🔙</span><strong style="margin-left:6px; font-size:16px">Logout</strong></div>
 </aside>
+
+
 
 <main class="main">
   <div class="topbar">
@@ -135,7 +135,7 @@ h2{margin:0 0 6px;font-size:20px}
             <button class="btn-use" data-id="${t.id}">✓ Use Template</button>
             <button class="btn-ghost" data-action="edit" data-id="${t.id}">✏️ Edit</button>
             <button class="btn-ghost" data-action="preview" data-id="${t.id}">👁️ Preview</button>
-            <button class="btn-delete" data-action="delete" data-id="${t.id}">Delete</button>
+            <button class="btn-delete" data-action="delete" data-id="${t.id}">🗑️ Delete</button>
           </div>
         `;
         list.appendChild(card);
@@ -182,6 +182,7 @@ h2{margin:0 0 6px;font-size:20px}
       const t = templates.find(x=>x.id===id);
       const root = document.getElementById('modalRoot');
       root.innerHTML = `
+      
         <div class="modal-backdrop">
           <div class="modal">
             <div class="modal-header">
@@ -199,6 +200,7 @@ h2{margin:0 0 6px;font-size:20px}
                 <strong>${t.title}</strong>
                 <p style="margin:8px 0;color:#6b7280">${t.desc}</p>
                 <button class="btn btn-primary">Use this template</button>
+                
                 <div id="successMsg" style="display:none; color: green;">
                 Success! Your action was completed.
                 </div>

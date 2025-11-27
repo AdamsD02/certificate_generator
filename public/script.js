@@ -26,6 +26,10 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(err => {
             msg.textContent = "Error connecting to server";
+         
+            
+
         });
     });
 });
+

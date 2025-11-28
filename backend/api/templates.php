@@ -61,7 +61,7 @@ try {
                 # sets the Template-ID into Session
 
                 if (isset($_POST['id'])) {
-                    $_SESSION['use_id'] = $_POST['id'];
+                    $_SESSION['t_id'] = $_POST['id'];
 
                     return_json('success', 'Template ready.');
 
@@ -71,9 +71,20 @@ try {
 
                 break;
 
+            case 'unuse':
+                # sets the Template-ID into Session
+
+                if (isset($_SESSION['t_id'])) {
+                    unset($_SESSION['t_id']);
+                    return_json('success', 'Template id reset.');
+                }
+
+                return_json('error', 'Template id not reset.');
+                break;
+
             case 'id_selected':
                 # Returns data of Template-ID in Session 
-                if (isset($_SESSION['use_id'])) {
+                if (isset($_SESSION['t_id'])) {
                     get_template($conn);
                 }
 
@@ -108,7 +119,7 @@ function save_template($conn) {
     $query = "INSERT INTO templates (t_name, orientation, html_code, bg_img, opacity, description, tag, u_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('sssssssi', $tname, $orientation, $html_code, $bg_img, $opacity, $desc, $tag, $uid);
+    $stmt->bind_param('sisssssi', $tname, $orientation, $html_code, $bg_img, $opacity, $desc, $tag, $uid);
 
     if ($stmt->execute()) {
         return_json('success', 'Template saved successfully.');
@@ -120,7 +131,7 @@ function save_template($conn) {
 }
 
 function get_template($conn) {
-    $id = $_SESSION['use_id'];
+    $id = $_SESSION['t_id'];
 
     // header('Content-Type: application/json');
     
@@ -195,7 +206,7 @@ function update_template($conn) {
             SET t_name = ?, orientation = ?, html_code = ?, bg_img = ?, opacity = ?, description = ?, tag = ?
             WHERE t_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('sssssssi', $tname, $orientation, $html_code, $bg_img, $opacity, $desc, $tag, $id);
+    $stmt->bind_param('sisssssi', $tname, $orientation, $html_code, $bg_img, $opacity, $desc, $tag, $id);
 
     if ($stmt->execute()) {
         return_json('success', 'Template updated successfully.');
@@ -208,7 +219,7 @@ function update_template($conn) {
 
 function list_templates($conn) {
 
-    $query = "SELECT t_id, t_name, orientation, bg_img, opacity FROM templates";
+    $query = "SELECT t_id, t_name, orientation, desccription, tag FROM templates";
     $stmt = $conn->prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();

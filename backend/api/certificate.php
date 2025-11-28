@@ -30,9 +30,9 @@ try {
                 # Update certificate in DB
 
                 if (empty($_POST['id'])) {
-                    return_json('error', 'Template not passed.');
+                    return_json('error', 'cert not passed.');
                 }
-                if (empty($__POST['tname']) || empty($_POST['orientation']) || empty($_POST['html_code']) ) {
+                if (empty($_POST['tname']) || empty($_POST['orientation']) || empty($_POST['html_code']) ) {
                     return_json('error', 'Required fields missing.');
                 }
 
@@ -42,7 +42,7 @@ try {
             case 'delete':
                 # Delete certificate from DB
                 if (!isset($_POST['id'])) {
-                    return_json('error', 'Template not passed.');
+                    return_json('error', 'cert not passed.');
                 }
 
                 delete_cert($conn);
@@ -50,30 +50,41 @@ try {
 
             case 'list':
                 # List templates onto Dashboard
-                list_templates($conn);
+                list_certs($conn);
                 break;
 
             case 'use':
-                # sets the Template-ID into Session
+                # sets the Cert-ID into Session
 
                 if (isset($_POST['id'])) {
-                    $_SESSION['use_id'] = $_POST['id'];
+                    $_SESSION['c_id'] = $_POST['id'];
 
-                    return_json('success', 'Template ready.');
+                    return_json('success', 'cert ready.');
 
                 }
 
-                return_json('error', 'Template not passed.');
+                return_json('error', 'cert not passed.');
 
+                break;
+            
+            case 'unuse':
+                # resets the Cert-ID in Session
+
+                if (isset($_SESSION['c_id'])) {
+                    unset($_SESSION['c_id']);
+                    return_json('success', 'Cert id reset.');
+                }
+
+                return_json('error', 'Cert id not reset.');
                 break;
 
             case 'id_selected':
-                # Returns data of Template-ID in Session 
-                if (isset($_SESSION['use_id'])) {
+                # Returns data of Cer-ID in Session 
+                if (isset($_SESSION['c_id'])) {
                     get_cert($conn);
                 }
 
-                return_json('error', 'Template not passed.');
+                return_json('error', 'cert not passed.');
 
                 break;
             
@@ -104,44 +115,81 @@ function save_cert($conn) {
     $purpose = $_POST['purpose'] ?? ''; 
     $u_id = $_SESSION['uid'];
     // placeholder data
-    $placeholders = $_POST['pldrs']; // ['pname'=>'pval', 'pname'=>'pval', ...]
+    $placeholders = $_POST['pldrs'] ?? []; // ['pname'=>'pval', 'pname'=>'pval', ...]
 
     $query = "INSERT INTO certificates ( r_name, course, issue_date, purpose, t_id, t_name, orientation, html_code, bg_img, opacity, u_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ssssisssssi', $r_name, $course, $issue_date, $purpose, $t_id, $tname, $orientation, $html_code, $bg_img, $opacity, $u_id );
+    $stmt->bind_param('ssssisisssi', $r_name, $course, $issue_date, $purpose, $t_id, $tname, $orientation, $html_code, $bg_img, $opacity, $u_id );
 
-    if ($stmt->execute()) {
-        return_json('success', 'Template saved successfully.');
+    if (!$stmt->execute()) {
+        return_json('error', 'Failed to save Certificate.');
+    }
+    $c_id = $conn->insert_id;
+
+    if(empty($placeholders)) {
+        return_json('success', 'Certificate saved successfully with no placeholders.');
     }
 
-    return_json('error', 'Failed to save Template.');
+    // insert individual placeholder
+    $err_check = 0;
+    foreach ($placeholders as $key => $value) {
+        $query2 = "INSERT INTO placeholders (p_name, p_value, c_id) VALUES (?, ?, ?)";
+        $stmt2 = $conn->prepare($query2);
+        $stmt2->bind_param('ssi', $key, $value, $c_id);
+        if(!$stmt2->execute()) {
+            $err_check = 1;
+        }
+    }
+    if($err_check) {
+        return_json('error', 'Error occured while saving placeholders.');
+    }
 
+    return_json('success', 'Saved Certificate successfully.');
 }
 
 function get_cert($conn) {
-    $id = $_SESSION['use_id'];
+    $id = $_SESSION['c_id'];
     
-    $query = 'SELECT * FROM templates WHERE t_id = ?';
+    $query = 'SELECT * FROM certificates WHERE c_id = ?';
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if (!$row = $result->fetch_assoc()) {
-        return_json('error', 'No Template Data available.');
+        return_json('error', 'No Certificate Data available.');
     }
 
     $data = [
-            'tname' => $row['t_name'],
+        // template data
+            't_id' => $row['t_id'],
+            't_name' => $row['t_name'],
             'orientation' => $row['orientation'],
             'html_code' => $row['html_code'],
             'bg_img' => $row['bg_img'] ?? '',
             'opacity' => $row['opacity'] ?? '',
-            'desc' => $row['description'] ?? '',
-            'tag' => $row['tag'] ?? ''
+        // cert data
+            'r_name' => $row['r_name'],
+            'course' => $row['course'],
+            'issue_date' => $row['issue_date'],
+            'purpose' => $row['purpose']
     ];
-    return_json('success', 'Retrieved Template Successfuly.', $data);
+    
+    $query2 = "SELECT * FROM placeholders where c_id = ?";
+    $stmt2 = $conn->prepare($query2);
+    $stmt2->bind_param('i', $id);
+    $stmt2->execute();
+    $result2 = $stmt2->get_result();
+    if ( $result2->num_rows <= 0) {
+        return_json('success', 'Retrieved Certificate Successfuly with no placeholders.', $data);
+    }
+    $placeholders = [];
+    foreach ($result2 as $pldr) {
+        $placeholders[$pldr['p_name']] = $pldr['p_value'];
+    }
+    $data['pldrs'] = $placeholders;
+    return_json('success', 'Retrieved Certificate Successfuly.', $data);
 
 }
 
@@ -149,65 +197,92 @@ function delete_cert($conn) {
 
     $id = $_POST['id'];
 
-    // First check if template exists
-    $checkQuery = 'SELECT t_id FROM templates WHERE t_id = ?';
+    // First check if certificate exists
+    $checkQuery = 'SELECT c_id FROM certificates WHERE c_id = ?';
     $stmt = $conn->prepare($checkQuery);
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if (!$result->fetch_assoc()) {
-        return_json('error', 'Template does not exist.');
+        return_json('error', 'Certificate does not exist.');
     }
 
     // Delete query
-    $deleteQuery = 'DELETE FROM templates WHERE t_id = ?';
+    $deleteQuery = 'DELETE FROM certificates WHERE c_id = ?';
     $stmt = $conn->prepare($deleteQuery);
     $stmt->bind_param('i', $id);
 
     if ($stmt->execute()) {
-        return_json('success', 'Template deleted successfully.');
+        return_json('success', 'Certificate deleted successfully.');
     } else {
-        return_json('error', 'Failed to delete template.');
+        return_json('error', 'Failed to delete certificate.');
     }
 }
 
 
 function update_cert($conn) {
+    // Certificate data
     $id = $_POST['id'];
-    $tname = $_POST['tname'];
-    $orientation = $_POST['orientation'];
-    $html_code = $_POST['html_code'];
+    $r_name = $_POST['r_name'];
+    $course = $_POST['course'];
+    $issue_date = $_POST['issue_date'];
+    $purpose = $_POST['purpose'] ?? ''; 
+    // placeholder data
+    $placeholders = $_POST['pldrs'] ?? []; // ['pname'=>'pval', 'pname'=>'pval', ...]
 
-    $bg_img = $_POST['bg_img'] ?? '';
-    $opacity = $_POST['opacity'] ?? '';
-    $desc = $_POST['desc'] ?? '';
-    $tag = $_POST['tag'] ?? '';
-
-    $query = "UPDATE templates 
-            SET t_name = ?, orientation = ?, html_code = ?, bg_img = ?, opacity = ?, description = ?, tag = ?
-            WHERE t_id = ?";
+    $query = "UPDATE certificates 
+            SET r_name = ?, course = ?, issue_date = ?, purpose = ?
+            WHERE c_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('sssssssi', $tname, $orientation, $html_code, $bg_img, $opacity, $desc, $tag, $id);
+    $stmt->bind_param('ssssi', $r_name, $course, $issue_date, $purpose, $id);
 
-    if ($stmt->execute()) {
-        return_json('success', 'Template updated successfully.');
+    if (!$stmt->execute()) {
+        return_json('error', 'Failed to update Certificate.');
     }
 
-    return_json('error', 'Failed to update Template.');
+    //Try blind DELETE on placeholders
+    $stmt = $conn->prepare("DELETE FROM placeholders WHERE c_id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    // if ($stmt->affected_rows > 0) {
+    //     echo "Rows deleted!";
+    // } else {
+    //     echo "No rows deleted (none found).";
+    // }
+
+    if(empty($placeholders)) {
+        return_json('success', 'Certificate updated successfully with no placeholders.');
+    }
+
+    // insert individual placeholder
+    $err_check = 0;
+    foreach ($placeholders as $key => $value) {
+        $query2 = "INSERT INTO placeholders (p_name, p_value, c_id) VALUES (?, ?, ?)";
+        $stmt2 = $conn->prepare($query2);
+        $stmt2->bind_param('ssi', $key, $value, $id);
+        if(!$stmt2->execute()) {
+            $err_check = 1;
+        }
+    }
+    if($err_check) {
+        return_json('error', 'Error occured while saving placeholders.');
+    }
+
+    return_json('success', 'Updated Certificate successfully.');
 
 }
 
-function list_templates($conn) {
+function list_certs($conn) {
 
-    $query = "SELECT t_id, t_name, orientation, bg_img, opacity FROM templates";
+    $query = "SELECT c_id, r_name, course, issue_date, purpose, t_name FROM certificates";
     $stmt = $conn->prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();
 
     // Check if no records found
     if ($result->num_rows === 0) {
-        return_json('error', 'No templates found.');
+        return_json('error', 'No certificates found.');
     }
 
     // Fetch all templates
@@ -215,7 +290,7 @@ function list_templates($conn) {
     while ($row = $result->fetch_assoc()) {
         $templates[] = $row;
     }
-    return_json('success', 'Templates retrieved successfully.', $templates);
+    return_json('success', 'Certificates retrieved successfully.', $templates);
 
 }
 

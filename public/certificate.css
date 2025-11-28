@@ -1,0 +1,64 @@
+:root{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --muted:#7b8694;
+  --accent:#5865f2;
+  --accent-2:#6b8cff;
+  --danger:#ffdca8;
+  --shadow:0 18px 40px rgba(15,23,42,0.08);
+  --glass:rgba(18,24,40,0.03);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#111827;background:var(--bg);}
+.app{display:flex;min-height:100vh;}
+
+.sidebar{width:260px;background:#111827;color:#fff;padding:28px 20px;display:flex;flex-direction:column;gap:28px}
+.brand{display:flex;align-items:center;gap:12px}
+.avatar{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#4f46e5,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700}
+.brand h1{margin:0;font-size:16px}
+.brand p{margin:0;color:rgba(255,255,255,0.7);font-size:13px}
+nav{display:flex;flex-direction:column;gap:8px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;color:rgba(255,255,255,0.9);cursor:pointer}
+.nav-item.active{background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));box-shadow:inset 0 -1px rgba(255,255,255,0.02)}
+.nav-item span{font-size:15px}
+.sidebar-bottom{margin-top:auto;padding-top:6px;border-top:1px solid rgba(255,255,255,0.02);font-size:13px;color:rgba(255,255,255,0.6)}
+
+.main{flex:1;padding:28px 36px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.page-title{font-size:28px;margin:0}
+.page-sub{color:var(--muted);margin:6px 0 0;font-size:14px}
+.actions{display:flex;gap:12px}
+
+.card{margin-top:22px;background:var(--card);padding:20px;border-radius:12px;box-shadow:var(--shadow)}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.card-header-left{font-size:14px;font-weight:700;color:#111827}
+.card-header-right{font-size:13px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:0.06em}
+th,td{padding:12px 8px;text-align:left}
+tbody tr{border-top:1px solid #e5e7eb}
+tbody tr:first-child{border-top:none}
+
+.recipient-cell{display:flex;align-items:center;gap:10px}
+.avatar-cell{width:32px;height:32px;border-radius:999px;background:#e0e7ff;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
+.recipient-info{display:flex;flex-direction:column}
+.recipient-name{font-weight:500;color:#111827}
+.recipient-id{font-size:11px;color:var(--muted)}
+.course-title{font-size:13px;font-weight:500;margin-bottom:2px}
+.course-status{font-size:11px;color:#22c55e}
+.issue-date-main{font-size:13px;font-weight:500}
+.issue-date-sub{font-size:11px;color:var(--muted)}
+.actions-cell{display:flex;flex-wrap:wrap;gap:6px}
+.btn-pill{padding:6px 12px;border-radius:999px;border:1px solid transparent;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.btn-ghost{background:#f8fafc;color:#111827;border:1px solid #e5e7eb}
+.btn-ghost:hover{background:#e5e7eb}
+.btn-danger{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.btn-danger:hover{background:#fee2e2}
+
+@media (max-width:880px){
+  .sidebar{display:none}
+  .main{padding:18px}
+}

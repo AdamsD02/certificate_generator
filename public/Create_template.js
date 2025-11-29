@@ -54,7 +54,7 @@ function refreshPlaceholders() {
 }
 
 function updateIframeContent() {
-  const doc = previewIframe.contentDocument || previewIframe.contentWindow.document;
+  // const doc = previewIframe.contentDocument || previewIframe.contentWindow.document;
 
   const t_name = nameInput.value.trim() || 'Untitled Template';
   const orientation = getOrientation() || 'portrait';
@@ -63,29 +63,71 @@ function updateIframeContent() {
   const bgFile = bgInput.files[0];
   const opacity = (parseInt(opacityInput.value, 10) || 35) / 100;
 
+
+  // Show Template details above the Certificate Template
+  const temp_details = document.getElementById('temp_data');
+  temp_details.style.width = '100%';
+  // temp_details.style.padding = '0.5rem';
+  temp_details.style.textAlign = 'center';
+  temp_details.innerHTML = `
+    <h2 style="margin-top: 0;">${t_name}</h2>
+    <p>${orientation.charAt(0).toUpperCase() + orientation.slice(1)} | ${tags}</p>
+    `;
+
   // Build HTML for iframe
+
+  // previewIframe.srcdoc = html_code;
+  const doc = previewIframe.contentDocument || previewIframe.contentWindow.document;
+  
   let bgStyle = '';
   if (bgFile) {
     const reader = new FileReader();
     reader.onload = e => {
-      bgStyle = `background-image: url(${e.target.result}); background-size: cover; background-position: center; opacity: ${opacity};`;
-      doc.body.innerHTML = `
-        <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; ${bgStyle}">
-          <h1>${t_name}</h1>
-          <p>${orientation.charAt(0).toUpperCase() + orientation.slice(1)} · ${tags}</p>
+      // bgStyle = `background-image: url(${e.target.result}); background-size: cover; background-position: center; opacity: ${opacity};`;
+      // doc.body.innerHTML = `
+      //   <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; ${bgStyle}"`
+      
+      // reset the iframe
+      doc.body.innerHTML = ``;
+
+      //  for html_code setup
+      const container = document.createElement('div');
+      // Ensure body can contain positioned layers
+      container.style.position = 'relative';
+      container.style.zIndex = '100';  // content above background
+      container.innerHTML = `
+        <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
           <div>${html_code}</div>
         </div>
       `;
+
+      // Create background img
+      const bg_img = doc.createElement('img');
+      bg_img.src = e.target.result;
+      bg_img.style.position = 'absolute';
+      bg_img.style.top = 0;
+      bg_img.style.left = 0;
+      bg_img.style.width = '100%';
+      bg_img.style.height = '100%';
+      bg_img.style.objectFit = 'cover';
+      bg_img.style.filter = `opacity(${opacity})`;
+      bg_img.style.zIndex = '0';
+      bg_img.style.pointerEvents = 'none';
+
+      // Append background behind content
+      doc.body.appendChild(bg_img);   
+      doc.body.appendChild(container);
     };
     reader.readAsDataURL(bgFile);
   } else {
     doc.body.innerHTML = `
       <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h1>${t_name}</h1>
-        <p>${orientation.charAt(0).toUpperCase() + orientation.slice(1)} · ${tags}</p>
+        
         <div>${html_code}</div>
       </div>
     `;
+
+
   }
 
   doc.body.style.margin = '0';

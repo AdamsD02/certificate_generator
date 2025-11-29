@@ -42,9 +42,10 @@ try {
 // apply dompdf 
 function generate_pdf($conn) {
     // get certificate data from db
+    $c_id = $_POST['id'];
     $query = 'SELECT * FROM certificates WHERE c_id = ?';
     $q_stmt = $conn->prepare($query);
-    $q_stmt->bind_param('i', $_POST['id']);
+    $q_stmt->bind_param('i', $c_id);
 
     if(!$q_stmt->execute()){
         return_json('error', 'DB connection error');
@@ -59,15 +60,36 @@ function generate_pdf($conn) {
     }
 
     $row = $result->fetch_assoc();
-    $r_name = $row['r_name'];
-    $course = $row['course'];
-    $issue_date = $row['issue_date'];
+    $r_name = trim($row['r_name']);
+    $course = trim($row['course']);
+    $issue_date = trim($row['issue_date']);
+
+    $filename = "Cert_" . $r_name . "_" . $course . "_" . str_replace('-', '_', $issue_date) . '.pdf';
 
     $html_code = $row['html_code'];
+    $my_para = $html_code;  // duplicate
     $orientation = $row['orientation'] ?? 'landscape' ;
     $opacity = $row['opacity'] ?? '40%';
     $bg_img = $row['bg_img'] ?? '';
     $issue_cnt = $row['issue_cnt'] + 1;
+
+    $placeholders = [];
+
+    $q_stmt2 = $conn->prepare('SELECT p_name, p_value FROM placeholders WHERE c_id = ?');
+    $q_stmt2->bind_param('i', $c_id);
+
+    if(!$q_stmt2->execute()){
+        return_json('error', 'DB connection error');
+    }
+    $result2 = $q_stmt2->get_result();
+
+    if($result2->num_rows >= 1){
+        foreach ($result2->fetch_assoc() as $row2) {
+            $pattern = '/{{\s*' . preg_quote($row2['p_name'], '/') . '\s*}}/i';
+            $my_para = preg_replace($pattern, $row2['p_value'], $my_para);
+
+        }
+    }
 
     // instantiate and use the dompdf class
     $dompdf = new Dompdf();
@@ -80,6 +102,6 @@ function generate_pdf($conn) {
     $dompdf->render();
 
     // Output the generated PDF to Browser
-    $dompdf->stream();
+    $dompdf->stream($filename);
 }
 ?>

@@ -54,7 +54,6 @@ function refreshPlaceholders() {
 }
 
 function updateIframeContent() {
-  // const doc = previewIframe.contentDocument || previewIframe.contentWindow.document;
 
   const t_name = nameInput.value.trim() || 'Untitled Template';
   const orientation = getOrientation() || 'portrait';

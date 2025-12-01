@@ -1,0 +1,139 @@
+* { box-sizing: border-box; }
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f3f4f6;
+  color: #111827;
+  margin: 0;
+  padding: 0;
+}
+
+.email-editor-page {
+  max-width: 750px;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.email-editor-page h1 {
+  margin-bottom: 20px;
+  font-size: 26px;
+  color: #4f46e5;
+}
+
+.email-form .field {
+  margin-bottom: 16px;
+}
+
+.field-inline {
+  display: flex;
+  gap: 16px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.email-form input[type="text"],
+.email-form input[type="email"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.email-form input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 1px #4f46e5;
+}
+
+.rich-text {
+  min-height: 200px;
+  border: 1px solid #d1d5db;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow-y: auto;
+}
+
+.rich-text:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 1px #4f46e5;
+}
+
+.toolbar {
+  margin-bottom: 6px;
+}
+
+.toolbar button {
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #f9fafb;
+  padding: 4px 8px;
+  margin-right: 4px;
+  cursor: pointer;
+}
+
+.toolbar button:hover {
+  background: #e5e7eb;
+}
+
+.btn-row {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn-primary {
+  background: #4f46e5;
+  color: white;
+}
+
+.status-message {
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.pdf-upload {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pdf-icon {
+  background: #f0f0f0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.pdf-icon:hover {
+  background: #e2e2e2;
+}
+
+#pdfFile {
+  display: none;
+}
+

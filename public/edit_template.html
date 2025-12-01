@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Create Template</title>
-  <link rel="stylesheet" href="Create_template.css">
+  <title>Edit Template</title>
+  <link rel="stylesheet" href="Edit_template.css">
 </head>
 <body>
 <div class="page">
@@ -12,22 +12,22 @@
     <div class="sidebar-header">
       <button class="icon-btn" type="button" aria-label="Back">←</button>
       <div>
-        <h1>Create Template</h1>
-        <p class="subtitle">Design and configure your certificate template</p>
+        <h1>Edit Template</h1>
+        <p class="subtitle">Modify and update your certificate template</p>
       </div>
     </div>
 
     <form id="templateForm" class="form" novalidate>
       <div class="field">
         <label for="t_name">Template Name</label>
-        <input id="t_name" name="t_name" type="text" placeholder="Untitled Template" />
+        <input id="t_name" name="t_name" type="text" placeholder="Template Name" />
         <div id="err_name" class="error"></div>
       </div>
 
       <div class="field">
         <label for="html_code">HTML Template Code</label>
         <textarea id="html_code" name="html_code"
-          placeholder="Paste or write your HTML template code here..."></textarea>
+          placeholder="Edit your HTML template code here..."></textarea>
         <p class="helper">
           Use placeholders like {{name}}, {{date}}, {{course}} in your HTML.
         </p>
@@ -37,7 +37,7 @@
       <div class="field">
         <label>Orientation</label>
         <div class="options-inline">
-          <label><input type="radio" name="orientation" value="portrait" checked> Portrait</label>
+          <label><input type="radio" name="orientation" value="portrait"> Portrait</label>
           <label><input type="radio" name="orientation" value="landscape"> Landscape</label>
         </div>
         <div id="err_orientation" class="error"></div>
@@ -73,12 +73,12 @@
 
       <div class="field">
         <label>Detected Placeholders</label>
-        <div id="placeholdersList" class="status-ok">No placeholders found yet.</div>
+        <div id="placeholdersList" class="status-ok">No placeholders detected.</div>
       </div>
 
       <div class="btn-row">
-        <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
-        <button type="submit" class="btn-primary">Save template</button>
+        <!-- RESET REMOVED -->
+        <button type="submit" class="btn-primary">Update Template</button>
       </div>
 
       <div id="submitStatus"></div>
@@ -92,7 +92,7 @@
         <h2>Template Preview</h2>
         <p class="subtitle">Live preview of your certificate template</p>
       </div>
-      <span class="pill pill-draft">Draft</span>
+      <span class="pill pill-draft">Editing</span>
     </header>
 
     <section class="preview-shell">
@@ -106,6 +106,6 @@
   </main>
 </div>
 
-<script src="Create_template.js"></script>
+<script src="Edit_template.js"></script>
 </body>
 </html>

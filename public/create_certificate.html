@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Certificate</title>
+  <link rel="stylesheet" href="create_certificate.css">
+</head>
+<body>
+<div class="page">
+  <!-- LEFT PANEL -->
+  <div class="left card">
+    <h1>Create Certificate</h1>
+
+    <!-- HIDDEN TEMPLATE INPUTS (EXAMPLE) -->
+    <input type="hidden" name="template_id" value="template-01">
+    <input type="hidden" name="template_version" value="v1">
+
+    <div class="field">
+      <label for="CertificateName">Certificate name</label>
+      <input id="CertificateName"  type="text" placeholder="">
+    </div>
+
+    <div class="field">
+      <label for="recipientName">Recipient name</label>
+      <input id="recipientName" type="text" placeholder="John Doe">
+    </div>
+
+    <div class="field">
+      <label for="courseName">Course</label>
+      <input id="courseName" type="text" placeholder="Professional Development Course">
+    </div>
+
+    <div class="field">
+      <label for="issueDate">Issue date</label>
+      <input id="issueDate" type="date">
+    </div>
+
+    <div class="field">
+      <label for="purposeText">Purpose / description</label>
+      <textarea id="purposeText" placeholder="Describe why this certificate is issued"></textarea>
+    </div>
+
+    <h2>Dynamic Placeholders</h2>
+    <p class="small-note">
+      Add placeholder names. These will replace matching placeholder text in the preview.
+    </p>
+
+    <div id="placeholderContainer"></div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-secondary" id="addPlaceholderBtn">Add placeholder</button>
+      <button type="button" class="btn-danger" id="clearPlaceholdersBtn">Clear all</button>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-primary" id="previewBtn">Preview</button>
+      <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
+      <button type="button" class="btn-secondary">Cancel</button>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div class="preview-header">
+      <h2>Certificate preview</h2>
+      <div class="preview-actions">
+        <button type="button" class="btn-primary">Save certificate</button>
+        <button type="button" class="btn-secondary">Export</button>
+        <button type="button" class="btn-secondary">Email</button>
+      </div>
+    </div>
+
+    <div class="certificate-wrapper card">
+      <div class="certificate" id="certificate">
+        <div class="cert-inner-border"></div>
+        <div class="badge-circle">★</div>
+
+        <div class="cert-content" id="certificateContent">
+          <div class="cert-title">CERTIFICATE</div>
+          <div class="cert-main">OF ACHIEVEMENT</div>
+
+          <div class="cert-label">This is presented to</div>
+          <div class="cert-name" data-placeholder="Recipient name">
+            Recipient name
+          </div>
+
+          <div class="cert-label">For successful completion of</div>
+          <div class="cert-course" data-placeholder="Course">
+            Course
+          </div>
+
+          <div class="cert-purpose" data-placeholder="Purpose/description">
+            Purpose/description
+          </div>
+
+          <div class="cert-footer">
+            <span data-placeholder="Template name">Template name</span>
+            <span data-placeholder="Issue date">Issue date</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="create_certificate.js"></script>
+</body>
+</html>

@@ -46,7 +46,7 @@
 
     <!-- PLACEHOLDER NAME INPUTS -->
     <h2>Dynamic Placeholders</h2>
-    <p class="small-note">
+    <p class="small-note" hidden>
       Add placeholder names. These will replace matching placeholder text in the preview.
     </p>
 
@@ -54,10 +54,10 @@
       <!-- generated inputs go here -->
     </div>
 
-    <div class="btn-row">
+    <!-- <div class="btn-row">
       <button type="button" class="btn-secondary" id="addPlaceholderBtn">Add placeholder</button>
       <button type="button" class="btn-danger" id="clearPlaceholdersBtn">Clear all</button>
-    </div>
+    </div> -->
 
     <div class="btn-row">
       <button type="button" class="btn-primary" id="previewBtn">Preview</button>
@@ -77,8 +77,14 @@
       </div>
     </div>
 
-    <div class="certificate-wrapper card">
-      <div class="certificate" id="certificate">
+    <div class="certificate-wrapper card" id="cert-wrapper">
+      <!-- iframe for rendering certificate -->
+      <!-- <iframe id="certificate-iframe" frameborder="0" ></iframe> -->
+
+      <!-- message box if template loading error -->
+      <div id="msg_box">No Template Passed!</div>
+
+      <!-- <div class="certificate" id="certificate">
         <div class="cert-inner-border"></div>
         <div class="badge-circle">★</div>
 
@@ -105,11 +111,12 @@
             <span data-placeholder="Issue date">Issue date</span>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>
 
-<script src="create_certificate.js"></script>
+<!-- <script src="./create_certificate.js"></script> -->
+<script src="./cert_control.js"></script>
 </body>
 </html>

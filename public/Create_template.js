@@ -19,7 +19,6 @@ previewIframe.style.width = '100%';
 previewIframe.style.height = '100%';
 previewIframe.style.border = '0';
 previewCanvas.appendChild(previewIframe);
-
 // Error elements
 const errName = document.getElementById('err_name');
 const errHtml = document.getElementById('err_html');

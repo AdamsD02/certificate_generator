@@ -54,8 +54,30 @@ let html_code = `<!DOCTYPE html>
             </body>
             </html>
 `;
+// html_code = '';
 
-html_code = '';
+let copy_html_code = html_code;
+let template_name = 'Workshop Template';
+let t_id = 1;
+let orientation = 'landscape';
+let bg_img = '';
+let opacity = '';
+
+// Form Elements
+const recipientInput = document.getElementById('recipientName');
+const courseInput    = document.getElementById('courseName');
+const dateInput      = document.getElementById('issueDate');
+const purposeInput   = document.getElementById('purposeText');
+
+const templateName   = document.getElementById('templateName');
+
+// Dynamic Placeholder Block
+const placeholderContainer   = document.getElementById('placeholderContainer');
+
+// Buttons 
+const previewBtn = document.getElementById('previewBtn');
+const resetBtn   = document.getElementById('resetBtn');
+
 const msgElement = document.getElementById("msg_box");
 
 const certWrapper = document.getElementById('cert-wrapper');
@@ -70,13 +92,20 @@ const loadPlaceholder = () => {
     const placeholder_list = html_code.match(regex);
 }
 
-if (html_code) {
-    iframeElement.srcdoc = html_code;
-    certWrapper.appendChild(iframeElement);
+// start 
+document.addEventListener('load', () => {
+    // check template code passed
+    if (html_code) {
+        iframeElement.srcdoc = html_code;
+        certWrapper.appendChild(iframeElement);
 
-    msgElement.style.visibility = 'hidden';
-}
-else {
-    msgElement.style.visibility = 'visible';
-    msgElement.style.fontWeight = 'bold';
-  }
+        msgElement.style.visibility = 'hidden';
+    }
+    else {
+        iframeElement.sandbox = true;
+        iframeElement.style.visibility = 'hidden';
+        msgElement.style.visibility = 'visible';
+        msgElement.style.fontWeight = 'bold';
+    }
+})
+

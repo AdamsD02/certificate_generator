@@ -45,6 +45,7 @@ button{
 .btn-primary{background:#6366f1;color:white;}
 .btn-secondary{background:#e5e7eb;color:#374151;}
 .btn-danger{background:#f97373;color:white;}
+/* preview */
 .preview-header{
   display:flex;
   justify-content:space-between;

@@ -1,3 +1,4 @@
+// references
 const recipientInput = document.getElementById('recipientName');
 const courseInput    = document.getElementById('courseName');
 const dateInput      = document.getElementById('issueDate');
@@ -10,6 +11,7 @@ const clearPlaceholdersBtn   = document.getElementById('clearPlaceholdersBtn');
 const previewBtn             = document.getElementById('previewBtn');
 const resetBtn               = document.getElementById('resetBtn');
 
+// PREVIEW TEXT NODES
 const previewNodes = document.querySelectorAll('[data-placeholder]');
 
 function syncMainFields() {
@@ -29,11 +31,13 @@ function syncMainFields() {
   });
 }
 
+// attach listeners for live update
 [recipientInput, courseInput, dateInput, purposeInput].forEach(el => {
   el.addEventListener('input', syncMainFields);
   el.addEventListener('change', syncMainFields);
 });
 
+// placeholder names handling
 let placeholderCount = 0;
 
 function addPlaceholderInput(initialName = '') {
@@ -53,8 +57,10 @@ function addPlaceholderInput(initialName = '') {
 }
 
 function updateDynamicPlaceholders() {
+  // reset base values first
   syncMainFields();
 
+  // for each placeholder_name input, replace matching text in preview
   const nameInputs = placeholderContainer.querySelectorAll('input');
   nameInputs.forEach(inp => {
     const nameValue = inp.value.trim();
@@ -62,6 +68,7 @@ function updateDynamicPlaceholders() {
 
     previewNodes.forEach(node => {
       const original = node.getAttribute('data-placeholder');
+      // if exact match, replace text
       if (original.toLowerCase() === nameValue.toLowerCase()) {
         node.textContent = nameValue;
       }
@@ -94,4 +101,5 @@ resetBtn.addEventListener('click', () => {
   syncMainFields();
 });
 
+// initial render
 syncMainFields();

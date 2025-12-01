@@ -15,11 +15,15 @@
     <input type="hidden" name="template_id" value="template-01">
     <input type="hidden" name="template_version" value="v1">
 
+    <!-- visible, readonly template name -->
     <div class="field">
-      <label for="CertificateName">Certificate name</label>
-      <input id="CertificateName"  type="text" placeholder="">
+      <label for="templateName">Template name</label>
+      <input id="templateName" name="template_name" type="text"
+             value="Sample Professional Development Certificate"
+             readonly />
     </div>
 
+    <!-- NEW VISIBLE INPUTS -->
     <div class="field">
       <label for="recipientName">Recipient name</label>
       <input id="recipientName" type="text" placeholder="John Doe">
@@ -40,12 +44,15 @@
       <textarea id="purposeText" placeholder="Describe why this certificate is issued"></textarea>
     </div>
 
+    <!-- PLACEHOLDER NAME INPUTS -->
     <h2>Dynamic Placeholders</h2>
     <p class="small-note">
       Add placeholder names. These will replace matching placeholder text in the preview.
     </p>
 
-    <div id="placeholderContainer"></div>
+    <div id="placeholderContainer">
+      <!-- generated inputs go here -->
+    </div>
 
     <div class="btn-row">
       <button type="button" class="btn-secondary" id="addPlaceholderBtn">Add placeholder</button>

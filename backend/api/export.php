@@ -91,12 +91,38 @@ function generate_pdf($conn) {
         }
     }
 
+    $img_block = '';
+    if (!empty($bg_img)) {
+        $filepath = __DIR__ . "/../../public/uploads/backgrounds/" . $bg_img;
+
+        if (file_exists($filepath)) {
+            $img_block = `<img src="$filepath"
+                style="position = 'absolute'; 
+                top = 0;
+                left = 0;
+                width = '100%';
+                height = '100%';
+                objectFit = 'cover';
+                filter = 'opacity($opacity)';
+                zIndex = '0';
+                pointerEvents = 'none';
+            ></img>`;
+        }
+    }
+    $cert_html = `<div style="margin: 0; padding:0; width: 100%; height: 100%;">
+            $img_block
+            <div>
+                $my_para
+            </div>
+        </div>
+    `;
+
     // instantiate and use the dompdf class
     $dompdf = new Dompdf();
-    $dompdf->loadHtml('hello world');
+    $dompdf->loadHtml($cert_html);
 
     // (Optional) Setup the paper size and orientation
-    $dompdf->setPaper('A4', 'landscape');
+    $dompdf->setPaper('A4', $orientation);
 
     // Render the HTML as PDF
     $dompdf->render();

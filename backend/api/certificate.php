@@ -120,7 +120,7 @@ function save_cert($conn) {
     $query = "INSERT INTO certificates ( r_name, course, issue_date, purpose, t_id, t_name, orientation, html_code, bg_img, opacity, u_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ssssisisssi', $r_name, $course, $issue_date, $purpose, $t_id, $tname, $orientation, $html_code, $bg_img, $opacity, $u_id );
+    $stmt->bind_param('ssssisssssi', $r_name, $course, $issue_date, $purpose, $t_id, $tname, $orientation, $html_code, $bg_img, $opacity, $u_id );
 
     if (!$stmt->execute()) {
         return_json('error', 'Failed to save Certificate.');
@@ -245,11 +245,6 @@ function update_cert($conn) {
     $stmt = $conn->prepare("DELETE FROM placeholders WHERE c_id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    // if ($stmt->affected_rows > 0) {
-    //     echo "Rows deleted!";
-    // } else {
-    //     echo "No rows deleted (none found).";
-    // }
 
     if(empty($placeholders)) {
         return_json('success', 'Certificate updated successfully with no placeholders.');
@@ -293,5 +288,5 @@ function list_certs($conn) {
     return_json('success', 'Certificates retrieved successfully.', $templates);
 
 }
-// reupload
+
 ?>

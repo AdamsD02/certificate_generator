@@ -84,22 +84,69 @@ const certWrapper = document.getElementById('cert-wrapper');
 let iframeElement = document.createElement('iframe')
 iframeElement.id = 'certificate-iframe';
 iframeElement.style.width="100%";
+iframeElement.style.height = "100%";
 iframeElement.style.boxShadow = '0 2px 5px #555';
 
+iframeElement.onload = () => {
+    const iframeDoc = iframeElement.contentDocument || iframeElement.contentWindow.document;
+
+    // Remove default body margin
+    iframeDoc.body.style.margin = 0;
+
+    // Get actual content size AFTER loading
+    const contentWidth = iframeDoc.body.scrollWidth;
+    const wrapperWidth = certWrapper.offsetWidth;
+
+    const scale = wrapperWidth / contentWidth;
+
+    // apply scaling inside iframe
+    iframeDoc.body.style.transform = `scale(${scale})`;
+    iframeDoc.body.style.transformOrigin = "top left";
+    iframeDoc.body.style.width = contentWidth + "px";
+};
+
+// updat on change
+function updateIframeContent() {
+    // empty the wrapper
+    // copy iframe code
+    // apply changes to copied iframe code based on placeholder input
+    // create new iframe Element
+    // appendChild(ifrmae)
+}
+
 const loadPlaceholder = () => {
+    placeholderContainer.innerHTML = ""; // empty the container
     const regex = /\{\{\s*([A-Za-z0-9_]+)\s*\}\}/g;
 
     const placeholder_list = html_code.match(regex);
+    placeholder_list.forEach( pl_el => {
+        const labelEl = document.createElement('label');
+        const inputEl = document.createElement('input');
+        labelEl.innerHTML = pl_el.replaceAll('_', " ").replaceAll(/[\{\}]/g, '');
+        inputEl.type = "text";
+        inputEl.name = "placeholder";
+        inputEl.id = pl_el.replaceAll(/[\{\}]/g, '');
+        labelEl.appendChild(inputEl);
+        placeholderContainer.appendChild(labelEl);
+    })
 }
 
 // start 
-document.addEventListener('load', () => {
+// document.addEventListener('load', () => {
     // check template code passed
     if (html_code) {
+        templateName.value = template_name;
         iframeElement.srcdoc = html_code;
         certWrapper.appendChild(iframeElement);
 
         msgElement.style.visibility = 'hidden';
+
+        // load placeholders
+        loadPlaceholder();
+        document.querySelectorAll('input').forEach(inputEl => {
+            inputEl.addEventListener('change', updateIframeContent());
+        })
+        previewBtn.addEventListener('click', updateIframeContent());
     }
     else {
         iframeElement.sandbox = true;
@@ -107,5 +154,5 @@ document.addEventListener('load', () => {
         msgElement.style.visibility = 'visible';
         msgElement.style.fontWeight = 'bold';
     }
-})
+// })
 

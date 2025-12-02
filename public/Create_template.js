@@ -54,6 +54,7 @@ function refreshPlaceholders() {
 }
 
 function updateIframeContent() {
+  // const doc = previewIframe.contentDocument || previewIframe.contentWindow.document;
 
   const t_name = nameInput.value.trim() || 'Untitled Template';
   const orientation = getOrientation() || 'portrait';
@@ -149,6 +150,13 @@ htmlInput.addEventListener('input', () => {
 orientationInputs.forEach(r => r.addEventListener('change', applyOrientation));
 tagsInput.addEventListener('input', updateIframeContent);
 opacityInput.addEventListener('input', updateIframeContent);
+
+opacityInput.addEventListener("input", () => {
+  opacityValue.textContent = opacityInput.value + "%";
+});
+
+
+
 bgInput.addEventListener('change', updateIframeContent);
 
 // Reset

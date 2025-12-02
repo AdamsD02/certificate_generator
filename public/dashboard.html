@@ -1,73 +1,19 @@
 <!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Panel — Dashboard</title>
-  <style>
-    :root{--bg:#f5f7fb;--card:#ffffff;--muted:#7b8694;--accent:#5865f2;--accent-2:#6b8cff;--danger:#ffdca8;--shadow:0 6px 18px rgba(18,24,40,0.06);--glass:rgba(18,24,40,0.03)}
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#111827;background:var(--bg)}/* layout */
-.app{display:flex;min-height:100vh}
-.sidebar{width:260px;background:#111827;color:#fff;padding:28px 20px;display:flex;flex-direction:column;gap:28px}
-.brand{display:flex;align-items:center;gap:12px}
-.avatar{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#4f46e5,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700}
-.brand h1{margin:0;font-size:16px}
-.brand p{margin:0;color:rgba(255,255,255,0.7);font-size:13px}
+  
 
-nav{display:flex;flex-direction:column;gap:8px}
-.nav-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;color:rgba(255,255,255,0.9);cursor:pointer}
-.nav-item.icon{font-size:18px}
-.nav-item.active{background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));box-shadow:inset 0 -1px rgba(255,255,255,0.02)}
-.nav-item span{font-size:15px}
-
-.sidebar-bottom{margin-top:auto;padding-top:6px;border-top:1px solid rgba(255,255,255,0.02);font-size:13px;color:rgba(255,255,255,0.6)}
-
-
-.main{flex:1;padding:28px 36px}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.page-title{font-size:28px;margin:0}
-.page-sub{color:var(--muted);margin:6px 0 0;font-size:14px}
-.actions{display:flex;gap:12px}
-.btn{padding:10px 16px;border-radius:12px;border:0;cursor:pointer;font-weight:600}
-.btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;box-shadow:var(--shadow)}
-.chip{background:#eef2ff;padding:6px 10px;border-radius:999px;font-weight:600;color:var(--accent-2);font-size:13px}
-
-.panel{margin-top:22px;background:linear-gradient(180deg,transparent,rgba(18,24,40,0.02));padding:20px;border-radius:12px}
-h2{margin:0 0 6px;font-size:20px}
-.muted{color:var(--muted);font-size:14px}
-
-/* template list */
-.list{display:flex;flex-direction:column;gap:18px;margin-top:14px}
-.card{display:flex;align-items:center;justify-content:space-between;background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow);border:1px solid rgba(16,24,40,0.03)}
-.card .left{display:flex;flex-direction:column;gap:6px}
-.card .title{font-weight:700;font-size:16px}
-.tag{background:var(--glass);padding:4px 8px;border-radius:8px;color:var(--muted);font-size:12px;margin-left:8px}
-.desc{color:var(--muted);font-size:13px}
-.card .right{display:flex;align-items:center;gap:10px}
-
-.btn-ghost{padding:8px 12px;border-radius:10px;border:1px solid rgba(16,24,40,0.06);background:transparent;cursor:pointer}
-.btn-use{background:linear-gradient(90deg,#4f46e5,#6b8cff);color:white;padding:10px 16px;border-radius:10px;border:0;cursor:pointer}
-.btn-delete{background:linear-gradient(90deg,#fff6e6,#fff0d1);border:1px solid rgba(0,0,0,0.04);padding:9px 12px;border-radius:10px}
-
-
-@media (max-width:880px){.sidebar{display:none}.main{padding:18px}}
-
-.modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:flex;align-items:center;justify-content:center;z-index:40}
-.modal{width:920px;max-width:95%;background:#fff;border-radius:12px;padding:18px;box-shadow:0 20px 40px rgba(2,6,23,0.4)}
-.modal .modal-header{display:flex;align-items:center;justify-content:space-between}
-.pill{font-size:13px;padding:6px 10px;border-radius:999px;background:#f3f4f6;color:#111}
-
-
-.flex{display:flex;align-items:center}
-.gap-8{gap:8px}
-.muted-2{color:#9aa4b2;font-size:13px}
-
-  </style>
+  <!-- External CSS -->
+  <link rel="stylesheet" href="dashboard.css">
 </head>
+
 <body>
   <div class="app">
+
+    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="brand">
         <div class="avatar">A</div>
@@ -75,149 +21,48 @@ h2{margin:0 0 6px;font-size:20px}
           <h1>Admin Panel</h1>
           <p>Corporate Suite</p>
         </div>
-      </div><nav>
-    <div class="nav-item active"><span class="icon">🏠</span><span>Dashboard</span></div>
-    <div class="nav-item"><span class="icon">📄</span><span>Create Templates</span></div>
-    <div class="nav-item"><span class="icon">📜</span><span>Certificates</span></div>
-  </nav>
-    <div class="sidebar-bottom"><span class="icon">🔙</span><strong style="margin-left:6px; font-size:16px">Logout</strong></div>
-</aside>
+      </div>
 
+      <nav>
+        <div class="nav-item active"><span class="icon">🏠</span><span>Dashboard</span></div>
+        <div class="nav-item"><span class="icon">📄</span><span>Create Templates</span></div>
+        <div class="nav-item"><span class="icon">📜</span><span>Certificates</span></div>
+      </nav>
 
+      <div class="sidebar-bottom">
+        <span class="icon">🔙</span>
+        <strong style="margin-left:6px; font-size:16px">Logout</strong>
+      </div>
+    </aside>
 
-<main class="main">
-  <div class="topbar">
-    <div>
-      <h1 class="page-title">Dashboard</h1>
-      <div class="page-sub">High-level overview of your templates and activity.</div>
-    </div>
-    <div class="actions">
-      <div class="chip">5 templates</div>
-      <button class="btn btn-primary" id="newTemplate">New Template +</button>
-    </div>
+    <!-- Main -->
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1 class="page-title">Dashboard</h1>
+          <div class="page-sub">High-level overview of your templates and activity.</div>
+        </div>
+
+        <div class="actions">
+          <div class="chip">5 templates</div>
+          <button class="btn btn-primary" id="newTemplate">New Template +</button>
+        </div>
+      </div>
+
+      <section class="panel">
+        <h2>Template List</h2>
+        <div class="muted">Manage, edit, and preview your templates in one place.</div>
+
+        <div class="list" id="templateList"></div>
+      </section>
+    </main>
+
   </div>
 
-  <section class="panel">
-    <h2>Template List</h2>
-    <div class="muted">Manage, edit, and preview your templates in one place.</div>
+  <!-- Modal Root -->
+  <div id="modalRoot"></div>
 
-    <div class="list" id="templateList">
-      
-    </div>
-  </section>
-</main>
-
-  </div>  
-   <div id="modalRoot"></div>  <script>
-    const templates = [
-      {id:1,title:'Marketing Landing Page', tag:'Web', desc:'High-converting layout for product launches and campaigns.'},
-      {id:2,title:'Internal Report Dashboard', tag:'Dashboard', desc:'Executive-ready reporting layout for internal stakeholders.'},
-      {id:3,title:'Customer Onboarding Flow', tag:'Journey', desc:'Guided experience optimized for new user activation.'},
-      {id:4,title:'Quarterly Board Pack', tag:'Presentation', desc:'Polished, board-ready presentation structure with metrics.'},
-      {id:5,title:'Feature Release Email', tag:'Email', desc:'Clear, high-open email template for announcing features.'}
-    ];
-
-    const list = document.getElementById('templateList');
-    function render(){
-      list.innerHTML = '';
-      templates.forEach(t => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="left">
-            <div style="display:flex;align-items:center">
-              <div class="title">${t.title}</div>
-              <div class="tag">${t.tag}</div>
-            </div>
-            <div class="desc">${t.desc}</div>
-          </div>
-          <div class="right">
-            <button class="btn-use" data-id="${t.id}">✓ Use Template</button>
-            <button class="btn-ghost" data-action="edit" data-id="${t.id}">✏️ Edit</button>
-            <button class="btn-ghost" data-action="preview" data-id="${t.id}">👁️ Preview</button>
-            <button class="btn-delete" data-action="delete" data-id="${t.id}">🗑️ Delete</button>
-          </div>
-        `;
-        list.appendChild(card);
-      })
-    }
-
-    render();
-
-    
-    list.addEventListener('click', e=>{
-      const btn = e.target.closest('button');
-      if(!btn) return;
-      const id = Number(btn.dataset.id);
-      const action = btn.dataset.action;
-      if(btn.classList.contains('btn-use')){
-        alert('Template "'+templates.find(x=>x.id===id).title+'" selected for use.');
-      } else if(action === 'edit'){
-        const t = templates.find(x=>x.id===id);
-        const newTitle = prompt('Edit template title', t.title);
-        if(newTitle) { t.title = newTitle; render(); }
-      } else if(action === 'preview'){
-        openPreview(id);
-      } else if(action === 'delete'){
-        if(confirm('Delete this template?')){
-          const idx = templates.findIndex(x=>x.id===id);
-          templates.splice(idx,1);
-          render();
-          document.querySelector('.chip').textContent = templates.length+ ' templates';
-        }
-      }
-    })
-
-    document.getElementById('newTemplate').addEventListener('click', ()=>{
-      const title = prompt('New template name');
-      if(!title) return;
-      const tag = prompt('Tag (e.g. Web, Dashboard)', 'Web') || 'Web';
-      const desc = prompt('Short description', '') || '';
-      templates.push({id:Date.now(),title,tag,desc});
-      render();
-      document.querySelector('.chip').textContent = templates.length+ ' templates';
-    })
-
-    function openPreview(id){
-      const t = templates.find(x=>x.id===id);
-      const root = document.getElementById('modalRoot');
-      root.innerHTML = `
-      
-        <div class="modal-backdrop">
-          <div class="modal">
-            <div class="modal-header">
-              <div>
-                <div style="font-weight:800;font-size:18px">${t.title} <span style="margin-left:10px" class="pill">${t.tag}</span></div>
-                <div class="muted-2" style="margin-top:6px">${t.desc}</div>
-              </div>
-              <div><button class="btn-ghost" id="closeModal">Close</button></div>
-            </div>
-            <hr style="margin:12px 0 18px;border:none;border-top:1px solid #eef2f8">
-            <div style="height:420px;overflow:auto;border-radius:8px;border:1px solid #f1f5f9;padding:14px">
-              <h3>Preview area</h3>
-              <p style="color:#6b7280">This is a simple preview placeholder showing how the template might look. Replace this with a live preview renderer if needed.</p>
-              <div style="margin-top:12px;background:#fafafa;padding:12px;border-radius:8px;border:1px dashed #e6edf3">
-                <strong>${t.title}</strong>
-                <p style="margin:8px 0;color:#6b7280">${t.desc}</p>
-                <button class="btn btn-primary">Use this template</button>
-                
-                <div id="successMsg" style="display:none; color: green;">
-                Success! Your action was completed.
-                </div>
-
-                <div id="errorMsg" style="display:none; color: red;">
-                 Something went wrong. Please try again.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      document.getElementById('closeModal').addEventListener('click', ()=> root.innerHTML='');
-      root.querySelector('.modal-backdrop').addEventListener('click', (ev)=>{ if(ev.target.classList.contains('modal-backdrop')) root.innerHTML=''; })
-    }
-    
-
-  </script></body>
+  <!-- External JS -->
+  <script src="dashboard.js"></script>
+</body>
 </html>

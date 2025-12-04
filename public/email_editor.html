@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Email Editor</title>
+  <link rel="stylesheet" href="email_editor.css">
+</head>
+<body>
+  <div class="email-editor-page">
+    <h1>Email Editor</h1>
+    <form id="emailForm" class="email-form">
+      <div class="field">
+        <label for="sender">From</label>
+        <input type="email" id="sender" name="sender" value="no-reply@gmail.com" required>
+      </div>
+
+      <div class="field">
+        <label for="receiver">To</label>
+        <input type="email" id="receiver" name="receiver" placeholder="" required>
+      </div>
+
+      <div class="field-inline">
+        <div class="field">
+          <label for="cc">CC</label>
+          <input type="email" id="cc" name="cc" placeholder="">
+        </div>
+        <div class="field">
+          <label for="bcc">BCC</label>
+          <input type="email" id="bcc" name="bcc" placeholder="">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" value="Congratulations on your Accomplishment " required>
+        
+      </div>
+
+      <div class="field">
+        <label for="body">Body</label>
+        
+        <div id="body" class="rich-text" contenteditable="true">
+          <p>Dear Student,</p>
+          <p>Congratulations on successfully completing the Data Structures. We wish you all the best for your future endeavors. ! 🎉</p>
+          <p>Best regards,<br>Certificate Team</p>
+        </div>
+      </div>
+
+    <div class="field">
+  <label for="pdfFile">Attach PDF</label>
+  <div class="pdf-upload">
+    <label for="pdfFile" class="pdf-icon">
+      📄 Choose PDF
+    </label>
+    <input type="file" id="pdfFile" name="pdfFile" accept="application/pdf">
+  </div>
+</div>
+
+
+      <div class="btn-row">
+        <button type="reset" class="btn-secondary">Reset</button>
+        <button type="submit" class="btn-primary">Send Email</button>
+      </div>
+
+      <div id="statusMessage" class="status-message"></div>
+    </form>
+  </div>
+
+  <script src="email_editor.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Certificate</title>
+  <link rel="stylesheet" href="create_certificate.css">
+</head>
+<body>
+<div class="page">
+  <!-- LEFT PANEL -->
+  <div class="left card">
+    <h1>Create Certificate</h1>
+
+    <!-- HIDDEN TEMPLATE INPUTS (EXAMPLE) -->
+    <input type="hidden" name="template_id" value="template-01">
+    <input type="hidden" name="template_version" value="v1">
+
+    <!-- visible, readonly template name -->
+    <div class="field">
+      <label for="templateName">Template name</label>
+      <input id="templateName" name="template_name" type="text"
+             value="Sample Professional Development Certificate" />
+    </div>
+
+    <!-- NEW VISIBLE INPUTS -->
+    <div class="field">
+      <label for="recipientName">Recipient name</label>
+      <input id="recipientName" type="text" placeholder="John Doe">
+    </div>
+
+    <div class="field">
+      <label for="courseName">Course</label>
+      <input id="courseName" type="text" placeholder="Professional Development Course">
+    </div>
+
+    <div class="field">
+      <label for="issueDate">Issue date</label>
+      <input id="issueDate" type="date">
+    </div>
+
+    <div class="field">
+      <label for="purposeText">Purpose / description</label>
+      <textarea id="purposeText" placeholder="Describe why this certificate is issued"></textarea>
+    </div>
+
+    <!-- Fixed Placeholders -->
+    <h2>Placeholders</h2>
+    <div id="placeholderContainer">
+      <div class="field">
+        <label for="student_name">Student Name</label>
+        <input type="text" id="student_name" placeholder="Enter student name">
+      </div>
+      <div class="field">
+        <label for="workshop_name">Workshop Name</label>
+        <input type="text" id="workshop_name" placeholder="Enter workshop name">
+      </div>
+      <div class="field">
+        <label for="duration">Duration</label>
+        <input type="text" id="duration" placeholder="Enter duration">
+      </div>
+      <div class="field">
+        <label for="certified_on">Certified On</label>
+        <input type="text" id="certified_on" placeholder="Enter date">
+      </div>
+      <div class="field">
+        <label for="certified_by">Certified By</label>
+        <input type="text" id="certified_by" placeholder="Enter issuer">
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-primary" id="previewBtn">Preview</button>
+      <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
+    </div>
+  </div>
+
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div class="preview-header">
+      <h2>Certificate preview</h2>
+      <div class="preview-actions">
+        <button type="button" class="btn-primary">Save certificate</button>
+        <button type="button" class="btn-secondary">Export</button>
+        <button type="button" class="btn-secondary">Email</button>
+      </div>
+    </div>
+
+    <div class="certificate-wrapper card" id="cert-wrapper"></div>
+  </div>
+</div>
+
+<script src="create_certificate.js"></script>
+</body>
+</html>

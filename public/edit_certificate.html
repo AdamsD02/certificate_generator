@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Create Certificate</title>
-  <link rel="stylesheet" href="create_certificate.css">
+  <title>Edit Certificate</title>
+  <link rel="stylesheet" href="edit_certificate.css">
 </head>
 <body>
 <div class="page">
   <!-- LEFT PANEL -->
   <div class="left card">
-    <h1>Create Certificate</h1>
+    <h1>Edit Certificate</h1>
 
-    <!-- HIDDEN TEMPLATE INPUTS (EXAMPLE) -->
+    <!-- HIDDEN TEMPLATE INPUTS -->
     <input type="hidden" name="template_id" value="template-01">
     <input type="hidden" name="template_version" value="v1">
 
@@ -68,20 +68,20 @@
       </div>
     </div>
 
-    <div class="btn-row">
-      <button type="button" class="btn-primary" id="previewBtn">Preview</button>
-      <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
-      <button type="button" class="btn-danger" id="logoutBtn">Logout</button>
-    </div>
+    <!-- Buttons row -->
+  <div class="btn-row">
+    <button type="button" class="btn-primary" id="previewBtn">Preview</button>
+    <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+    <button type="button" class="btn-logout" id="logoutBtn">Logout</button>
   </div>
-
+</div>
 
   <!-- RIGHT PANEL -->
   <div class="right">
     <div class="preview-header">
       <h2>Certificate preview</h2>
       <div class="preview-actions">
-        <button type="button" class="btn-primary">Save certificate</button>
+        <button type="button" class="btn-primary">Update certificate</button>
         <button type="button" class="btn-secondary">Export</button>
         <button type="button" class="btn-secondary">Email</button>
       </div>
@@ -91,6 +91,6 @@
   </div>
 </div>
 
-<script src="create_certificate.js"></script>
+<script src="edit_certificate.js"></script>
 </body>
 </html>

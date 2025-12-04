@@ -45,6 +45,31 @@
 </div>
   <!-- Login Page End -->
 
+  <script>
+    window.addEventListener('load', () => {
+      // check if loged-in
+      fetch("../backend/api/auth.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "action=check"  // <-- sending the POST action
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          alert('User Logged In, redirecting...');
+          // msg.textContent = "Login successful! Redirecting...";
+          window.location.href = "./dashboard.html";
+        } else {
+          // msg.textContent = data.message || "Invalid credentials";
+        }
+      })
+      .catch(err => {
+        // msg.textContent = "Error connecting to server";
+      });
+
+
+    });
+  </script>
   <script src="index.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("loginForm");
-    const msg  = document.getElementById("msg");
+    const msg  = document.getElementById("successMsg");
 
     form.addEventListener("submit", function(e) {
         e.preventDefault(); // stop normal form submit

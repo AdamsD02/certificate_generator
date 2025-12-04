@@ -106,27 +106,41 @@ catch (\Throwable $th) {
 
 function save_template($conn) {
 
-    $tname = $_POST['tname'];
+    $tname       = $_POST['t_name'];
     $orientation = $_POST['orientation'];
-    $html_code = $_POST['html_code'];
-    $bg_img = $_POST['bg_img'] ?? '';
-    $opacity = $_POST['opacity'] ?? '';
-    $desc = $_POST['desc'] ?? '';
-    $tag = $_POST['tag'] ?? '';
-    $u_id = $_SESSION['uid'];
+    $html_code   = $_POST['html_code'];
+    $opacity     = $_POST['opacity'] ?? '';
+    $desc        = $_POST['des'] ?? '';
+    $tag         = $_POST['tags'] ?? '';
+    $u_id        = $_SESSION['uid'];
+
+    // Upload bg image if exists
+    $bg_img = "";
+    if (!empty($_FILES['bg_img']['name'])) {
+        $fileName = time() . "_" . basename($_FILES["bg_img"]["name"]);
+        $target = "./../../uploads/background/" . $fileName;
+
+        if (!move_uploaded_file($_FILES["bg_img"]["tmp_name"], $target)) {
+            return_json("error", "Failed to upload background image.");
+        }
+
+        $bg_img = $fileName;
+    }
 
     $query = "INSERT INTO templates (t_name, orientation, html_code, bg_img, opacity, description, tag, u_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('sssssssi', $tname, $orientation, $html_code, $bg_img, $opacity, $desc, $tag, $u_id);
+    $stmt->bind_param('sssssssi', 
+        $tname, $orientation, $html_code, $bg_img, 
+        $opacity, $desc, $tag, $u_id
+    );
 
     if ($stmt->execute()) {
         return_json('success', 'Template saved successfully.');
-
     }
 
-    return_json('error', 'Failed to save Template.');
-
+    return_json('error', 'Failed to save template.');
 }
 
 function get_template($conn) {
@@ -188,29 +202,60 @@ function delete_template($conn) {
 
 
 function update_template($conn) {
-    $id = $_POST['id'];
-    $tname = $_POST['tname'];
+
+    if (!isset($_SESSION['id'])) {
+        return_json('error', 'Template ID missing.');
+    }
+
+    $id = $_SESSION['id'];
+
+    // Fetch existing template first
+    $get = $conn->prepare("SELECT bg_img FROM templates WHERE t_id=?");
+    $get->bind_param("i", $id);
+    $get->execute();
+    $old = $get->get_result()->fetch_assoc();
+    $existing_bg = $old['bg_img'];
+
+    // Posted fields
+    $tname       = $_POST['t_name'];
     $orientation = $_POST['orientation'];
-    $html_code = $_POST['html_code'];
+    $html_code   = $_POST['html_code'];
+    $opacity     = $_POST['opacity'] ?? '';
+    $desc        = $_POST['des'] ?? '';
+    $tag         = $_POST['tags'] ?? '';
 
-    $bg_img = $_POST['bg_img'] ?? '';
-    $opacity = $_POST['opacity'] ?? '';
-    $desc = $_POST['desc'] ?? '';
-    $tag = $_POST['tag'] ?? '';
+    // ---------- Handle bg_img ----------
+    if (!empty($_FILES['bg_img']['name'])) {
+        // New image uploaded
+        $fileName = time() . "_" . basename($_FILES["bg_img"]["name"]);
+        $target = "./../../uploads/background/" . $fileName;
 
+        if (!move_uploaded_file($_FILES["bg_img"]["tmp_name"], $target)) {
+            return_json("error", "Failed to upload background image.");
+        }
+
+        $bg_img = $fileName;
+    } else {
+        // User did NOT upload a new file → keep old one
+        $bg_img = $existing_bg;
+    }
+
+    // ---------- Perform update ----------
     $query = "UPDATE templates 
-            SET t_name = ?, orientation = ?, html_code = ?, bg_img = ?, opacity = ?, description = ?, tag = ?
-            WHERE t_id = ?";
+              SET t_name=?, orientation=?, html_code=?, bg_img=?, opacity=?, description=?, tag=?
+              WHERE t_id=?";
+
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('sssssssi', $tname, $orientation, $html_code, $bg_img, $opacity, $desc, $tag, $id);
+    $stmt->bind_param('sssssssi', 
+        $tname, $orientation, $html_code, $bg_img, 
+        $opacity, $desc, $tag, $id
+    );
 
     if ($stmt->execute()) {
         return_json('success', 'Template updated successfully.');
-        
     }
 
-    return_json('error', 'Failed to update Template.');
-
+    return_json('error', 'Failed to update template.');
 }
 
 function list_templates($conn) {

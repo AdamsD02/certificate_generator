@@ -106,6 +106,122 @@
   </main>
 </div>
 
+<script>
+  window.addEventListener('load', () => {
+
+    // check if loged-in
+    fetch("../backend/api/auth.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "action=check"  // <-- sending the POST action
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        alert('User Logged In, redirecting...');
+        msg.textContent = console.log("Login successful! Create Template *-* ");
+        // window.location.href = "./dashboard.html";
+      } else {
+        // msg.textContent = data.message || "Invalid credentials";
+        alert('User not logged in.');
+        window.location.href = './index.html';
+      }
+    })
+    .catch(err => {
+      // msg.textContent = "Error connecting to server";
+      alert('Error connecting to server');
+      window.location.href = './index.html';
+    });
+
+    // check logout btn
+
+    // check cancel btn
+
+    // form submission 
+    document.getElementById('templateForm').addEventListener('submit', (e) =>{
+      e.preventDefault();
+      // form validation 
+      const t_name = document.getElementById("t_name").value.trim();
+      const html_code = document.getElementById("html_code").value.trim();
+      const orientation = document.querySelector("input[name='orientation']:checked");
+      const bg_img = document.getElementById("bg_img").files[0];
+      const opacity = document.getElementById("opacity").value;
+      const description = document.getElementById("description").value.trim();
+      const tags = document.getElementById("tags").value.trim();
+
+      // ===== VALIDATION RULES =====
+
+      // Template name (required)
+      if (t_name === "") {
+        alert("Template name is required.");
+        return;
+      }
+
+      // HTML code (required)
+      if (html_code === "") {
+          alert("HTML code is required.");
+          return;
+      }
+
+      // Background image validation (optional but must be an image)
+      if (bg_img) {
+        const allowed = ["image/png", "image/jpeg", "image/webp"];
+        if (!allowed.includes(bg_img.type)) {
+          alert("Only PNG, JPG or WEBP allowed.");
+          return;
+        }
+      }
+
+      // Description (optional but limit to 200 chars)
+      if (description.length > 200) {
+        alert("Description must be less than 200 characters.");
+        isValid = false;
+      }
+
+      // Tags (optional, but must be comma-separated words)
+      if (tags !== "") {
+        if (!/^[a-zA-Z0-9,\s-]+$/.test(tags)) {
+            alert("Tags must be comma-separated words only.");
+            return;
+        }
+      }
+
+      // create data structure to be saved 
+      const formData = new URLSearchParams();
+      formData.append("action", "create");
+      formData.append("t_name", t_name);
+      formData.append('html_code', html_code);
+      formData.append('orientation', orientation);
+      formData.append('bg_img', bg_img);
+      formData.append('opacity', opacity);
+      formData.append('des', description);
+      formData.append('tags', tags);
+
+      fetch('./../backend/api/templates.php', {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: formData  // <-- sending the POST action
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          alert(data.message || "Created new Template successfully");
+          msg.textContent = console.log("Successfully Created new Template *-* ");
+          window.location.href = "./dashboard.html";
+        } else {
+          alert(data.message || "Invalid credentials");
+          // window.location.href = './index.html';
+        }
+      })
+      .catch(err => {
+        // msg.textContent = "Error connecting to server";
+        alert(data.message || 'Error connecting to server *w*');
+        // window.location.href = './index.html';
+      });
+    });
+
+  });
+</script>
 <script src="Create_template.js"></script>
 </body>
 </html>

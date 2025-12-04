@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("loginForm");
     const msg  = document.getElementById("successMsg");
+    const erMsg  = document.getElementById("errorMsg");
 
     form.addEventListener("submit", function(e) {
         e.preventDefault(); // stop normal form submit
@@ -21,13 +22,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 msg.textContent = "Login successful! Redirecting...";
                 window.location.href = "./dashboard.html";
             } else {
-                msg.textContent = data.message || "Invalid credentials";
+                erMsg.textContent = data.message || "Invalid credentials";
             }
         })
         .catch(err => {
-            msg.textContent = "Error connecting to server";
-         
-            
+            erMsg.textContent = "Error connecting to server";
 
         });
     });

@@ -154,7 +154,12 @@ opacityInput.addEventListener('input', updateIframeContent);
 opacityInput.addEventListener("input", () => {
   opacityValue.textContent = opacityInput.value + "%";
 });
-
+// ----------------------------
+// Back button event listener
+// ----------------------------
+document.querySelector('.icon-btn[aria-label="Back"]').addEventListener('click', () => {
+    window.location.href = 'dashboard.html';
+});
 
 
 bgInput.addEventListener('change', updateIframeContent);

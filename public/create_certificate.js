@@ -104,6 +104,7 @@ resetBtn.addEventListener('click', () => {
     placeholderContainer.querySelectorAll('input').forEach(inp => inp.value='');
     updateIframeContent();
 });
+
 addPlaceholderBtn.addEventListener('click', () => addPlaceholderInput());
 clearPlaceholdersBtn.addEventListener('click', () => {
     placeholderContainer.innerHTML='';

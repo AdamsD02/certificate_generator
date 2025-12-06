@@ -43,29 +43,14 @@
       <textarea id="purposeText" placeholder="Describe why this certificate is issued"></textarea>
     </div>
 
-    <!-- Fixed Placeholders -->
+    <!-- Placeholders -->
     <h2>Placeholders</h2>
     <div id="placeholderContainer">
-      <div class="field">
-        <label for="student_name">Student Name</label>
-        <input type="text" id="student_name" placeholder="Enter student name">
-      </div>
-      <div class="field">
-        <label for="workshop_name">Workshop Name</label>
-        <input type="text" id="workshop_name" placeholder="Enter workshop name">
-      </div>
-      <div class="field">
-        <label for="duration">Duration</label>
-        <input type="text" id="duration" placeholder="Enter duration">
-      </div>
-      <div class="field">
-        <label for="certified_on">Certified On</label>
-        <input type="text" id="certified_on" placeholder="Enter date">
-      </div>
-      <div class="field">
-        <label for="certified_by">Certified By</label>
-        <input type="text" id="certified_by" placeholder="Enter issuer">
-      </div>
+      <!-- <div class="field pldr-field">
+        <label class="pldr-key">pldr_name
+          <input type="text" class="pldr-val" id="pldr_name" placeholder="Enter value">
+        </label>
+      </div> -->
     </div>
 
     <div class="btn-row">
@@ -147,6 +132,8 @@ window.addEventListener("load", () => {
         document.getElementById('t_name').value = t_name;
         document.getElementById('t_id').value = t_id;
 
+        // assign placeholders if existing 
+
         } else {
             alert('Template not passed, try again...');
             window.location.href = './dashboard.html';
@@ -180,7 +167,7 @@ window.addEventListener("load", () => {
     // PLACEHOLDER FIELDS (if any)
     let placeholders = {};
     document.querySelectorAll(".pldr-field").forEach(row => {
-      const key = row.querySelector(".pldr-key").value.trim();
+      const key = row.querySelector(".pldr-key").textContent .trim();
       const val = row.querySelector(".pldr-val").value.trim();
       if (key) placeholders[key] = val;
     });
@@ -232,7 +219,7 @@ window.addEventListener("load", () => {
 
   
   /*------- Check Cancel -------*/
-  
+
   document.getElementById('cancel').addEventListener('click', () => {
     fetch("../backend/api/templates.php", {
       method: 'POST',

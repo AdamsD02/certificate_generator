@@ -14,20 +14,25 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch("../backend/api/auth.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: formData
+            body: formData.toString()
         })
         .then(res => res.json())
         .then(data => {
             if (data.status === "success") {
                 msg.textContent = "Login successful! Redirecting...";
-                window.location.href = "./dashboard.html";
+
+                // short delay to show message before redirect
+                setTimeout(() => {
+                    window.location.href = "./dashboard.html";
+                }, 500);
+
             } else {
                 erMsg.textContent = data.message || "Invalid credentials";
             }
         })
         .catch(err => {
-            console.error("Error: ", err.message);
-            erMsg.textContent = "Error connecting to server";
+            console.error("Error caught at login-submit ", err.message);
+            erMsg.textContent = "rror caught at login-submit.";
 
         });
     });

@@ -30,6 +30,13 @@ try {
                 generate_pdf($conn);
                 break;
             
+            case 'download':
+                if(!isset($_POST['id'])) {
+                    return_json('error', 'Certificate was not passed.');
+                }
+                download_cert($conn);
+                break;
+            
             default:
                 # code...
                 break;
@@ -128,6 +135,49 @@ function generate_pdf($conn) {
     $dompdf->render();
 
     // Output the generated PDF to Browser
-    $dompdf->stream($filename);
+    $pdf_path = __DIR__ . '/../../uploads/certificates/' . $filename;
+    $output_file = $dompdf->output();
+    file_put_contents($pdf_path, $output_file);
+
+    $msg = 'Certificate saved as pdf with name' . $filename;
+
+    return_json('success', $msg);
+
+    // force download 
+    // $dompdf->stream($filename, ['Attachment' => true]);
+}
+
+function download_cert($conn) {
+
+    $c_id = $_POST['id'];
+
+    // Get certificate row
+    $stmt = $conn->prepare("SELECT r_name, course, issue_date FROM certificates WHERE c_id = ?");
+    $stmt->bind_param("i", $c_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+
+    if ($res->num_rows !== 1) {
+        return_json('error', 'Certificate not found.');
+    }
+
+    $row = $res->fetch_assoc();
+
+    // Rebuild filename
+    $filename = "Cert_" . trim($row['r_name']) . "_" . trim($row['course']) . "_" . str_replace('-', '_', trim($row['issue_date'])) . ".pdf";
+
+    $filepath = __DIR__ . "/../../uploads/certificates/" . $filename;
+
+    if (!file_exists($filepath)) {
+        return_json('error', 'PDF file not found on server.');
+    }
+
+    /********** FORCE DOWNLOAD **********/
+    header("Content-Type: application/pdf");
+    header("Content-Disposition: attachment; filename=\"$filename\"");
+    header("Content-Length: " . filesize($filepath));
+
+    readfile($filepath);
+    exit;
 }
 ?>

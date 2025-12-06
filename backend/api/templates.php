@@ -158,6 +158,7 @@ function get_template($conn) {
     }
 
     $data = [
+            't_id' => $id,
             'tname' => $row['t_name'],
             'orientation' => $row['orientation'],
             'html_code' => $row['html_code'],

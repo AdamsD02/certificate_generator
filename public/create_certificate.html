@@ -12,13 +12,13 @@
     <h1>Create Certificate</h1>
 
     <!-- HIDDEN TEMPLATE INPUTS (EXAMPLE) -->
-    <input type="hidden" name="template_id" value="template-01">
-    <input type="hidden" name="template_version" value="v1">
+    <input type="hidden" name="t_id" id="t_id" value="">
+    <!-- <input type="hidden" name="template_version" value="v1"> -->
 
     <!-- visible, readonly template name -->
     <div class="field">
-      <label for="templateName">Template name</label>
-      <input id="templateName" name="template_name" type="text"
+      <label for="t_name">Template name</label>
+      <input id="t_name" name="template_name" type="text"
              value="Sample Professional Development Certificate" />
     </div>
 
@@ -71,7 +71,7 @@
     <div class="btn-row">
       <button type="button" class="btn-primary" id="previewBtn">Preview</button>
       <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
-      <button type="button" class="btn-danger" id="logoutBtn">Logout</button>
+      <button type="button" class="btn-danger" id="cancel">Cancel</button>
     </div>
   </div>
 
@@ -82,8 +82,8 @@
       <h2>Certificate preview</h2>
       <div class="preview-actions">
         <button type="button" id="certSubmit" class="btn-primary">Save certificate</button>
-        <button type="button" class="btn-secondary">Export</button>
-        <button type="button" class="btn-secondary">Email</button>
+        <button type="button" id="export" class="btn-secondary">Export</button>
+        <button type="button" id="email" class="btn-secondary">Email</button>
       </div>
     </div>
 
@@ -92,9 +92,17 @@
 </div>
 
 <script>
+let t_id = null;
+let t_name = '';
+let html_code = '';
+let bg_img = '';
+let orientation = 'landscape';
+let opacity = '100%';
+
 window.addEventListener("load", () => {
 
   /* -------- CHECK LOGIN ----------- */
+
   // fetch("../backend/api/auth.php", {
   //   method: "POST",
   //   headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -112,17 +120,48 @@ window.addEventListener("load", () => {
   //   window.location.href = "./index.html";
   // });
 
-  /* ------------ FORM SUBMISSION ----------- */
-  document.getElementById("certSubmit").addEventListener("click", (e) => {
-    e.preventDefault();
 
-    // BASIC FIELDS
-    const t_id = document.getElementById("t_id").value;
-    const tname = document.getElementById("t_name").value.trim();
-    const orientation = document.querySelector("input[name='orientation']:checked");
-    const html_code = document.getElementById("html_code").value.trim();
-    const bg_img = document.getElementById("bg_img").value; 
-    const opacity = document.getElementById("opacity").value;
+  /*------- Check template-ID passed -------*/
+
+    fetch("./../backend/api/templates.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "action=id_selected"
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+
+        console.log("Template id retrieved! Edit Template *-* ");
+
+        const template = data.data; // shorten reference
+
+        // Inputs
+        t_id = template.t_id;
+        t_name = template.tname;
+        html_code = template.html_code;
+        bg_img = template.bg_img;
+        opacity = template.opacity;
+        orientation = template.orientation;  // example: "portrait" or "landscape"
+
+        document.getElementById('t_name').value = t_name;
+        document.getElementById('t_id').value = t_id;
+
+        } else {
+            alert('Template not passed, try again...');
+            window.location.href = './dashboard.html';
+        }
+    })
+    .catch(err => {
+        alert('Error connecting to server');
+        window.location.href = './dashboard.html';
+    });
+
+  
+  /* ------------ FORM SUBMISSION ----------- */
+
+  document.getElementById("certSubmit").addEventListener("click", (e) => {
+    // e.preventDefault();
 
     // CERT DATA
     const r_name = document.getElementById("r_name").value.trim();
@@ -131,7 +170,7 @@ window.addEventListener("load", () => {
     const purpose = document.getElementById("purpose").value.trim();
 
     // VALIDATION
-    if (!tname) return alert("Certificate template name missing.");
+    if (!t_name) return alert("Certificate template name missing.");
     if (!html_code) return alert("HTML code missing.");
     if (!orientation) return alert("Orientation missing.");
     if (!r_name) return alert("Recipient name required.");
@@ -150,8 +189,8 @@ window.addEventListener("load", () => {
     const formData = new FormData();
     formData.append("action", "create");
     formData.append("t_id", t_id);
-    formData.append("tname", tname);
-    formData.append("orientation", orientation.value);
+    formData.append("tname", t_name);
+    formData.append("orientation", orientation);
     formData.append("html_code", html_code);
     formData.append("bg_img", bg_img);
     formData.append("opacity", opacity);
@@ -175,7 +214,7 @@ window.addEventListener("load", () => {
     .then(data => {
       alert(data.message);
       if (data.status === "success") {
-        window.location.href = "./dashboard.html";
+        window.location.href = "./certificate.html";
       }
     })
     .catch(err => {
@@ -185,6 +224,32 @@ window.addEventListener("load", () => {
   });
 
 });
+
+  
+  /*------- Check Export -------*/
+  
+  /*------- Check Email -------*/
+
+  
+  /*------- Check Cancel -------*/
+  
+  document.getElementById('cancel').addEventListener('click', () => {
+    fetch("../backend/api/templates.php", {
+      method: 'POST',
+      body: "action=unuse"
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message);
+      if (data.status === "success") {
+        window.location.href = "./certificate.html";
+      }
+    })
+    .catch(err => {
+      alert("Server error: " + err.message);
+    });
+  });
+
 </script>
 
 <script src="create_certificate.js"></script>

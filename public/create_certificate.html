@@ -67,8 +67,6 @@
       <h2>Certificate preview</h2>
       <div class="preview-actions">
         <button type="button" id="certSubmit" class="btn-primary">Save certificate</button>
-        <button type="button" id="export" class="btn-secondary">Export</button>
-        <button type="button" id="email" class="btn-secondary">Email</button>
       </div>
     </div>
 
@@ -88,22 +86,22 @@ window.addEventListener("load", () => {
 
   /* -------- CHECK LOGIN ----------- */
 
-  // fetch("../backend/api/auth.php", {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/x-www-form-urlencoded" },
-  //   body: "action=check"
-  // })
-  // .then(res => res.json())
-  // .then(data => {
-  //   if (data.status !== "success") {
-  //     alert("User not logged in.");
-  //     window.location.href = "./index.html";
-  //   }
-  // })
-  // .catch(() => {
-  //   alert("Error connecting to server");
-  //   window.location.href = "./index.html";
-  // });
+  fetch("../backend/api/auth.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "action=check"
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status !== "success") {
+      alert("User not logged in.");
+      window.location.href = "./index.html";
+    }
+  })
+  .catch(() => {
+    alert("Error connecting to server");
+    window.location.href = "./index.html";
+  });
 
 
   /*------- Check template-ID passed -------*/
@@ -201,7 +199,26 @@ window.addEventListener("load", () => {
     .then(data => {
       alert(data.message);
       if (data.status === "success") {
-        window.location.href = "./certificate.html";
+
+        // ajax to save pdf
+        let c_id = data.data.c_id;
+        const certForm = new FormData();
+        certForm.append("action", "create");
+        certForm.append("c_id", c_id);
+        fetch("./../backend/api/export.php", {
+          method: "POST",
+          body: certForm
+        })
+        .then(res2 => res2.json())
+        .then(data2 => {
+          if (data2.status === "success") {
+            console.log("Success: " . data2.message);
+          }
+        })
+
+        setTimeout(window.location.href = "./certificate.html", 500);
+
+        // window.location.href = "./certificate.html";
       }
     })
     .catch(err => {
@@ -211,11 +228,6 @@ window.addEventListener("load", () => {
   });
 
 });
-
-  
-  /*------- Check Export -------*/
-  
-  /*------- Check Email -------*/
 
   
   /*------- Check Cancel -------*/

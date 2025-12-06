@@ -145,7 +145,7 @@ function save_cert($conn) {
         return_json('error', 'Error occured while saving placeholders.');
     }
 
-    return_json('success', 'Saved Certificate successfully.');
+    return_json('success', 'Saved Certificate successfully.', ['c_id' => $c_id]);
 }
 
 function get_cert($conn) {

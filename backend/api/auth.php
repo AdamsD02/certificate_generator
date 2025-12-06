@@ -119,10 +119,18 @@ function logout_user() {
 function check_login() {
 
     header("Content-Type: application/json");
-
-    echo json_encode([
-        "logged_in" => isset($_SESSION['uid'])
-    ]);
+    if (isset($_SESSION['uid'])) {
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Login Successfull!!'
+        ]);
+    }
+    else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'login failed.'
+        ]);
+    }
     exit();
 }
 ?>

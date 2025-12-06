@@ -21,6 +21,7 @@ const dateInput = document.getElementById('issueDate');
 const purposeInput = document.getElementById('purposeText');
 const templateName = document.getElementById('templateName');
 const placeholderContainer = document.getElementById('placeholderContainer');
+
 const previewBtn = document.getElementById('previewBtn');
 const resetBtn = document.getElementById('resetBtn');
 const addPlaceholderBtn = document.getElementById('addPlaceholderBtn');
@@ -103,6 +104,7 @@ resetBtn.addEventListener('click', () => {
     placeholderContainer.querySelectorAll('input').forEach(inp => inp.value='');
     updateIframeContent();
 });
+
 addPlaceholderBtn.addEventListener('click', () => addPlaceholderInput());
 clearPlaceholdersBtn.addEventListener('click', () => {
     placeholderContainer.innerHTML='';

@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("loginForm");
     const msg  = document.getElementById("successMsg");
+    const erMsg  = document.getElementById("errorMsg");
 
     form.addEventListener("submit", function(e) {
         e.preventDefault(); // stop normal form submit
@@ -26,12 +27,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 }, 500);
 
             } else {
-                msg.textContent = data.message || "Invalid credentials";
+                erMsg.textContent = data.message || "Invalid credentials";
             }
         })
         .catch(err => {
-            console.error("Error caught at form-submit ", err.message);
-            msg.textContent = "Error connecting to server";
+            console.error("Error caught at login-submit ", err.message);
+            erMsg.textContent = "rror caught at login-submit.";
 
         });
     });

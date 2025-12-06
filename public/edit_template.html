@@ -106,6 +106,170 @@
   </main>
 </div>
 
+<script>
+  window.addEventListener('load', () => {
+
+    // check if loged-in
+    fetch("../backend/api/auth.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "action=check"  // <-- sending the POST action
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        // alert('User Logged In, redirecting...');
+        console.log("Login successful! Edit Template *-* ");
+      } else {
+        alert('User not logged in.');
+        window.location.href = './index.html';
+      }
+    })
+    .catch(err => {
+      alert('Error connecting to server');
+      window.location.href = './index.html';
+    });
+
+    // check logout btn
+
+    // check cancel btn trigger unuse
+
+
+    // check if template-id passed
+    fetch("./../backend/api/templates.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "action=id_selected"
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+
+        console.log("Template id retrieved! Edit Template *-* ");
+
+        const template = data.data; // shorten reference
+
+        // Inputs
+        document.getElementById("t_name").value = template.tname;
+        document.getElementById("html_code").value = template.html_code;
+        // document.getElementById("bg_img").value = template.bg_img;
+        document.getElementById("opacity").value = template.opacity;
+        document.getElementById("description").value = template.desc;
+        document.getElementById("tags").value = template.tag;
+
+        // Handle radio buttons for "orientation"
+        const orientationValue = template.orientation;  // example: "portrait" or "landscape"
+        const radios = document.querySelectorAll("input[name='orientation']");
+        radios.forEach(r => {
+          if (r.value === orientationValue) {
+            r.checked = true;
+          }
+        });
+
+        } else {
+            alert('Template not passed, try again...');
+            window.location.href = './dashboard.html';
+        }
+    })
+    .catch(err => {
+        alert('Error connecting to server');
+        window.location.href = './dashboard.html';
+    });
+
+    
+    // form submission 
+    document.getElementById('templateForm').addEventListener('submit', (e) =>{
+      e.preventDefault();
+      // form validation 
+      const t_name = document.getElementById("t_name").value.trim();
+      const html_code = document.getElementById("html_code").value.trim();
+      const orientation = document.querySelector("input[name='orientation']:checked");
+      const bg_img = document.getElementById("bg_img").files[0];
+      const opacity = document.getElementById("opacity").value;
+      const description = document.getElementById("description").value.trim();
+      const tags = document.getElementById("tags").value.trim();
+
+      // ===== VALIDATION RULES =====
+
+      if (!t_name) return alert("Template name is required.");
+      if (!html_code) return alert("HTML code is required.");
+      // if (!orientation) return alert("Select orientation");
+
+      // Background image validation (optional but must be an image)
+      if (bg_img) {
+        const allowed = ["image/png", "image/jpeg", "image/webp"];
+        if (!allowed.includes(bg_img.type)) {
+          alert("Only PNG, JPG or WEBP allowed.");
+          return;
+        }
+      }
+
+      // Description (optional but limit to 200 chars)
+      if (description.length > 200) {
+        alert("Description must be less than 200 characters.");
+        return;
+      }
+
+      // Tags (optional, but must be comma-separated words)
+      if (tags !== "") {
+        if (!/^[a-zA-Z0-9,\s-]+$/.test(tags)) {
+            alert("Tags must be comma-separated words only.");
+            return;
+        }
+      }
+
+      // create data structure to be saved 
+      const formData = new FormData();
+      formData.append("action", "edit");
+      formData.append("t_name", t_name);
+      formData.append('html_code', html_code);
+      formData.append('orientation', orientation.value);
+      formData.append('opacity', opacity);
+      formData.append('des', description);
+      formData.append('tags', tags);
+      if (bg_img) {
+        formData.append("bg_img", bg_img);
+      }
+
+      fetch('./../backend/api/templates.php', {
+          method: "POST",
+          // headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: formData  // <-- sending the POST action
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          alert(data.message || "Created new Template successfully");
+          console.log("Successfully Created new Template *-* ");
+
+          // trigger unuse
+          fetch('./../backend/api/templates.php', {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: "action=unuse"
+          })
+          .then(res => res.json())
+          .then(data => {
+            const msg = data.status + ": " + data.message;
+            console.log(msg);
+          })
+          .catch(err => {
+            const msg = "Error Caught: " + err.message;
+          });
+
+          window.location.href = "./dashboard.html";
+        } else {
+          alert(data.message || "Update Failed");
+        }
+      })
+      .catch(err => {
+        alert(err.message || 'Error connecting to server *w*');
+      });
+    });
+
+  });
+</script>
+
 <script src="Edit_template.js"></script>
 </body>
 </html>

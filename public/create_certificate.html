@@ -81,7 +81,7 @@
     <div class="preview-header">
       <h2>Certificate preview</h2>
       <div class="preview-actions">
-        <button type="button" class="btn-primary">Save certificate</button>
+        <button type="button" id="certSubmit" class="btn-primary">Save certificate</button>
         <button type="button" class="btn-secondary">Export</button>
         <button type="button" class="btn-secondary">Email</button>
       </div>
@@ -90,6 +90,102 @@
     <div class="certificate-wrapper card" id="cert-wrapper"></div>
   </div>
 </div>
+
+<script>
+window.addEventListener("load", () => {
+
+  /* -------- CHECK LOGIN ----------- */
+  // fetch("../backend/api/auth.php", {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  //   body: "action=check"
+  // })
+  // .then(res => res.json())
+  // .then(data => {
+  //   if (data.status !== "success") {
+  //     alert("User not logged in.");
+  //     window.location.href = "./index.html";
+  //   }
+  // })
+  // .catch(() => {
+  //   alert("Error connecting to server");
+  //   window.location.href = "./index.html";
+  // });
+
+  /* ------------ FORM SUBMISSION ----------- */
+  document.getElementById("certSubmit").addEventListener("click", (e) => {
+    e.preventDefault();
+
+    // BASIC FIELDS
+    const t_id = document.getElementById("t_id").value;
+    const tname = document.getElementById("t_name").value.trim();
+    const orientation = document.querySelector("input[name='orientation']:checked");
+    const html_code = document.getElementById("html_code").value.trim();
+    const bg_img = document.getElementById("bg_img").value; 
+    const opacity = document.getElementById("opacity").value;
+
+    // CERT DATA
+    const r_name = document.getElementById("r_name").value.trim();
+    const course = document.getElementById("course").value.trim();
+    const issue_date = document.getElementById("issue_date").value;
+    const purpose = document.getElementById("purpose").value.trim();
+
+    // VALIDATION
+    if (!tname) return alert("Certificate template name missing.");
+    if (!html_code) return alert("HTML code missing.");
+    if (!orientation) return alert("Orientation missing.");
+    if (!r_name) return alert("Recipient name required.");
+    if (!course) return alert("Course name required.");
+    if (!issue_date) return alert("Issue date required.");
+
+    // PLACEHOLDER FIELDS (if any)
+    let placeholders = {};
+    document.querySelectorAll(".pldr-field").forEach(row => {
+      const key = row.querySelector(".pldr-key").value.trim();
+      const val = row.querySelector(".pldr-val").value.trim();
+      if (key) placeholders[key] = val;
+    });
+
+    // PREPARE DATA
+    const formData = new FormData();
+    formData.append("action", "create");
+    formData.append("t_id", t_id);
+    formData.append("tname", tname);
+    formData.append("orientation", orientation.value);
+    formData.append("html_code", html_code);
+    formData.append("bg_img", bg_img);
+    formData.append("opacity", opacity);
+
+    formData.append("r_name", r_name);
+    formData.append("course", course);
+    formData.append("issue_date", issue_date);
+    formData.append("purpose", purpose);
+
+    // Add placeholder JSON object
+    Object.keys(placeholders).forEach(k => {
+      formData.append(`pldrs[${k}]`, placeholders[k]);
+    });
+
+    // SEND REQUEST
+    fetch("../backend/api/certificate.php", {
+      method: "POST",
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message);
+      if (data.status === "success") {
+        window.location.href = "./dashboard.html";
+      }
+    })
+    .catch(err => {
+      alert("Server error: " + err.message);
+    });
+
+  });
+
+});
+</script>
 
 <script src="create_certificate.js"></script>
 </body>

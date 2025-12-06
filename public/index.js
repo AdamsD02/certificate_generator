@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         })
         .catch(err => {
+            console.error("Error: ", err.message);
             erMsg.textContent = "Error connecting to server";
 
         });

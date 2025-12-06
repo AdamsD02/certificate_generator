@@ -2,6 +2,8 @@ const emailForm = document.getElementById('emailForm');
 const statusMessage = document.getElementById('statusMessage');
 const bodyEditor = document.getElementById('body');
 const toolbarButtons = document.querySelectorAll('.toolbar button');
+const pdfInput = document.getElementById("pdfFile");
+const pdfLabel = document.getElementById("pdfLabel");
 
 // Rich-text toolbar actions
 toolbarButtons.forEach(btn => {
@@ -11,6 +13,16 @@ toolbarButtons.forEach(btn => {
     bodyEditor.focus();
   });
 });
+
+// PDF upload preview text update
+pdfInput.addEventListener("change", function () {
+  if (pdfInput.files.length > 0) {
+    pdfLabel.textContent = "PDF Attached: " + pdfInput.files[0].name;
+  } else {
+    pdfLabel.textContent = "Attach PDF";
+  }
+});
+
 
 emailForm.addEventListener('submit', function(e) {
   e.preventDefault();
@@ -28,30 +40,40 @@ emailForm.addEventListener('submit', function(e) {
     return;
   }
 
-  const emailData = {
-    sender,
-    receiver,
-    cc,
-    bcc,
-    subject,
-    body
-  };
+  const formData = new FormData();
+  formData.append('sender', sender);
+  formData.append('receiver', receiver);
+  formData.append('cc', cc);
+  formData.append('bcc', bcc);
+  formData.append('subject', subject);
+  formData.append('body', body);
 
-  console.log('Email payload:', emailData);
-
-  // Simulate email sending
-  statusMessage.textContent = 'Email sent successfully (simulated).';
-  statusMessage.style.color = '#15803d';
-  // PDF upload preview text update
-const pdfInput = document.getElementById("pdfFile");
-const pdfLabel = document.getElementById("pdfLabel");
-
-pdfInput.addEventListener("change", function () {
   if (pdfInput.files.length > 0) {
-    pdfLabel.textContent = "PDF Attached: " + pdfInput.files[0].name;
-  } else {
-    pdfLabel.textContent = "Attach PDF";
+    formData.append('pdfFile', pdfInput.files[0]);
   }
-});
 
+  // ✅ AJAX POST request
+  fetch('../backend/send_email.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'success') {
+      statusMessage.textContent = 'Email sent successfully!';
+      statusMessage.style.color = '#15803d';
+      // Clear form if needed
+      emailForm.reset();
+      bodyEditor.innerHTML = '';
+      pdfLabel.textContent = "Attach PDF";
+    } else {
+      statusMessage.textContent = data.message || 'Failed to send email.';
+      statusMessage.style.color = '#b91c1c';
+    }
+  })
+  .catch(err => {
+    console.error('Email send error:', err);
+    statusMessage.textContent = 'Error connecting to server.';
+    statusMessage.style.color = '#b91c1c';
+  });
 });

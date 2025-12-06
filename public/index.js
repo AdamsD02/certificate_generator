@@ -30,10 +30,8 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         })
         .catch(err => {
-            console.error("Login error:", err);
+            console.error("Error caught at form-submit ", err.message);
             msg.textContent = "Error connecting to server";
-         
-            
 
         });
     });

@@ -49,7 +49,7 @@ try {
 // apply dompdf 
 function generate_pdf($conn) {
     // get certificate data from db
-    $c_id = $_POST['id'];
+    $c_id = (int)$_POST['id'];
     $query = 'SELECT * FROM certificates WHERE c_id = ?';
     $q_stmt = $conn->prepare($query);
     $q_stmt->bind_param('i', $c_id);
@@ -72,13 +72,14 @@ function generate_pdf($conn) {
     $issue_date = trim($row['issue_date']);
 
     $filename = "Cert_" . $r_name . "_" . $course . "_" . str_replace('-', '_', $issue_date) . '.pdf';
+    $pdf_path = __DIR__ . '/../../uploads/certificates/' . $filename;
 
     $html_code = $row['html_code'];
     $my_para = $html_code;  // duplicate
     $orientation = $row['orientation'] ?? 'landscape' ;
     $opacity = $row['opacity'] ?? '40%';
     $bg_img = $row['bg_img'] ?? '';
-    $issue_cnt = $row['issue_cnt'] + 1;
+    $issue_cnt = max(1, (int)$row['issue_cnt'] + 1);
 
     $placeholders = [];
 
@@ -91,7 +92,7 @@ function generate_pdf($conn) {
     $result2 = $q_stmt2->get_result();
 
     if($result2->num_rows >= 1){
-        foreach ($result2->fetch_assoc() as $row2) {
+        while ($row2 = $result2->fetch_assoc()) {
             $pattern = '/{{\s*' . preg_quote($row2['p_name'], '/') . '\s*}}/i';
             $my_para = preg_replace($pattern, $row2['p_value'], $my_para);
 
@@ -100,32 +101,35 @@ function generate_pdf($conn) {
 
     $img_block = '';
     if (!empty($bg_img)) {
-        $filepath = __DIR__ . "/../../public/uploads/backgrounds/" . $bg_img;
+        $filepath = __DIR__ . "/../../uploads/backgrounds/" . $bg_img;
 
         if (file_exists($filepath)) {
-            $img_block = `<img src="$filepath"
-                style="position = 'absolute'; 
-                top = 0;
-                left = 0;
-                width = '100%';
-                height = '100%';
-                objectFit = 'cover';
-                filter = 'opacity($opacity)';
-                zIndex = '0';
-                pointerEvents = 'none';
-            ></img>`;
+            $img_block = "<img src=\"$filepath\" 
+                            style=\"position:absolute; 
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            filter: opacity($opacity);
+                            z-index: '0';
+                            pointer-events: none;\"
+                        />";
         }
     }
-    $cert_html = `<div style="margin: 0; padding:0; width: 100%; height: 100%;">
-            $img_block
-            <div>
-                $my_para
-            </div>
-        </div>
-    `;
+    $cert_html = "<div style=\"margin: 0; padding:0; width: 100%; height: 100%;\">
+                        $img_block
+                        <div>
+                            $my_para
+                        </div>
+                    </div>";
 
     // instantiate and use the dompdf class
-    $dompdf = new Dompdf();
+    $options = new Options();
+    $options->set('isRemoteEnabled', TRUE);
+    $dompdf = new Dompdf($options);
+
+    // $dompdf = new Dompdf();
     $dompdf->loadHtml($cert_html);
 
     // (Optional) Setup the paper size and orientation
@@ -134,12 +138,27 @@ function generate_pdf($conn) {
     // Render the HTML as PDF
     $dompdf->render();
 
+    // delete old file if exists
+    if (file_exists($pdf_path)) {
+        unlink($pdf_path);
+    }
+
     // Output the generated PDF to Browser
-    $pdf_path = __DIR__ . '/../../uploads/certificates/' . $filename;
     $output_file = $dompdf->output();
     file_put_contents($pdf_path, $output_file);
 
-    $msg = 'Certificate saved as pdf with name' . $filename;
+    $msg = 'Certificate saved as pdf with name ' . $filename;
+
+    // update issue count = 1, last issued time
+    $stmt = $conn->prepare("
+        UPDATE certificates
+        SET issue_cnt = ?,
+            last_issued_at = NOW(),
+            updated_at = NOW()
+        WHERE c_id = ?
+    ");
+    $stmt->bind_param("ii", $issue_cnt, $c_id);
+    $stmt->execute();
 
     return_json('success', $msg);
 
@@ -149,7 +168,7 @@ function generate_pdf($conn) {
 
 function download_cert($conn) {
 
-    $c_id = $_POST['id'];
+    $c_id = (int)$_POST['id'];
 
     // Get certificate row
     $stmt = $conn->prepare("SELECT r_name, course, issue_date FROM certificates WHERE c_id = ?");
@@ -176,6 +195,9 @@ function download_cert($conn) {
     header("Content-Type: application/pdf");
     header("Content-Disposition: attachment; filename=\"$filename\"");
     header("Content-Length: " . filesize($filepath));
+
+    ob_clean();
+    flush();
 
     readfile($filepath);
     exit;

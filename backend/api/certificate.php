@@ -123,7 +123,7 @@ function save_cert($conn) {
     $stmt->bind_param('ssssisssssi', $r_name, $course, $issue_date, $purpose, $t_id, $tname, $orientation, $html_code, $bg_img, $opacity, $u_id );
 
     if (!$stmt->execute()) {
-        return_json('error', 'Failed to save Certificate.');
+        return_json('error', 'Failed to save Certificate.' . $stmt->error);
     }
     $c_id = $conn->insert_id;
 

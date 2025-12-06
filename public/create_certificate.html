@@ -151,18 +151,18 @@ window.addEventListener("load", () => {
     // e.preventDefault();
 
     // CERT DATA
-    const r_name = document.getElementById("r_name").value.trim();
-    const course = document.getElementById("course").value.trim();
-    const issue_date = document.getElementById("issue_date").value;
-    const purpose = document.getElementById("purpose").value.trim();
+    const r_name = document.getElementById("recipientName").value.trim();
+    const course = document.getElementById("courseName").value.trim();
+    const issue_date = document.getElementById("issueDate").value;
+    const purpose = document.getElementById("purposeText").value.trim();
 
     // VALIDATION
-    if (!t_name) return alert("Certificate template name missing.");
-    if (!html_code) return alert("HTML code missing.");
-    if (!orientation) return alert("Orientation missing.");
-    if (!r_name) return alert("Recipient name required.");
-    if (!course) return alert("Course name required.");
-    if (!issue_date) return alert("Issue date required.");
+    if (t_name.trim().length === 0) return alert("Certificate template name missing.");
+    if (html_code.trim().length === 0) return alert("HTML code missing.");
+    // if (!orientation) return alert("Orientation missing.");
+    if (r_name.trim().length === 0) return alert("Recipient name required.");
+    if (course.trim().length === 0) return alert("Course name required.");
+    if (issue_date.trim().length === 0) return alert("Issue date required.");
 
     // PLACEHOLDER FIELDS (if any)
     let placeholders = {};

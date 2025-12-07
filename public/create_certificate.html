@@ -234,7 +234,8 @@ window.addEventListener("load", () => {
 
   document.getElementById('cancel').addEventListener('click', () => {
     fetch("../backend/api/templates.php", {
-      method: 'POST',
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "action=unuse"
     })
     .then(res => res.json())

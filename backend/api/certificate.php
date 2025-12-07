@@ -170,6 +170,7 @@ function get_cert($conn) {
             'bg_img' => $row['bg_img'] ?? '',
             'opacity' => $row['opacity'] ?? '',
         // cert data
+            'c_id' => $id,
             'r_name' => $row['r_name'],
             'course' => $row['course'],
             'issue_date' => $row['issue_date'],

@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await checkLogin();
     await getData();
     
-//---- Form Handler ----
+  //---- Form Handler ----
     emailForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       formData.append('cc_email', cc_email);
       formData.append('bcc_email', bcc_email);
 
-      // ✅ AJAX POST request
+      // AJAX POST request
       fetch('../backend/api/email.php', {
         method: 'POST',
         body: formData

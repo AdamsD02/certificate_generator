@@ -10,7 +10,11 @@
     <h1>Email Editor</h1>
     <form id="emailForm" class="email-form">
       <div class="field">
-        <label for="sender">From</label>
+        <label for="sender_name">From Name</label>
+        <input type="text" id="sender_name" name="sender_name" value="Certificate Team" required>
+      </div>
+      <div class="field">
+        <label for="sender">From Email</label>
         <input type="email" id="sender" name="sender" value="no-reply@gmail.com" required>
       </div>
 
@@ -46,15 +50,16 @@
         </div>
       </div>
 
-    <div class="field">
-  <label for="pdfFile">Attach PDF</label>
-  <div class="pdf-upload">
-    <label for="pdfFile" class="pdf-icon">
-      📄 Choose PDF
-    </label>
-    <input type="file" id="pdfFile" name="pdfFile" accept="application/pdf">
-  </div>
-</div>
+      <div class="field">
+        <p style="font-size: 0.8rem;"><i>PDF matching Certificate: &quot;<span id="pdf_name">DefaultCert.pdf</span>&quot; will be attached in email. </i></p>
+        <!-- <label for="pdfFile">Attach PDF</label>
+        <div class="pdf-upload">
+          <label for="pdfFile" class="pdf-icon">
+            📄 Choose PDF
+          </label>
+          <input type="file" id="pdfFile" name="pdfFile" accept="application/pdf">
+        </div> -->
+      </div>
 
 
       <div class="btn-row">

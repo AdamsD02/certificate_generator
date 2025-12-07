@@ -123,7 +123,7 @@ function save_cert($conn) {
     $stmt->bind_param('ssssisssssi', $r_name, $course, $issue_date, $purpose, $t_id, $tname, $orientation, $html_code, $bg_img, $opacity, $u_id );
 
     if (!$stmt->execute()) {
-        return_json('error', 'Failed to save Certificate.');
+        return_json('error', 'Failed to save Certificate.' . $stmt->error);
     }
     $c_id = $conn->insert_id;
 
@@ -145,7 +145,7 @@ function save_cert($conn) {
         return_json('error', 'Error occured while saving placeholders.');
     }
 
-    return_json('success', 'Saved Certificate successfully.');
+    return_json('success', 'Saved Certificate successfully.', ['c_id' => $c_id]);
 }
 
 function get_cert($conn) {
@@ -170,6 +170,7 @@ function get_cert($conn) {
             'bg_img' => $row['bg_img'] ?? '',
             'opacity' => $row['opacity'] ?? '',
         // cert data
+            'c_id' => $id,
             'r_name' => $row['r_name'],
             'course' => $row['course'],
             'issue_date' => $row['issue_date'],

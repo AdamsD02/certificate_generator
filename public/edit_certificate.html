@@ -12,14 +12,13 @@
     <h1>Edit Certificate</h1>
 
     <!-- HIDDEN TEMPLATE INPUTS -->
-    <input type="hidden" name="template_id" value="template-01">
+    <input type="hidden" id="t_id" name="template_id" value="template-01">
     <input type="hidden" name="template_version" value="v1">
 
     <!-- visible, readonly template name -->
     <div class="field">
-      <label for="templateName">Template name</label>
-      <input id="templateName" name="template_name" type="text"
-             value="Sample Professional Development Certificate" />
+      <label for="t_name">Template name</label>
+      <input id="t_name" name="template_name" type="text" placeholder="Eg.: Sample Web Development Certificate" />
     </div>
 
     <!-- NEW VISIBLE INPUTS -->
@@ -43,36 +42,15 @@
       <textarea id="purposeText" placeholder="Describe why this certificate is issued"></textarea>
     </div>
 
-    <!-- Fixed Placeholders -->
+    <!-- Placeholders -->
     <h2>Placeholders</h2>
     <div id="placeholderContainer">
-      <div class="field">
-        <label for="student_name">Student Name</label>
-        <input type="text" id="student_name" placeholder="Enter student name">
-      </div>
-      <div class="field">
-        <label for="workshop_name">Workshop Name</label>
-        <input type="text" id="workshop_name" placeholder="Enter workshop name">
-      </div>
-      <div class="field">
-        <label for="duration">Duration</label>
-        <input type="text" id="duration" placeholder="Enter duration">
-      </div>
-      <div class="field">
-        <label for="certified_on">Certified On</label>
-        <input type="text" id="certified_on" placeholder="Enter date">
-      </div>
-      <div class="field">
-        <label for="certified_by">Certified By</label>
-        <input type="text" id="certified_by" placeholder="Enter issuer">
-      </div>
     </div>
 
     <!-- Buttons row -->
   <div class="btn-row">
     <button type="button" class="btn-primary" id="previewBtn">Preview</button>
     <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
-    <button type="button" class="btn-logout" id="logoutBtn">Logout</button>
   </div>
 </div>
 
@@ -81,15 +59,209 @@
     <div class="preview-header">
       <h2>Certificate preview</h2>
       <div class="preview-actions">
-        <button type="button" class="btn-primary">Update certificate</button>
-        <button type="button" class="btn-secondary">Export</button>
-        <button type="button" class="btn-secondary">Email</button>
+        <button type="button" class="btn-primary" id="certUpdate">Update certificate</button>
       </div>
     </div>
 
     <div class="certificate-wrapper card" id="cert-wrapper"></div>
   </div>
 </div>
+
+<script>
+let t_id = null;
+let t_name = '';
+let html_code = '';
+let bg_img = '';
+let orientation = 'landscape';
+let opacity = '100%';
+
+let c_id = '';
+let r_name = '';
+let course = '';
+let issue_date = '';
+let purpose = '';
+
+window.addEventListener("load", () => {
+
+  /* -------- CHECK LOGIN ----------- */
+
+  fetch("../backend/api/auth.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "action=check"
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status !== "success") {
+      alert("User not logged in.");
+      window.location.href = "./index.html";
+    }
+  })
+  .catch(() => {
+    alert("Error connecting to server");
+    window.location.href = "./index.html";
+  });
+
+
+  /*------- Check template-ID passed -------*/
+
+  fetch("./../backend/api/certificate.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "action=id_selected"
+  })
+  .then(res => res.json())
+  .then(response => {
+
+      if (response.status !== "success") {
+          alert('Certificate not passed, try again...');
+          return window.location.href = './dashboard.html';
+      }
+
+      console.log("Certificate loaded for editing");
+
+      const data = response.data;
+
+      // BASIC TEMPLATE FIELDS
+      t_id       = data.t_id;
+      t_name     = data.t_name;
+      html_code  = data.html_code;
+      bg_img     = data.bg_img;
+      opacity    = data.opacity;
+      orientation = data.orientation;
+
+      // CERTIFICATE FIELDS
+      c_id = data.c_id;
+      r_name     = data.r_name;
+      course     = data.course;
+      issue_date = data.issue_date;
+      purpose    = data.purpose;
+
+      // PLACEHOLDERS (optional)
+      const placeholders = data.pldrs || {};   // prevents crash if null/undefined
+
+      // ASSIGN VALUES TO INPUTS
+      document.getElementById('t_id').value            = t_id;
+      document.getElementById('t_name').value          = t_name;
+      document.getElementById('recipientName').value   = r_name;
+      document.getElementById('courseName').value      = course;
+      document.getElementById('issueDate').value       = issue_date;
+      document.getElementById('purposeText').value     = purpose;
+
+      // RENDER PLACEHOLDERS 
+      const container = document.getElementById('placeholderContainer');
+      container.innerHTML = "";  // Reset old dummy field
+
+      if (Object.keys(placeholders).length === 0) {
+        container.innerHTML = "<p>No placeholders available.</p>";
+      } else {
+          Object.entries(placeholders).forEach(([key, value]) => {
+
+            const row = document.createElement("div");
+            row.className = "pldr-field field";
+
+            row.innerHTML = `<label>${key}
+                              <input type="text" 
+                                class="pldr-val"
+                                data-pldr="${key}"
+                                value="${value}"
+                                placeholder="Enter value for ${key}">
+                            </label>`;
+
+              container.appendChild(row);
+          });
+      }
+
+      // render Iframe
+
+  })
+  .catch(err => {
+      console.error(err);
+      alert('Error connecting to server');
+      window.location.href = './dashboard.html';
+  });
+
+  
+  /* ------------ FORM SUBMISSION ----------- */
+
+  document.getElementById("certUpdate").addEventListener("click", (e) => {
+
+    const r_name_new = document.getElementById("recipientName").value.trim();
+    const course_new = document.getElementById("courseName").value.trim();
+    const issue_date_new = document.getElementById("issueDate").value;
+    const purpose_new = document.getElementById("purposeText").value.trim();
+
+    if (r_name_new.length === 0) return alert("Recipient name required.");
+    if (course_new.length === 0) return alert("Course name required.");
+    if (issue_date_new.length === 0) return alert("Issue date required.");
+
+    // Collect placeholders
+    let placeholders_new = {};
+    document.querySelectorAll(".pldr-field").forEach(row => {
+        const input = row.querySelector(".pldr-val");
+        const key = input.dataset.pldr;
+        const val = input.value.trim();
+        placeholders_new[key] = val;
+    });
+
+    // Prepare data for backend
+    const formData = new FormData();
+    formData.append("action", "edit");
+    formData.append("id", c_id); // ensure correct ID
+    formData.append("r_name", r_name_new);
+    formData.append("course", course_new);
+    formData.append("issue_date", issue_date_new);
+    formData.append("purpose", purpose_new);
+
+    // Append placeholders
+    Object.entries(placeholders_new).forEach(([key, val]) => {
+        formData.append(`pldrs[${key}]`, val);
+    });
+
+    fetch("../backend/api/certificate.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        alert(data.message);
+
+        if (data.status === "success") {
+            setTimeout(() => {
+                window.location.href = "./certificate.html";
+            }, 400);
+        }
+    })
+    .catch(err => {
+        alert("Server error: " + err.message);
+    });
+  });
+
+});
+
+  
+  /*------- Check Cancel -------*/
+
+  document.getElementById('cancelBtn').addEventListener('click', () => {
+    fetch("../backend/api/certificate.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "action=unuse"
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message);
+      if (data.status === "success") {
+        window.location.href = "./certificate.html";
+      }
+    })
+    .catch(err => {
+      alert("Server error: " + err.message);
+    });
+  });
+
+</script>
 
 <script src="edit_certificate.js"></script>
 </body>

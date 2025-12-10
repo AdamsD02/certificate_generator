@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(err => {
             console.error("Error caught at login-submit ", err.message);
-            erMsg.textContent = "rror caught at login-submit.";
+            erMsg.textContent = "Error caught at login-submit.";
 
         });
     });

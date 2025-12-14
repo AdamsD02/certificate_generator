@@ -99,7 +99,7 @@ const logoutBtn = document.getElementById('logoutBtn');
 
 // Cancel button event
 cancelBtn.addEventListener('click', () => {
-    // Left panel inputs reset करणे
+    
     placeholderContainer.querySelectorAll('input').forEach(inp => inp.value='');
     recipientInput.value = '';
     courseInput.value = '';
@@ -110,7 +110,6 @@ cancelBtn.addEventListener('click', () => {
 
 // Logout button event
 logoutBtn.addEventListener('click', () => {
-    // Example: page redirect to login/logout page
     window.location.href = '/logout'; 
 });
 
@@ -118,4 +117,4 @@ logoutBtn.addEventListener('click', () => {
 // Initial setup
 templateName.value = 'Workshop Template';
 loadPlaceholder();
-updateIframeContent(); // page load वर preview
+updateIframeContent(); 

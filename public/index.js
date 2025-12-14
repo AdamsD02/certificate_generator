@@ -1,38 +1,39 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("loginForm");
-    const msg  = document.getElementById("successMsg");
-    const erMsg  = document.getElementById("errorMsg");
+document.addEventListener("DOMContentLoaded", () => {
+    const form  = document.getElementById("loginForm");
+    const erMsg = document.getElementById("errorMsg");
 
-    form.addEventListener("submit", function(e) {
-        e.preventDefault(); // stop normal form submit
+    if (!form) return;
 
-        const formData = new URLSearchParams();
-        formData.append("action", "login");
-        formData.append("email", document.getElementById("email").value);
-        formData.append("pswd", document.getElementById("pswd").value);
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        erMsg.textContent = "";
 
-        fetch("../backend/api/auth.php", {
+        // Use URLSearchParams for x-www-form-urlencoded
+        const formData = new URLSearchParams({
+            action: "login",
+            email: document.getElementById("email").value,
+            pswd: document.getElementById("pswd").value
+        });
+
+        // Use absolute path from localhost root
+        fetch("/certificate_generator/backend/api/auth.php", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
             body: formData.toString()
         })
-        .then(res => res.json())
+        .then(res => res.json()) // directly parse JSON
         .then(data => {
             if (data.status === "success") {
-                msg.textContent = "Login successful! Redirecting...";
-
-                // short delay to show message before redirect
-                setTimeout(() => {
-                    window.location.href = "./dashboard.html";
-                }, 500);
-
+                window.location.href = "/certificate_generator/public/dashboard.html";
             } else {
-                erMsg.textContent = data.message || "Invalid credentials";
+                erMsg.style.display = "block";
+                erMsg.textContent = data.message || "Login failed";
             }
         })
         .catch(err => {
             console.error("Login error:", err);
-            erMsg.textContent = "Error connecting to server";
+            erMsg.style.display = "block";
+            erMsg.textContent = "Server error";
         });
     });
 });

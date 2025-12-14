@@ -4,12 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Panel — Dashboard</title>
-  
-
-  <!-- External CSS -->
   <link rel="stylesheet" href="dashboard.css">
 </head>
-
 <body>
   <div class="app">
 
@@ -29,24 +25,23 @@
         <div class="nav-item"><span class="icon">📜</span><span>Certificates</span></div>
       </nav>
 
-      <!-- ✅ Logout Button -->
-  <div class="sidebar-bottom" id="logoutBtn" style="cursor:pointer; display:flex; align-items:center;">
-    <span class="icon">🔙</span>
-    <strong style="margin-left:6px; font-size:16px">Logout</strong>
-  </div>
-</aside>
-
+      <!-- Logout Button -->
+      <div class="sidebar-bottom" id="logoutBtn" style="cursor:pointer; display:flex; align-items:center;">
+        <span class="icon">🔙</span>
+        <strong style="margin-left:6px; font-size:16px">Logout</strong>
+      </div>
+    </aside>
 
     <!-- Main -->
     <main class="main">
       <div class="topbar">
         <div>
           <h1 class="page-title">Dashboard</h1>
-          <div class="page-sub">High-level overview of your templates and activity.</div>
+          <div class="page-sub">Welcome, <span id="uname"></span></div>
         </div>
 
         <div class="actions">
-          <div class="chip">5 templates</div>
+          <div class="chip">0 templates</div>
           <button class="btn btn-primary" id="newTemplate">New Template +</button>
         </div>
       </div>
@@ -58,7 +53,6 @@
         <div class="list" id="templateList"></div>
       </section>
     </main>
-
   </div>
 
   <!-- Modal Root -->

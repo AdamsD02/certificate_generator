@@ -19,10 +19,11 @@
 
       <form id="loginForm">
         <label for="email">Email Address</label>
-        <input name="email" type="email" id="email" placeholde ="admin@company.com"required/>
+        <input name="email" type="email" id="email" placeholder="admin@company.com" required/>
 
         <label for="password">Password</label>
-        <input name="pswd" type="password" id="pswd" placeholder= "Enter Yours Password"required/>
+        <input name="pswd" type="password" id="pswd" placeholder="Enter Your Password" required/>
+
 
         <!-- <div class="options">
           <label><input type="checkbox" /> Remember me</label>
@@ -36,42 +37,54 @@
       <footer>© 2021 Certify Admin. All rights reserved.</footer>
     </div>
   </div>
-  <div id="successMsg" style="display:none; color: green;">
-    Success! Your action was completed.
-</div>
-
+  
 <div id="errorMsg" style="display:none; color: red;">
     Something went wrong. Please try again.
 </div>
   <!-- Login Page End -->
 
   <script>
-    window.addEventListener('load', () => {
-      // check if loged-in
-      fetch("../backend/api/auth.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: "action=check"  // <-- sending the POST action
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success") {
-          alert('User Logged In, redirecting...');
-          // msg.textContent = "Login successful! Redirecting...";
-          window.location.href = "./dashboard.html";
-        } else {
-          // msg.textContent = data.message || "Invalid credentials";
-          console.log('User not logged in.');
-        }
-      })
-      .catch(err => {
-        // msg.textContent = "Error connecting to server";
-        console.log('Error connecting to server');
-      });
+document.addEventListener("DOMContentLoaded", () => {
+    const form  = document.getElementById("loginForm");
+    const erMsg = document.getElementById("errorMsg");
 
+    if (!form) return;
 
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        erMsg.style.display = "none";
+        erMsg.textContent = "";
+
+        const formData = new URLSearchParams({
+            action: "login",
+            email: document.getElementById("email").value,
+            pswd: document.getElementById("pswd").value
+        });
+
+        fetch("/certificate_generator/backend/api/auth.php", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: formData.toString()
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                // Only redirect after successful login
+                window.location.href = "/certificate_generator/public/dashboard.html";
+            } else {
+                erMsg.style.display = "block";
+                erMsg.textContent = data.message || "Login failed";
+            }
+        })
+        .catch(err => {
+            console.error("Login error:", err);
+            erMsg.style.display = "block";
+            erMsg.textContent = "Server error";
+        });
     });
-  </script>
+});
+</script>
+
   <script src="index.js"></script>
 </body>
 </html>

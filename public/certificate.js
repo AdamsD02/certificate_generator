@@ -1,58 +1,85 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // EMAIL CERTIFICATE BUTTON
-    document.querySelectorAll(".email-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            // redirect to email editor page
-            window.location.href = "email_editor.html";
-        });
+  // =============================
+  // DOWNLOAD CERTIFICATE
+  // =============================
+  document.querySelectorAll(".btn-primary").forEach(btn => {
+    btn.addEventListener("click", e => {
+
+      // Only Download button
+      if (!btn.innerText.includes("Download")) return;
+
+      const row = e.target.closest("tr");
+      const certId = row.dataset.id;
+
+      fetch("../backend/export.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `action=create&id=${certId}`
+      })
+      .then(res => res.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "certificate.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch(() => alert("Download failed"));
     });
+  });
 
-});
-
-// EDIT CERTIFICATE
-    document.querySelectorAll(".edit-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            window.location.href = "edit_certificate.html";
-        });
+  // =============================
+  // EMAIL CERTIFICATE
+  // =============================
+  document.querySelectorAll(".email-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      window.location.href = "email_editor.html";
     });
+  });
 
+  // =============================
+  // EDIT CERTIFICATE
+  // =============================
+  document.querySelectorAll(".edit-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      window.location.href = "edit_certificate.html";
+    });
+  });
 
+  // =============================
+  // DELETE (Frontend only)
+  // =============================
+  document.querySelectorAll(".btn-danger").forEach(btn => {
+    btn.addEventListener("click", e => {
+      if (!confirm("Are you sure you want to delete this certificate?")) return;
+      e.target.closest("tr").remove();
+    });
+  });
 
+  // =============================
+  // LOGOUT
+  // =============================
+  const logoutBtn = document.getElementById("logoutBtn");
 
-// ========================================
-//              LOGOUT (AJAX)
-// ========================================
+  logoutBtn.addEventListener("click", () => {
+    if (!confirm("Do you really want to logout?")) return;
 
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-
-            if (!confirm("Do you really want to logout?")) return;
-
-            fetch("../backend/api/auth.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "action=logout"
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === "success") {
-                    // Redirect to login page after successful logout
-                    window.location.href = "index.html";
-                } else {
-                    alert("Logout failed");
-                }
-            })
-            .catch(err => {
-                console.error("Logout error:", err);
-                alert("Server error");
-            });
-        });
-    }
+    fetch("../backend/api/auth.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "action=logout"
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        window.location.href = "index.html";
+      } else {
+        alert("Logout failed");
+      }
+    });
+  });
 
 });

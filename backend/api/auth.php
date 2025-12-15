@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 session_start();
 
 /* ✅ CORRECT DB CONFIG PATH */
+
 require_once dirname(__DIR__) . '/config/db_config.php';
 
 /* ---------------------------

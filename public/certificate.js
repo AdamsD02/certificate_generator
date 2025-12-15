@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //              LOGOUT (AJAX)
 // ========================================
 
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const logoutBtn = document.getElementById("logoutBtn");

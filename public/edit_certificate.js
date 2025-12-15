@@ -93,6 +93,7 @@ function updateIframeContent() {
 }
 
 // Event listeners
+
 previewBtn.addEventListener('click', updateIframeContent);
 const cancelBtn = document.getElementById('cancelBtn');
 const logoutBtn = document.getElementById('logoutBtn');

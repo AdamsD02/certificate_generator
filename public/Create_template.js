@@ -13,6 +13,7 @@ const resetBtn = document.getElementById('resetBtn');
 const submitStatus = document.getElementById('submitStatus');
 
 // Preview elements
+
 const previewCanvas = document.getElementById('previewCanvas');
 let previewIframe = document.createElement('iframe');
 previewIframe.style.width = '100%';

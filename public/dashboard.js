@@ -156,6 +156,7 @@ function openPreview(id){
 //              LOGOUT (AJAX)
 // ========================================
 
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const logoutBtn = document.getElementById("logoutBtn");

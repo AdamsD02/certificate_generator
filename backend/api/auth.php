@@ -101,6 +101,6 @@ function check_login()
         return_json('success', 'User Logged In!');
         
     } else {
-        return_json('error', 'User not Logged In')
+        return_json('error', 'User not Logged In');
     }
 }

@@ -6,61 +6,58 @@ error_reporting(E_ALL);
 session_start();
 require __DIR__ . '/../config/db_config.php';
 
-try {
-
-    if (isset($_POST['action'])) {
-        $action = $_POST['action'];
-
-        switch ($action) {
-
-            // LOGIN
-            case 'login':
-                if (isset($_POST['email']) && isset($_POST['pswd'])) {
-                    login_user($conn); // exits inside
-                }
-
-                header("Content-Type: application/json");
-                echo json_encode([
-                    "status" => "error",
-                    "message" => "Missing email or password"
-                ]);
-                exit();
-
-
-            // LOGOUT
-            case 'logout':
-                logout_user(); // exits inside
-                break;
-
-
-            // CHECK LOGIN
-            case 'check':
-                check_login();
-                break;
-
-            default:
-                header("Content-Type: application/json");
-                echo json_encode([
-                    "status" => "error",
-                    "message" => "Invalid action"
-                ]);
-                exit();
-        }
-    }
-
-} catch (\Throwable $th) {
-
-    header("Content-Type: application/json");
+// common json response handler
+function return_json($status, $msg, $data = null)
+{
+    header('Content-Type: application/json');
     echo json_encode([
-        "status" => "error",
-        "message" => "Server error"
+        'status' => $status,
+        'message' => $msg,
+        'data' => $data
     ]);
     exit();
 }
 
-function login_user($conn) {
+try {
 
-    header("Content-Type: application/json");
+    if (!isset($_POST['action'])) {
+        return_json('error', 'Failed to perform action');
+    }
+
+    $action = $_POST['action'];
+    switch ($action) {
+        // LOGIN
+        case 'login':
+            if (isset($_POST['email']) && isset($_POST['pswd'])) {
+                login_user($conn); // exits inside
+            }
+            return_json('error', 'Missing email or password');
+            break;
+
+
+        // LOGOUT
+        case 'logout':
+            logout_user(); // exits inside
+            break;
+
+
+        // CHECK LOGIN
+        case 'check':
+            check_login();
+            break;
+
+        default:
+            return_json('error', 'Invalid action');
+            break;
+    }
+} catch (\Throwable $th) {
+
+    return_json('error', 'Server error');
+}
+
+
+function login_user($conn)
+{
 
     $plain = $_POST['pswd'];
     $email = $_POST['email'];
@@ -72,11 +69,7 @@ function login_user($conn) {
     $result = $stmt->get_result();
 
     if (!$row = $result->fetch_assoc()) {
-        echo json_encode([
-            "status" => "error",
-            "message" => "Email not found"
-        ]);
-        exit();
+        return_json('error', 'Email not found');
     }
 
     if (password_verify($plain, $row['u_pswd'])) {
@@ -85,52 +78,29 @@ function login_user($conn) {
         $_SESSION['uname'] = $row['u_name'];
         $_SESSION['role'] = $row['role'];
 
-        echo json_encode([
-            "status" => "success",
-            "message" => "Login successful."
-        ]);
-
+        return_json('success', 'Login successful');
     } else {
 
-        echo json_encode([
-            "status" => "error",
-            "message" => "Invalid credentials"
-        ]);
+        return_json('error', 'Invalid Credentials');
     }
-    exit();
 }
 
-function logout_user() {
 
-    header("Content-Type: application/json");
-
+function logout_user()
+{
     session_unset();
     session_destroy();
 
-    echo json_encode([
-        "status" => "success",
-        "message" => "Logged out successfully"
-    ]);
-    exit();
+    return_json('success', 'Logged out successfully');
 }
 
 
-
-function check_login() {
-
-    header("Content-Type: application/json");
+function check_login()
+{
     if (isset($_SESSION['uid'])) {
-        echo json_encode([
-            'status' => 'success',
-            'message' => 'Login Successfull!!'
-        ]);
+        return_json('success', 'User Logged In!');
+        
+    } else {
+        return_json('error', 'User not Logged In')
     }
-    else {
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'login failed.'
-        ]);
-    }
-    exit();
 }
-?>

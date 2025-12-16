@@ -8,32 +8,39 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         erMsg.textContent = "";
 
+        const emailIn = document.getElementById("email").value;
+        const pswdIn = document.getElementById("pswd").value;
+
         // Use URLSearchParams for x-www-form-urlencoded
-        const formData = new URLSearchParams({
-            action: "login",
-            email: document.getElementById("email").value,
-            pswd: document.getElementById("pswd").value
-        });
+        const formData = new FormData();
+        formData.append('action', 'login');
+        formData.append('email', emailIn);
+        formData.append('pswd', pswdIn);
 
         // Use absolute path from localhost root
-        fetch("/certificate_generator/backend/api/auth.php", {
+        fetch("./../backend/api/auth.php", {
             method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            body: formData.toString()
+            body: formData
         })
         .then(res => res.json()) // directly parse JSON
         .then(data => {
             if (data.status === "success") {
-                window.location.href = "/certificate_generator/public/dashboard.html";
+                msg.textContent = "Login successful! Redirecting...";
+
+                // short delay to show message before redirect
+                setTimeout(() => {
+                    window.location.href = "./dashboard.html";
+                }, 500);
+
             } else {
                 erMsg.style.display = "block";
                 erMsg.textContent = data.message || "Login failed";
             }
         })
         .catch(err => {
-            console.error("Login error:", err);
-            erMsg.style.display = "block";
-            erMsg.textContent = "Server error";
+            console.error("Error caught at login-submit ", err.message);
+            erMsg.textContent = "Error caught at login-submit.";
+
         });
     });
 });

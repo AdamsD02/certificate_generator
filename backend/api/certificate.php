@@ -61,7 +61,6 @@ try {
                     $_SESSION['c_id'] = $_POST['id'];
 
                     return_json('success', 'cert ready.');
-
                 }
 
                 return_json('error', 'cert not passed.');
@@ -193,7 +192,6 @@ function get_cert($conn)
     }
     $data['pldrs'] = $placeholders;
     return_json('success', 'Retrieved Certificate Successfuly.', $data);
-
 }
 
 function delete_cert($conn)
@@ -270,7 +268,6 @@ function update_cert($conn)
     }
 
     return_json('success', 'Updated Certificate successfully.');
-
 }
 
 function list_certs($conn)
@@ -294,7 +291,4 @@ function list_certs($conn)
         $templates[] = $row;
     }
     return_json('success', 'Certificates retrieved successfully.', $templates);
-
 }
-
-?>

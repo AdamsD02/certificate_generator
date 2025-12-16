@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Certify Admin Login</title>
   <link rel="stylesheet" href="index.css" />
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
   <!-- Login Page Start -->
@@ -19,11 +21,10 @@
 
       <form id="loginForm">
         <label for="email">Email Address</label>
-        <input name="email" type="email" id="email" placeholder="admin@company.com" required/>
+        <input name="email" type="email" id="email" placeholder="admin@company.com" required />
 
-        <label for="password">Password</label>
-        <input name="pswd" type="password" id="pswd" placeholder="Enter Your Password" required/>
-
+        <label for="pswd">Password</label>
+        <input name="pswd" type="password" id="pswd" placeholder="Enter Yours Password" required />
 
         <!-- <div class="options">
           <label><input type="checkbox" /> Remember me</label>
@@ -37,54 +38,55 @@
       <footer>© 2021 Certify Admin. All rights reserved.</footer>
     </div>
   </div>
-  
-<div id="errorMsg" style="display:none; color: red;">
+
+  <div id="errorMsg" style="display:none; color: red;">
     Something went wrong. Please try again.
-</div>
+  </div>
   <!-- Login Page End -->
 
   <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const form  = document.getElementById("loginForm");
-    const erMsg = document.getElementById("errorMsg");
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("loginForm");
+      const erMsg = document.getElementById("errorMsg");
 
-    if (!form) return;
+      if (!form) return;
 
-    form.addEventListener("submit", (e) => {
+      form.addEventListener("submit", (e) => {
         e.preventDefault();
         erMsg.style.display = "none";
         erMsg.textContent = "";
 
         const formData = new URLSearchParams({
-            action: "login",
-            email: document.getElementById("email").value,
-            pswd: document.getElementById("pswd").value
+          action: "login",
+          email: document.getElementById("email").value,
+          pswd: document.getElementById("pswd").value
         });
 
         fetch("/certificate_generator/backend/api/auth.php", {
-            method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            body: formData.toString()
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: formData.toString()
         })
-        .then(res => res.json())
-        .then(data => {
+          .then(res => res.json())
+          .then(data => {
             if (data.status === "success") {
-                // Only redirect after successful login
-                window.location.href = "/certificate_generator/public/dashboard.html";
+              // Only redirect after successful login
+              window.location.href = "/certificate_generator/public/dashboard.html";
             } else {
-                erMsg.style.display = "block";
-                erMsg.textContent = data.message || "Login failed";
+              erMsg.style.display = "block";
+              erMsg.textContent = data.message || "Login failed";
             }
-        })
-        .catch(err => {
+          })
+          .catch(err => {
             console.error("Login error:", err);
             erMsg.style.display = "block";
             erMsg.textContent = "Server error";
-        });
+          });
+      });
     });
-});
-</script>
+  </script>
 
   <script src="index.js"></script>
 </body>
+
 </html>

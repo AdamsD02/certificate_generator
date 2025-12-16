@@ -13,13 +13,13 @@
     <h1>Create Certificate</h1>
 
     <!-- HIDDEN TEMPLATE INPUTS (EXAMPLE) -->
-    <input type="hidden" name="template_id" value="template-01">
-    <input type="hidden" name="template_version" value="v1">
+    <input type="hidden" name="t_id" id="t_id" value="">
+    <!-- <input type="hidden" name="template_version" value="v1"> -->
 
     <!-- visible, readonly template name -->
     <div class="field">
-      <label for="templateName">Template name</label>
-      <input id="templateName" name="template_name" type="text"
+      <label for="t_name">Template name</label>
+      <input id="t_name" name="template_name" type="text"
              value="Sample Professional Development Certificate" />
     </div>
 
@@ -44,35 +44,20 @@
       <textarea id="purposeText" placeholder="Describe why this certificate is issued"></textarea>
     </div>
 
-    <!-- Fixed Placeholders -->
+    <!-- Placeholders -->
     <h2>Placeholders</h2>
     <div id="placeholderContainer">
-      <div class="field">
-        <label for="student_name">Student Name</label>
-        <input type="text" id="student_name" placeholder="Enter student name">
-      </div>
-      <div class="field">
-        <label for="workshop_name">Workshop Name</label>
-        <input type="text" id="workshop_name" placeholder="Enter workshop name">
-      </div>
-      <div class="field">
-        <label for="duration">Duration</label>
-        <input type="text" id="duration" placeholder="Enter duration">
-      </div>
-      <div class="field">
-        <label for="certified_on">Certified On</label>
-        <input type="text" id="certified_on" placeholder="Enter date">
-      </div>
-      <div class="field">
-        <label for="certified_by">Certified By</label>
-        <input type="text" id="certified_by" placeholder="Enter issuer">
-      </div>
+      <!-- <div class="field pldr-field">
+        <label class="pldr-key">pldr_name
+          <input type="text" class="pldr-val" id="pldr_name" placeholder="Enter value">
+        </label>
+      </div> -->
     </div>
 
     <div class="btn-row">
       <button type="button" class="btn-primary" id="previewBtn">Preview</button>
       <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
-      <button type="button" class="btn-danger" id="logoutBtn">Logout</button>
+      <button type="button" class="btn-danger" id="cancel">Cancel</button>
     </div>
   </div>
 
@@ -82,15 +67,191 @@
     <div class="preview-header">
       <h2>Certificate preview</h2>
       <div class="preview-actions">
-        <button type="button" class="btn-primary">Save certificate</button>
-        <button type="button" class="btn-secondary">Export</button>
-        <button type="button" class="btn-secondary">Email</button>
+        <button type="button" id="certSubmit" class="btn-primary">Save certificate</button>
       </div>
     </div>
 
     <div class="certificate-wrapper card" id="cert-wrapper"></div>
   </div>
 </div>
+
+<script>
+let t_id = null;
+let t_name = '';
+let html_code = '';
+let bg_img = '';
+let orientation = 'landscape';
+let opacity = '100%';
+
+window.addEventListener("load", () => {
+
+  /* -------- CHECK LOGIN ----------- */
+
+  fetch("../backend/api/auth.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "action=check"
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status !== "success") {
+      alert("User not logged in.");
+      window.location.href = "./index.html";
+    }
+  })
+  .catch(() => {
+    alert("Error connecting to server");
+    window.location.href = "./index.html";
+  });
+
+
+  /*------- Check template-ID passed -------*/
+
+    fetch("./../backend/api/templates.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "action=id_selected"
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+
+        console.log("Template id retrieved! Edit Template *-* ");
+
+        const template = data.data; // shorten reference
+
+        // Inputs
+        t_id = template.t_id;
+        t_name = template.tname;
+        html_code = template.html_code;
+        bg_img = template.bg_img;
+        opacity = template.opacity;
+        orientation = template.orientation;  // example: "portrait" or "landscape"
+
+        document.getElementById('t_name').value = t_name;
+        document.getElementById('t_id').value = t_id;
+
+        // assign placeholders if existing 
+
+        } else {
+            alert('Template not passed, try again...');
+            window.location.href = './dashboard.html';
+        }
+    })
+    .catch(err => {
+        alert('Error connecting to server');
+        window.location.href = './dashboard.html';
+    });
+
+  
+  /* ------------ FORM SUBMISSION ----------- */
+
+  document.getElementById("certSubmit").addEventListener("click", (e) => {
+    // e.preventDefault();
+
+    // CERT DATA
+    const r_name = document.getElementById("recipientName").value.trim();
+    const course = document.getElementById("courseName").value.trim();
+    const issue_date = document.getElementById("issueDate").value;
+    const purpose = document.getElementById("purposeText").value.trim();
+
+    // VALIDATION
+    if (t_name.trim().length === 0) return alert("Certificate template name missing.");
+    if (html_code.trim().length === 0) return alert("HTML code missing.");
+    // if (!orientation) return alert("Orientation missing.");
+    if (r_name.trim().length === 0) return alert("Recipient name required.");
+    if (course.trim().length === 0) return alert("Course name required.");
+    if (issue_date.trim().length === 0) return alert("Issue date required.");
+
+    // PLACEHOLDER FIELDS (if any)
+    let placeholders = {};
+    document.querySelectorAll(".pldr-field").forEach(row => {
+      const key = row.querySelector(".pldr-key").textContent .trim();
+      const val = row.querySelector(".pldr-val").value.trim();
+      if (key) placeholders[key] = val;
+    });
+
+    // PREPARE DATA
+    const formData = new FormData();
+    formData.append("action", "create");
+    formData.append("t_id", t_id);
+    formData.append("tname", t_name);
+    formData.append("orientation", orientation);
+    formData.append("html_code", html_code);
+    formData.append("bg_img", bg_img);
+    formData.append("opacity", opacity);
+
+    formData.append("r_name", r_name);
+    formData.append("course", course);
+    formData.append("issue_date", issue_date);
+    formData.append("purpose", purpose);
+
+    // Add placeholder JSON object
+    Object.keys(placeholders).forEach(k => {
+      formData.append(`pldrs[${k}]`, placeholders[k]);
+    });
+
+    // SEND REQUEST
+    fetch("../backend/api/certificate.php", {
+      method: "POST",
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message);
+      if (data.status === "success") {
+
+        // ajax to save pdf
+        let c_id = data.data.c_id;
+        const certForm = new FormData();
+        certForm.append("action", "create");
+        certForm.append("c_id", c_id);
+        fetch("./../backend/api/export.php", {
+          method: "POST",
+          body: certForm
+        })
+        .then(res2 => res2.json())
+        .then(data2 => {
+          if (data2.status === "success") {
+            console.log("Success: " . data2.message);
+          }
+        })
+
+        setTimeout(window.location.href = "./certificate.html", 500);
+
+        // window.location.href = "./certificate.html";
+      }
+    })
+    .catch(err => {
+      alert("Server error: " + err.message);
+    });
+
+  });
+
+});
+
+  
+  /*------- Check Cancel -------*/
+
+  document.getElementById('cancel').addEventListener('click', () => {
+    fetch("../backend/api/templates.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "action=unuse"
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message);
+      if (data.status === "success") {
+        window.location.href = "./certificate.html";
+      }
+    })
+    .catch(err => {
+      alert("Server error: " + err.message);
+    });
+  });
+
+</script>
 
 <script src="create_certificate.js"></script>
 </body>

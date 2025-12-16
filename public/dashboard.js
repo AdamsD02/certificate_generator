@@ -34,24 +34,24 @@ window.addEventListener('DOMContentLoaded', () => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'action=list'
     })
-    .then(res => res.json())
-    .then(data => {
-        if(data.status === 'success'){
-            templates = data.data;  
-        } else {
-            templates = [];  
-            console.warn(data.message);
-        }
-        render(); 
-        document.querySelector('.chip').textContent = templates.length + ' templates';
-    })
-    .catch(err => console.error('Error fetching templates:', err));
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                templates = data.data;
+            } else {
+                templates = [];
+                console.warn(data.message);
+            }
+            render();
+            document.querySelector('.chip').textContent = templates.length + ' templates';
+        })
+        .catch(err => console.error('Error fetching templates:', err));
 });
 
 // ----------------------------
 // Render templates
 // ----------------------------
-function render(){
+function render() {
     list.innerHTML = '';
     templates.forEach(t => {
         const card = document.createElement('div');
@@ -80,36 +80,36 @@ function render(){
 // ----------------------------
 list.addEventListener('click', e => {
     const btn = e.target.closest('button');
-    if(!btn) return;
+    if (!btn) return;
     const id = Number(btn.dataset.id);
     const action = btn.dataset.action;
 
-    if(btn.classList.contains('btn-use')){
+    if (btn.classList.contains('btn-use')) {
         alert('Template "' + templates.find(x => x.id === id).title + '" selected for use.');
-    } else if(action === 'edit'){
+    } else if (action === 'edit') {
         const t = templates.find(x => x.id === id);
         const newTitle = prompt('Edit template title', t.title);
-        if(newTitle) { t.title = newTitle; render(); }
-    } else if(action === 'preview'){
+        if (newTitle) { t.title = newTitle; render(); }
+    } else if (action === 'preview') {
         openPreview(id);
-    } else if(action === 'delete'){
-        if(confirm('Delete this template?')){
+    } else if (action === 'delete') {
+        if (confirm('Delete this template?')) {
             fetch('/backend/templates.php', {
                 method: 'POST',
-                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: 'action=delete&id=' + id
             })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === 'success'){
-                    templates = templates.filter(t => t.id !== id);
-                    render();
-                    document.querySelector('.chip').textContent = templates.length + ' templates';
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(err => console.error('Delete error:', err));
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        templates = templates.filter(t => t.id !== id);
+                        render();
+                        document.querySelector('.chip').textContent = templates.length + ' templates';
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(err => console.error('Delete error:', err));
         }
     }
 });
@@ -124,7 +124,7 @@ document.getElementById('newTemplate').addEventListener('click', () => {
 // ----------------------------
 // Template preview modal
 // ----------------------------
-function openPreview(id){
+function openPreview(id) {
     const t = templates.find(x => x.id === id);
     const root = document.getElementById('modalRoot');
     root.innerHTML = `
@@ -148,7 +148,7 @@ function openPreview(id){
 
     document.getElementById('closeModal').addEventListener('click', () => root.innerHTML = '');
     root.querySelector('.modal-backdrop').addEventListener('click', ev => {
-        if(ev.target.classList.contains('modal-backdrop')) root.innerHTML = '';
+        if (ev.target.classList.contains('modal-backdrop')) root.innerHTML = '';
     });
 }
 
@@ -171,20 +171,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: "action=logout"
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === "success") {
-                    // Redirect to login page after successful logout
-                    window.location.href = "index.html";
-                } else {
-                    alert("Logout failed");
-                }
-            })
-            .catch(err => {
-                console.error("Logout error:", err);
-                alert("Server error");
-            });
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        window.location.href = "index.html"; // redirect to login
+                    } else {
+                        alert("Logout failed: " + (data.message || ""));
+                    }
+                })
+                .catch(err => {
+                    console.error("Logout Error:", err);
+                    alert("Logout failed due to network/server error.");
+                });
         });
     }
-
 });

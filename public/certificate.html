@@ -6,6 +6,7 @@
   <title>Admin Panel — Certificates</title>
 
   <!-- External CSS -->
+   
   <link rel="stylesheet" href="certificate.css">
 </head>
 
@@ -24,13 +25,7 @@
         <div class="nav-item"><span class="icon">📄</span><span>Create Templates</span></div>
         <div class="nav-item active"><span class="icon">📜</span><span>Certificates</span></div>
       </nav>
-      
-      <!-- Logout Button -->
-       
-      <div class="sidebar-bottom" id="logoutBtn" style="cursor:pointer; display:flex; align-items:center;">
-        <span class="icon">🔙</span>
-        <strong style="margin-left:6px; font-size:16px">Logout</strong>
-      </div>
+      <div class="sidebar-bottom"><span class="icon">🔙</span><strong style="margin-left:6px;font-size:16px">Logout</strong></div>
     </aside>
 
     <main class="main">
@@ -62,7 +57,7 @@
           </thead>
 
           <tbody>
-            <tr data-id="1">
+            <tr>
               <td>
                 <div class="recipient-cell">
                   <div class="avatar-cell">AJ</div>
@@ -82,69 +77,34 @@
               </td>
               <td>
                 <div class="actions-cell">
-                  <button class="btn-pill btn-primary">Download</button>
-                  <button class="btn-pill btn-ghost email-btn">Email Certificate</button>
-                  <button class="btn-pill btn-ghost edit-btn">Edit Certificate</button>
-                  <button class="btn-pill btn-danger">Delete</button>
+                  <button 
+  class="btn-pill btn-primary download-btn"
+  data-id="<?= $row['id'] ?>">
+  Download
+</button>
+
+<button 
+  class="btn-pill btn-ghost email-btn"
+  data-id="<?= $row['id'] ?>">
+  Email Certificate
+</button>
+
+<button 
+  class="btn-pill btn-ghost edit-btn"
+  data-id="<?= $row['id'] ?>">
+  Edit Certificate
+</button>
+
+<button 
+  class="btn-pill btn-danger delete-btn"
+  data-id="<?= $row['id'] ?>">
+  Delete
+</button>
+
                 </div>
               </td>
             </tr>
 
-            <tr data-id="2">
-              <td>
-                <div class="recipient-cell">
-                  <div class="avatar-cell">MG</div>
-                  <div class="recipient-info">
-                    <span class="recipient-name">Maria Gomez</span>
-                    <span class="recipient-id">ID #0002</span>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="course-title">Data Analytics Foundations</div>
-                <div class="course-status">Certified</div>
-              </td>
-              <td>
-                <div class="issue-date-main">Mar 28, 2024</div>
-                <div class="issue-date-sub">Issued</div>
-              </td>
-              <td>
-                <div class="actions-cell">
-                  <button class="btn-pill btn-primary">Download</button>
-                  <button class="btn-pill btn-ghost email-btn"> Email Certificate</button>
-                  <button class="btn-pill btn-ghost edit-btn">Edit Certificate</button>
-                 <button class="btn-pill btn-danger">Delete</button>
-                </div>
-              </td>
-            </tr>
-
-            <tr data-id="3">
-              <td>
-                <div class="recipient-cell">
-                  <div class="avatar-cell">LC</div>
-                  <div class="recipient-info">
-                    <span class="recipient-name">Liam Chen</span>
-                    <span class="recipient-id">ID #0003</span>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="course-title">Cloud Infrastructure Essentials</div>
-                <div class="course-status">Certified</div>
-              </td>
-              <td>
-                <div class="issue-date-main">Jan 16, 2024</div>
-                <div class="issue-date-sub">Issued</div>
-              </td>
-              <td>
-                <div class="actions-cell">
-                  <button class="btn-pill btn-primary">Download</button>
-                  <button class="btn-pill btn-ghost email-btn">Email Certificate</button>
-                  <button class="btn-pill btn-ghost edit-btn">Edit Certificate</button>
-                 <button class="btn-pill btn-danger">Delete</button>
-                </div>
-              </td>
-            </tr>
           </tbody>
         </table>
 

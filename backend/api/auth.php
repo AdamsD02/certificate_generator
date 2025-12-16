@@ -4,6 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
+require __DIR__ . '/../config/db_config.php';
 
 // common json response handler
 function return_json($status, $msg, $data = null)
@@ -68,16 +69,6 @@ function login_user($conn)
         if ($result->num_rows === 0) {
             return_json("error", "Email not found");
         }
-
-        // $user = $result->fetch_assoc();
-        // if (!password_verify($pswd, $user['u_pswd'])) {
-        //     return_json("error", "Invalid password");
-        // }
-
-        // /* ✅ LOGIN SUCCESS */
-        // $_SESSION['uid']   = $user['u_id'];
-        // $_SESSION['uname'] = $user['u_name'];
-        // $_SESSION['role']  = $user['role'];
 
     if (!$row = $result->fetch_assoc()) {
         return_json('error', 'Email not found');

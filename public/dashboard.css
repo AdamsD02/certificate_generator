@@ -31,6 +31,7 @@ h2{margin:0 0 6px;font-size:20px}
 .muted{color:var(--muted);font-size:14px}
 
 /* template list */
+
 .list{display:flex;flex-direction:column;gap:18px;margin-top:14px}
 .card{display:flex;align-items:center;justify-content:space-between;background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow);border:1px solid rgba(16,24,40,0.03)}
 .card .left{display:flex;flex-direction:column;gap:6px}

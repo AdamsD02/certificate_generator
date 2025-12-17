@@ -78,6 +78,7 @@ function render() {
 // ----------------------------
 // Template actions
 // ----------------------------
+
 list.addEventListener('click', e => {
     const btn = e.target.closest('button');
     if (!btn) return;

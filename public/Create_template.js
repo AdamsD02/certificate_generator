@@ -10,10 +10,10 @@ const descInput = document.getElementById('description');
 const tagsInput = document.getElementById('tags');
 const placeholdersList = document.getElementById('placeholdersList');
 const resetBtn = document.getElementById('resetBtn');
+const cancelBtn = document.getElementById('cancelBtn');
 const submitStatus = document.getElementById('submitStatus');
 
 // Preview elements
-
 const previewCanvas = document.getElementById('previewCanvas');
 let previewIframe = document.getElementById('previewFrame');
 previewIframe.style.width = '100%';
@@ -31,11 +31,13 @@ const errTags = document.getElementById('err_tags');
 // Regex for {{placeholder_pattern}}
 const PLACEHOLDER_REGEX = /{{\s*([^{}]+?)\s*}}/g;
 
+// Get selected orientation
 function getOrientation() {
   const checked = document.querySelector('input[name="orientation"]:checked');
   return checked ? checked.value : '';
 }
 
+// Detect and refresh placeholders
 function refreshPlaceholders() {
   const text = htmlInput.value;
   const matches = [...text.matchAll(PLACEHOLDER_REGEX)];
@@ -53,6 +55,7 @@ function refreshPlaceholders() {
   });
 }
 
+// Update iframe content
 function updateIframeBody(doc, html_code, bgSrc, opacity) {
   doc.body.innerHTML = '';
   const container = document.createElement('div');
@@ -81,6 +84,7 @@ function updateIframeBody(doc, html_code, bgSrc, opacity) {
   doc.body.style.height = '100%';
 }
 
+// Update iframe preview
 function updateIframeContent() {
   const t_name = nameInput.value.trim() || 'Untitled Template';
   const orientation = getOrientation() || 'portrait';
@@ -110,6 +114,7 @@ function updateIframeContent() {
   }
 }
 
+// Apply orientation
 function applyOrientation() {
   const orientation = getOrientation();
   previewCanvas.style.aspectRatio = orientation === 'landscape' ? '4 / 3' : '3 / 4';
@@ -124,25 +129,70 @@ htmlInput.addEventListener('input', () => {
 });
 orientationInputs.forEach(r => r.addEventListener('change', applyOrientation));
 tagsInput.addEventListener('input', updateIframeContent);
-opacityInput.addEventListener('input', updateIframeContent);
-opacityInput.addEventListener("input", () => {
+opacityInput.addEventListener('input', () => {
   opacityValue.textContent = opacityInput.value + "%";
-});
-document.querySelector('.icon-btn[aria-label="Back"]').addEventListener('click', () => {
-  window.location.href = 'dashboard.html';
+  updateIframeContent();
 });
 bgInput.addEventListener('change', updateIframeContent);
 resetBtn.addEventListener('click', () => {
   form.reset();
   opacityInput.value = 35;
+  opacityValue.textContent = "35%";
   placeholdersList.textContent = 'No placeholders found yet.';
   updateIframeContent();
 });
+cancelBtn.addEventListener('click', () => {
+  form.reset();
+  placeholdersList.textContent = 'No placeholders found yet.';
+  opacityInput.value = 35;
+  opacityValue.textContent = "35%";
+  window.location.href = 'dashboard.html';
+});
+
+// Save template (submit)
 form.addEventListener('submit', e => {
   e.preventDefault();
-  submitStatus.textContent = 'Template saved (demo)';
+
+  const t_nameVal = nameInput.value.trim();
+  const htmlVal = htmlInput.value.trim();
+  const orientationVal = getOrientation();
+  const bgFile = bgInput.files[0];
+  const opacityVal = opacityInput.value;
+  const descVal = descInput.value.trim();
+  const tagsVal = tagsInput.value.trim();
+
+  // Validation
+  if (!t_nameVal) return alert("Template name is required.");
+  if (!htmlVal) return alert("HTML code is required.");
+  if (!orientationVal) return alert("Orientation is required.");
+  if (bgFile && !['image/png','image/jpeg','image/webp'].includes(bgFile.type)) return alert("Only PNG, JPG or WEBP allowed.");
+  if (descVal.length > 200) return alert("Description must be less than 200 characters.");
+  if (tagsVal && !/^[a-zA-Z0-9,\s-]+$/.test(tagsVal)) return alert("Tags must be comma-separated words.");
+
+  const formData = new FormData();
+  formData.append('action', 'create');
+  formData.append('t_name', t_nameVal);
+  formData.append('html_code', htmlVal);
+  formData.append('orientation', orientationVal);
+  formData.append('opacity', opacityVal);
+  formData.append('des', descVal);
+  formData.append('tags', tagsVal);
+  if (bgFile) formData.append('bg_img', bgFile);
+
+  fetch("./../backend/api/templates.php", { method: "POST", body: formData })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        alert(data.message || "Template created successfully!");
+        window.location.href = 'dashboard.html';
+      } else {
+        alert(data.message || "Failed to create template.");
+      }
+    })
+    .catch(err => alert("Error connecting to server: " + err.message));
 });
 
 // Initial render
 applyOrientation();
 updateIframeContent();
+refreshPlaceholders();

@@ -8,6 +8,7 @@
 <body>
 <div class="page">
   <!-- LEFT: form -->
+   
   <aside class="sidebar">
     <div class="sidebar-header">
       <button class="icon-btn" type="button" aria-label="Back">←</button>
@@ -79,6 +80,7 @@
       <div class="btn-row">
         <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
         <button type="submit" class="btn-primary">Save template</button>
+        <button type="button" id="cancelBtn">Cancel</button>
       </div>
 
       <div id="submitStatus"></div>
@@ -180,6 +182,7 @@ window.addEventListener('load', () => {
     })
     .then(res => res.json())
     .then(data => {
+      console.log(data.message)
       if (data.status === "success") {
         alert(data.message || "Template created successfully");
         window.location.href = "./dashboard.html";
@@ -188,6 +191,7 @@ window.addEventListener('load', () => {
       }
     })
     .catch(err => {
+      console.log(err.message);
       alert("Error connecting to server: " + err.message);
     });
 

@@ -26,25 +26,22 @@ const previewBtn = document.getElementById('previewBtn');
 const certWrapper = document.getElementById('cert-wrapper');
 let iframeElement = document.createElement('iframe');
 iframeElement.id = 'certificate-iframe';
-iframeElement.style.width="100%";
-iframeElement.style.height="100%";
+iframeElement.style.width = "100%";
+iframeElement.style.height = "500px"; // fixed height
 iframeElement.style.boxShadow = '0 2px 5px #555';
 certWrapper.appendChild(iframeElement);
 
-// Dynamic Placeholder Block
-let placeholderCount = 0;
-
 // Add placeholder input dynamically
-function addPlaceholderInput(initialName='') {
-    placeholderCount++;
+function addPlaceholderInput(name = '') {
     const wrapper = document.createElement('div');
     wrapper.className = 'field';
     const label = document.createElement('label');
-    label.textContent = 'Placeholder ' + placeholderCount;
+    label.textContent = name || 'Placeholder';
     const input = document.createElement('input');
     input.type = 'text';
-    input.value = initialName;
-    input.placeholder = 'Type placeholder text to replace';
+    input.id = name;
+    input.placeholder = 'Type placeholder text';
+    input.value = ''; // default empty
     input.addEventListener('input', updateIframeContent);
     wrapper.appendChild(label);
     wrapper.appendChild(input);
@@ -61,61 +58,78 @@ function loadPlaceholder() {
         placeholdersSet.add(match[1]);
     }
 
-    placeholdersSet.forEach(name => {
-        addPlaceholderInput(name);
-    });
+    placeholdersSet.forEach(name => addPlaceholderInput(name));
 }
 
-// Update iframe content dynamically
+// Update iframe content
 function updateIframeContent() {
     let tempHtml = html_code;
 
-    const placeholders = placeholderContainer.querySelectorAll('input');
-    placeholders.forEach(input => {
-        const key = input.id || input.value.replace(/\s/g,'_');
-        const val = input.value || key;
+    // replace placeholder values
+    const inputs = placeholderContainer.querySelectorAll('input');
+    inputs.forEach(input => {
+        const key = input.id;
+        const val = input.value || '';
         const regex = new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, 'g');
         tempHtml = tempHtml.replace(regex, val);
     });
 
+    // set iframe srcdoc
     iframeElement.srcdoc = tempHtml;
 
-    iframeElement.onload = () => {
+    // scale iframe content to wrapper width
+    setTimeout(() => { // slight delay to allow render
         const iframeDoc = iframeElement.contentDocument || iframeElement.contentWindow.document;
+        iframeDoc.body.style.margin = 0;
+        iframeDoc.body.style.transformOrigin = "top left";
         const contentWidth = iframeDoc.body.scrollWidth;
         const wrapperWidth = certWrapper.offsetWidth;
         const scale = wrapperWidth / contentWidth;
         iframeDoc.body.style.transform = `scale(${scale})`;
-        iframeDoc.body.style.transformOrigin = "top left";
         iframeDoc.body.style.width = contentWidth + "px";
-        iframeDoc.body.style.margin = 0;
-    };
+    }, 50);
 }
 
 // Event listeners
 previewBtn.addEventListener('click', updateIframeContent);
-const cancelBtn = document.getElementById('cancelBtn');
-const logoutBtn = document.getElementById('logoutBtn');
 
-// Cancel button event
+// Cancel button
+const cancelBtn = document.getElementById('cancelBtn');
 cancelBtn.addEventListener('click', () => {
-    // Left panel inputs reset करणे
-    placeholderContainer.querySelectorAll('input').forEach(inp => inp.value='');
+    placeholderContainer.querySelectorAll('input').forEach(inp => inp.value = '');
     recipientInput.value = '';
     courseInput.value = '';
     dateInput.value = '';
     purposeInput.value = '';
-    updateIframeContent(); // preview refresh
+    updateIframeContent();
 });
 
 // Logout button event
-logoutBtn.addEventListener('click', () => {
-    // Example: page redirect to login/logout page
-    window.location.href = '/logout'; 
+const logout = document.getElementById("logoutBtn");
+
+logoutBtn.addEventListener("click", () => {
+    if (!confirm("Do you really want to logout?")) return;
+
+    fetch("../backend/api/auth.php", {  // auth.php file path
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "action=logout"
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            window.location.href = "index.html"; // redirect to login page
+        } else {
+            alert("Logout failed: " + data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Logout error:", err);
+        alert("Server error");
+    });
 });
 
-
-// Initial setup
+// Initial load
 templateName.value = 'Workshop Template';
 loadPlaceholder();
-updateIframeContent(); // page load वर preview
+updateIframeContent();

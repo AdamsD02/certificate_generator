@@ -200,6 +200,6 @@ function download_cert($conn) {
     flush();
 
     readfile($filepath);
-    exit;
+    return_json('success', 'PDF downloaded.');
 }
 ?>

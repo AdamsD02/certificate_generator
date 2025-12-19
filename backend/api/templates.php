@@ -20,7 +20,7 @@ try {
         switch ($action) {
             case 'create':
                 # Save template in DB
-                if ( empty($_POST['tname']) || empty($_POST['orientation']) || empty($_POST['html_code']) ) {
+                if ( empty($_POST['t_name']) || empty($_POST['orientation']) || empty($_POST['html_code']) ) {
                     return_json('error', 'Required field missing.');
                     
                 }
@@ -34,7 +34,7 @@ try {
                     return_json('error', 'Template not passed.');
                     
                 }
-                if (empty($__POST['tname']) || empty($_POST['orientation']) || empty($_POST['html_code']) ) {
+                if (empty($_POST['tname']) || empty($_POST['orientation']) || empty($_POST['html_code']) ) {
                     return_json('error', 'Required fields missing.');
                     
                 }
@@ -101,7 +101,7 @@ try {
 } 
 catch (\Throwable $th) {
     //throw $th;
-    return_json('error', 'Error thrown by Server.');
+    return_json('error', 'Error thrown by Server.' . $th->getMessage());
 }
 
 function save_template($conn) {
@@ -111,7 +111,7 @@ function save_template($conn) {
     $html_code   = $_POST['html_code'];
     $opacity     = $_POST['opacity'] ?? '';
     $desc        = $_POST['des'] ?? '';
-    $tag         = $_POST['tags'] ?? '';
+    $tags         = $_POST['tags'] ?? '';
     $u_id        = $_SESSION['uid'];
 
     // Upload bg image if exists
@@ -127,13 +127,13 @@ function save_template($conn) {
         $bg_img = $fileName;
     }
 
-    $query = "INSERT INTO templates (t_name, orientation, html_code, bg_img, opacity, description, tag, u_id)
+    $query = "INSERT INTO templates (t_name, orientation, html_code, bg_img, opacity, description, tags, u_id)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($query);
     $stmt->bind_param('sssssssi', 
         $tname, $orientation, $html_code, $bg_img, 
-        $opacity, $desc, $tag, $u_id
+        $opacity, $desc, $tags, $u_id
     );
 
     if ($stmt->execute()) {
@@ -165,7 +165,7 @@ function get_template($conn) {
             'bg_img' => $row['bg_img'] ?? '',
             'opacity' => $row['opacity'] ?? '',
             'desc' => $row['description'] ?? '',
-            'tag' => $row['tag'] ?? ''
+            'tags' => $row['tags'] ?? ''
     ];
     return_json('success', 'Retrieved Template Successfuly.', $data);
 
@@ -223,7 +223,7 @@ function update_template($conn) {
     $html_code   = $_POST['html_code'];
     $opacity     = $_POST['opacity'] ?? '';
     $desc        = $_POST['des'] ?? '';
-    $tag         = $_POST['tags'] ?? '';
+    $tags         = $_POST['tags'] ?? '';
 
     // ---------- Handle bg_img ----------
     if (!empty($_FILES['bg_img']['name'])) {
@@ -243,13 +243,13 @@ function update_template($conn) {
 
     // ---------- Perform update ----------
     $query = "UPDATE templates 
-              SET t_name=?, orientation=?, html_code=?, bg_img=?, opacity=?, description=?, tag=?
+              SET t_name=?, orientation=?, html_code=?, bg_img=?, opacity=?, description=?, tags=?
               WHERE t_id=?";
 
     $stmt = $conn->prepare($query);
     $stmt->bind_param('sssssssi', 
         $tname, $orientation, $html_code, $bg_img, 
-        $opacity, $desc, $tag, $id
+        $opacity, $desc, $tags, $id
     );
 
     if ($stmt->execute()) {

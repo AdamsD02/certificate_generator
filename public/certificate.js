@@ -10,7 +10,27 @@ function formatDate(dateStr) {
 
 
 //------ Download/Export AJAX handler ------ 
-function startDownload(id) { }
+function startDownload(id) {
+    const formData = new FormData();
+    formData.append('action', 'download');
+    formData.append('id', id);
+
+    fetch('../backend/api/export.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data.message);
+            if (data.status !== 'success') {
+                alert(data.message);
+            }
+        })
+        .catch(err => {
+            console.log('Error connecting to server');
+            window.location.href = './index.html';
+        });
+}
 
 
 //------ Email Handler ------ 
@@ -36,7 +56,7 @@ function emailProcess(id) {
             console.log('Error connecting to server');
             window.location.href = './index.html';
         });
- }
+}
 
 
 //------ Delete Certificate Handler ------ 
@@ -135,13 +155,15 @@ function checkLogin() {
 
 //------ Get All Certs in DB ------ 
 function getCertList() {
-    return fetch("../backend/api/auth.php", {
+    return fetch("../backend/api/certificate.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "action=list"  // <-- sending the POST action
     })
         .then(res => res.json())
         .then(data => {
+
+            console.log('Cert-List: ',data.message);
             const tbody = document.querySelector("table tbody");
             tbody.innerHTML = ""; // clear old rows
 
@@ -149,7 +171,7 @@ function getCertList() {
                 tbody.innerHTML = `
                 <tr>
                     <td colspan="4" style="text-align:center; padding:20px;">
-                        ${data.message || 'No Certificates found! <br>Create certificates from Dashboard Templates.'}
+                        ${data.message + ' <br>Create certificates from Dashboard Templates.'}
                     </td>
                 </tr>
             `;
@@ -214,8 +236,29 @@ function getCertList() {
 }
 
 
-//------ Logout User Handler ------
-function userLogout() {
+// ------------------ SIDEBAR NAVIGATION --------------------
+
+document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const text = item.querySelector('span:nth-child(2)').innerText.trim();
+
+        document.querySelectorAll('.sidebar .nav-item')
+            .forEach(i => i.classList.remove('active'));
+
+        item.classList.add('active');
+
+        if (text === "Dashboard") location.href = "dashboard.html";
+        if (text === "Create Templates") location.href = "create_template.html";
+        if (text === "Certificates") location.href = "certificate.html";
+    });
+});
+
+
+// ----------------- Logout User Handler -------------------
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    if (!confirm("Do you really want to logout?")) return;
+
     fetch("../backend/api/auth.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -225,7 +268,7 @@ function userLogout() {
         .then(data => {
             if (data.status === "success") {
                 alert('User Logout Successful!');
-                console.log('Certificate-List: User logged out.');
+                console.log('Certificate-List: ', data.message);
                 window.location.href = './index.html';
             }
             else {
@@ -236,7 +279,7 @@ function userLogout() {
             console.log('Error connecting to server');
             window.location.href = './index.html';
         });
-}
+});
 
 
 //------ Start/Load ------ 

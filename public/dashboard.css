@@ -1,57 +1,71 @@
-:root{--bg:#f5f7fb;--card:#ffffff;--muted:#7b8694;--accent:#5865f2;--accent-2:#6b8cff;--danger:#ffdca8;--shadow:0 6px 18px rgba(18,24,40,0.06);--glass:rgba(18,24,40,0.03)}
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#111827;background:var(--bg)}/* layout */
-.app{display:flex;min-height:100vh}
+:root{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --muted:#7b8694;
+  --accent:#5865f2;
+  --accent-2:#6b8cff;
+  --danger:#ffdca8;
+  --shadow:0 18px 40px rgba(15,23,42,0.08);
+  --glass:rgba(18,24,40,0.03);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#111827;background:var(--bg);}
+.app{display:flex;min-height:100vh;}
+
 .sidebar{width:260px;background:#111827;color:#fff;padding:28px 20px;display:flex;flex-direction:column;gap:28px}
 .brand{display:flex;align-items:center;gap:12px}
 .avatar{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#4f46e5,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700}
 .brand h1{margin:0;font-size:16px}
 .brand p{margin:0;color:rgba(255,255,255,0.7);font-size:13px}
-
 nav{display:flex;flex-direction:column;gap:8px}
 .nav-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;color:rgba(255,255,255,0.9);cursor:pointer}
-.nav-item.icon{font-size:18px}
 .nav-item.active{background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));box-shadow:inset 0 -1px rgba(255,255,255,0.02)}
 .nav-item span{font-size:15px}
-
 .sidebar-bottom{margin-top:auto;padding-top:6px;border-top:1px solid rgba(255,255,255,0.02);font-size:13px;color:rgba(255,255,255,0.6)}
-
 
 .main{flex:1;padding:28px 36px}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .page-title{font-size:28px;margin:0}
 .page-sub{color:var(--muted);margin:6px 0 0;font-size:14px}
 .actions{display:flex;gap:12px}
-.btn{padding:10px 16px;border-radius:12px;border:0;cursor:pointer;font-weight:600}
-.btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;box-shadow:var(--shadow)}
-.chip{background:#eef2ff;padding:6px 10px;border-radius:999px;font-weight:600;color:var(--accent-2);font-size:13px}
 
-.panel{margin-top:22px;background:linear-gradient(180deg,transparent,rgba(18,24,40,0.02));padding:20px;border-radius:12px}
-h2{margin:0 0 6px;font-size:20px}
-.muted{color:var(--muted);font-size:14px}
+/* =========================== */
+/* CARD + TABLE STYLE           */
+/* =========================== */
+.card{margin-top:22px;background:var(--card);padding:20px;border-radius:12px;box-shadow:var(--shadow);}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.card-header-left{font-size:14px;font-weight:700;color:#111827;}
+.card-header-right{font-size:13px;color:var(--muted);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead{color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:0.06em;}
+th,td{padding:12px 8px;text-align:left;}
+tbody tr{border-top:1px solid #e5e7eb;}
+tbody tr:first-child{border-top:none;}
 
-/* template list */
-.list{display:flex;flex-direction:column;gap:18px;margin-top:14px}
-.card{display:flex;align-items:center;justify-content:space-between;background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow);border:1px solid rgba(16,24,40,0.03)}
-.card .left{display:flex;flex-direction:column;gap:6px}
-.card .title{font-weight:700;font-size:16px}
-.tag{background:var(--glass);padding:4px 8px;border-radius:8px;color:var(--muted);font-size:12px;margin-left:8px}
-.desc{color:var(--muted);font-size:13px}
-.card .right{display:flex;align-items:center;gap:10px}
+/* ROW CELLS */
+.recipient-cell{display:flex;align-items:center;gap:10px;}
+.avatar-cell{width:32px;height:32px;border-radius:999px;background:#e0e7ff;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;}
+.recipient-info{display:flex;flex-direction:column;}
+.recipient-name{font-weight:500;color:#111827;}
+.recipient-id{font-size:11px;color:var(--muted);}
 
-.btn-ghost{padding:8px 12px;border-radius:10px;border:1px solid rgba(16,24,40,0.06);background:transparent;cursor:pointer}
-.btn-use{background:linear-gradient(90deg,#4f46e5,#6b8cff);color:white;padding:10px 16px;border-radius:10px;border:0;cursor:pointer}
-.btn-delete{background:linear-gradient(90deg,#fff6e6,#fff0d1);border:1px solid rgba(0,0,0,0.04);padding:9px 12px;border-radius:10px}
+.course-title{font-size:13px;font-weight:500;margin-bottom:2px;}
+.course-status{font-size:11px;color:#22c55e;}
+.issue-date-main{font-size:13px;font-weight:500;}
+.issue-date-sub{font-size:11px;color:var(--muted);}
 
+/* BUTTONS */
+.actions-cell{display:flex;flex-wrap:wrap;gap:6px;}
+.btn-pill{padding:6px 12px;border-radius:999px;border:1px solid transparent;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{background:var(--accent-2);border-color:var(--accent-2);}
+.btn-ghost{background:#f8fafc;color:#111827;border:1px solid #e5e7eb;}
+.btn-ghost:hover{background:#e5e7eb;}
+.btn-danger{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;}
+.btn-danger:hover{background:#fee2e2;}
 
-@media (max-width:880px){.sidebar{display:none}.main{padding:18px}}
-
-.modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:flex;align-items:center;justify-content:center;z-index:40}
-.modal{width:920px;max-width:95%;background:#fff;border-radius:12px;padding:18px;box-shadow:0 20px 40px rgba(2,6,23,0.4)}
-.modal .modal-header{display:flex;align-items:center;justify-content:space-between}
-.pill{font-size:13px;padding:6px 10px;border-radius:999px;background:#f3f4f6;color:#111}
-
-
-.flex{display:flex;align-items:center}
-.gap-8{gap:8px}
-.muted-2{color:#9aa4b2;font-size:13px}
+@media (max-width:880px){
+  .sidebar{display:none;}
+  .main{padding:18px;}
+}

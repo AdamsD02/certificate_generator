@@ -58,15 +58,17 @@ try {
 
 function login_user($conn)
 {
+        $email = trim($_POST['email']);
+        $plain  = $_POST['pswd'];
 
-    $plain = $_POST['pswd'];
-    $email = $_POST['email'];
+        $stmt = $conn->prepare("SELECT * FROM users WHERE u_email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    $sql = "SELECT * FROM users WHERE u_email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+        if ($result->num_rows === 0) {
+            return_json("error", "Email not found");
+        }
 
     if (!$row = $result->fetch_assoc()) {
         return_json('error', 'Email not found');

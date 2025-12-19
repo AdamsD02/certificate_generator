@@ -15,6 +15,7 @@ let html_code = `<!DOCTYPE html>
 </div></body></html>`;
 
 // Form elements
+
 const recipientInput = document.getElementById('recipientName');
 const courseInput = document.getElementById('courseName');
 const dateInput = document.getElementById('issueDate');

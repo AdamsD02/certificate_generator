@@ -1,184 +1,180 @@
-let templates = [];
-const list = document.getElementById('templateList');
+// ===============================
+// CHECK USER LOGIN
+// ===============================
+async function checkLogin() {
+    try {
+        const res = await fetch("../backend/api/auth.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "action=check"
+        });
+        const data = await res.json();
 
-// ----------------------------
-// Sidebar Navigation Handling
-// ----------------------------
-const sidebarItems = document.querySelectorAll('.sidebar .nav-item');
+        console.log('Dashboard: ', data.message)
 
-sidebarItems.forEach(item => {
+        if (data.status !== "success") {
+            alert('User not Logged In, redirecting...');
+            window.location.href = "index.html";
+        }
+    } catch (err) {
+        console.error("Error connecting to server", err);
+        window.location.href = "index.html";
+    }
+}
+
+// ===============================
+// SIDEBAR NAVIGATION
+// ===============================
+document.querySelectorAll('.sidebar .nav-item').forEach(item => {
     item.addEventListener('click', () => {
-        const text = item.querySelector('span:nth-child(2)').textContent.trim();
+        const text = item.querySelector('span:nth-child(2)').innerText.trim();
 
-        // Remove 'active' class from all nav-items
-        sidebarItems.forEach(i => i.classList.remove('active'));
-        // Set active class to clicked item
+        document.querySelectorAll('.sidebar .nav-item')
+            .forEach(i => i.classList.remove('active'));
+
         item.classList.add('active');
 
-        if (text === 'Create Templates') {
-            window.location.href = 'create_template.html';
-        } else if (text === 'Dashboard') {
-            window.location.href = 'dashboard.html';
-        } else if (text === 'Certificates') {
-            window.location.href = 'certificate.html';
-        }
+        if (text === "Dashboard") location.href = "dashboard.html";
+        if (text === "Create Templates") location.href = "create_template.html";
+        if (text === "Certificates") location.href = "certificate.html";
     });
 });
 
-// ----------------------------
-// Fetch templates from server
-// ----------------------------
-window.addEventListener('DOMContentLoaded', () => {
-    fetch('/backend/templates.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'action=list'
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.status === 'success'){
-            templates = data.data;  
-        } else {
-            templates = [];  
-            console.warn(data.message);
-        }
-        render(); 
-        document.querySelector('.chip').textContent = templates.length + ' templates';
-    })
-    .catch(err => console.error('Error fetching templates:', err));
-});
 
-// ----------------------------
-// Render templates
-// ----------------------------
-function render(){
-    list.innerHTML = '';
-    templates.forEach(t => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="left">
-            <div style="display:flex;align-items:center">
-              <div class="title">${t.title}</div>
-              <div class="tag">${t.tag}</div>
-            </div>
-            <div class="desc">${t.desc}</div>
-          </div>
-          <div class="right">
-            <button class="btn-use" data-id="${t.id}">✓ Use Template</button>
-            <button class="btn-ghost" data-action="edit" data-id="${t.id}">✏️ Edit</button>
-            <button class="btn-ghost" data-action="preview" data-id="${t.id}">👁️ Preview</button>
-            <button class="btn-delete" data-action="delete" data-id="${t.id}">🗑️ Delete</button>
-          </div>
-        `;
-        list.appendChild(card);
-    });
-}
+// ===============================
+// LOAD TEMPLATE LIST (FIXED)
+// ===============================
+async function loadTemplateList() {
+    const tbody = document.querySelector("table tbody");
+    tbody.innerHTML = "";
 
-// ----------------------------
-// Template actions
-// ----------------------------
-list.addEventListener('click', e => {
-    const btn = e.target.closest('button');
-    if(!btn) return;
-    const id = Number(btn.dataset.id);
-    const action = btn.dataset.action;
-
-    if(btn.classList.contains('btn-use')){
-        alert('Template "' + templates.find(x => x.id === id).title + '" selected for use.');
-    } else if(action === 'edit'){
-        const t = templates.find(x => x.id === id);
-        const newTitle = prompt('Edit template title', t.title);
-        if(newTitle) { t.title = newTitle; render(); }
-    } else if(action === 'preview'){
-        openPreview(id);
-    } else if(action === 'delete'){
-        if(confirm('Delete this template?')){
-            fetch('/backend/templates.php', {
-                method: 'POST',
-                headers: {'Content-Type':'application/x-www-form-urlencoded'},
-                body: 'action=delete&id=' + id
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === 'success'){
-                    templates = templates.filter(t => t.id !== id);
-                    render();
-                    document.querySelector('.chip').textContent = templates.length + ' templates';
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(err => console.error('Delete error:', err));
-        }
-    }
-});
-
-// ----------------------------
-// New Template button
-// ----------------------------
-document.getElementById('newTemplate').addEventListener('click', () => {
-    window.location.href = 'create_template.html';
-});
-
-// ----------------------------
-// Template preview modal
-// ----------------------------
-function openPreview(id){
-    const t = templates.find(x => x.id === id);
-    const root = document.getElementById('modalRoot');
-    root.innerHTML = `
-        <div class="modal-backdrop">
-          <div class="modal">
-            <div class="modal-header">
-              <div>
-                <div style="font-weight:800;font-size:18px">${t.title} <span style="margin-left:10px" class="pill">${t.tag}</span></div>
-                <div class="muted-2" style="margin-top:6px">${t.desc}</div>
-              </div>
-              <div><button class="btn-ghost" id="closeModal">Close</button></div>
-            </div>
-            <hr style="margin:12px 0 18px;border:none;border-top:1px solid #eef2f8">
-            <div style="height:420px;overflow:auto;border-radius:8px;border:1px solid #f1f5f9;padding:14px">
-              <h3>Preview area</h3>
-              <p style="color:#6b7280">This is a simple preview placeholder showing how the template might look. Replace this with a live preview renderer if needed.</p>
-            </div>
-          </div>
-        </div>
-    `;
-
-    document.getElementById('closeModal').addEventListener('click', () => root.innerHTML = '');
-    root.querySelector('.modal-backdrop').addEventListener('click', ev => {
-        if(ev.target.classList.contains('modal-backdrop')) root.innerHTML = '';
-    });
-}
-
-// ========================================
-//              LOGOUT (AJAX)
-// ========================================
-document.addEventListener("DOMContentLoaded", () => {
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    if(logoutBtn){
-        logoutBtn.addEventListener("click", () => {
-            if(!confirm("Do you really want to logout?")) return;
-
-            fetch("backend/auth.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "action=logout"
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "success"){
-                    window.location.href = "index.html"; // redirect to login
-                } else {
-                    alert("Logout failed: " + (data.message || ""));
-                }
-            })
-            .catch(err => {
-                console.error("Logout Error:", err);
-                alert("Logout failed due to network/server error.");
-            });
+    try {
+        const res = await fetch("../backend/api/templates.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "action=list"
         });
+        const data = await res.json();
+
+        if (data.status !== "success" || !data.data.length) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;padding:20px">No templates found</td></tr>`;
+            return;
+        }
+
+        data.data.forEach((row, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${row.t_name}</td>
+                <td>
+                    <div class="actions-cell">
+                        <button class="btn-pill btn-primary" data-id="${row.t_id}" data-action="use">Use</button>
+                        <button class="btn-pill btn-ghost" data-id="${row.t_id}" data-action="edit">Edit</button>
+                        <button class="btn-pill btn-danger" data-id="${row.t_id}" data-action="delete">Delete</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Only after rows are added
+        attachActionEvents();
+
+    } catch (err) {
+        console.error("Server error:", err);
+        alert("Server error. Please try again.");
     }
+}
+
+
+// ===============================
+// BUTTON ACTIONS (AJAX)
+// ===============================
+
+function useTemplate(id) {
+    const fd = new FormData();
+    fd.append("action", "use");
+    fd.append("id", id);
+
+    fetch("../backend/api/templates.php", { method: "POST", body: fd })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                window.location.href = "./create_certificate.html";
+            } else {
+                alert(data.message || "Email failed");
+            }
+        });
+}
+
+function editTemplate(id) {
+    const fd = new FormData();
+    fd.append("action", "use");
+    fd.append("id", id);
+
+    fetch("../backend/api/templates.php", { method: "POST", body: fd })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                window.location.href = "edit_template.html";
+            } else {
+                alert(data.message || "Edit failed");
+            }
+        });
+}
+
+function deleteTemplate(id) {
+    if (!confirm("Do you really want to delete this template?")) return;
+
+    const fd = new FormData();
+    fd.append("action", "delete");
+    fd.append("id", id);
+
+    fetch("../backend/api/templates.php", { method: "POST", body: fd })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            if (data.status === "success") loadTemplateList();
+        });
+}
+
+//------ Button Action Handler ------
+function attachActionEvents() {
+    document.querySelectorAll("button[data-action]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const id = btn.dataset.id;
+            const action = btn.dataset.action;
+
+            if (action === "use") {
+                useTemplate(id);
+            }
+            else if (action === "edit") {
+                editTemplate(id);
+            }
+            else if (action === "delete") {
+                deleteTemplate(id);
+            }
+        });
+    });
+}
+
+// ===============================
+// LOGOUT
+// ===============================
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    if (!confirm("Do you really want to logout?")) return;
+
+    fetch("../backend/api/auth.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "action=logout"
+    }).then(() => location.href = "index.html");
+});
+
+// ===============================
+// INIT
+// ===============================
+document.addEventListener("DOMContentLoaded", async () => {
+    await checkLogin();      // ✅ check login first
+    await loadTemplateList(); // ✅ then load template list
 });

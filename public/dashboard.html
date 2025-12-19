@@ -1,12 +1,10 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Panel — Dashboard</title>
-  
-
-  <!-- External CSS -->
   <link rel="stylesheet" href="dashboard.css">
 </head>
 
@@ -24,47 +22,78 @@
       </div>
 
       <nav>
-        <div class="nav-item active"><span class="icon">🏠</span><span>Dashboard</span></div>
-        <div class="nav-item"><span class="icon">📄</span><span>Create Templates</span></div>
-        <div class="nav-item"><span class="icon">📜</span><span>Certificates</span></div>
+        <div class="nav-item active">
+          <span class="icon">🏠</span><span>Dashboard</span>
+        </div>
+        <div class="nav-item">
+          <span class="icon">📄</span><span>Create Templates</span>
+        </div>
+        <div class="nav-item">
+          <span class="icon">📜</span><span>Certificates</span>
+        </div>
       </nav>
 
-      <!-- ✅ Logout Button -->
-  <div class="sidebar-bottom" id="logoutBtn" style="cursor:pointer; display:flex; align-items:center;">
-    <span class="icon">🔙</span>
-    <strong style="margin-left:6px; font-size:16px">Logout</strong>
-  </div>
-</aside>
-
+      <!-- Logout -->
+      <div class="sidebar-bottom" id="logoutBtn" style="cursor:pointer; display:flex; align-items:center;">
+        <span class="icon">🔙</span>
+        <strong style="margin-left:6px;font-size:16px">Logout</strong>
+      </div>
+    </aside>
 
     <!-- Main -->
     <main class="main">
       <div class="topbar">
         <div>
-          <h1 class="page-title">Dashboard</h1>
-          <div class="page-sub">High-level overview of your templates and activity.</div>
+          <h1 class="page-title">Template List</h1>
+          <div class="page-sub">
+            Manage, search, and take quick actions on issued templates.
+          </div>
         </div>
 
         <div class="actions">
-          <div class="chip">5 templates</div>
-          <button class="btn btn-primary" id="newTemplate">New Template +</button>
+          <input
+            type="text"
+            placeholder="Search template..."
+            style="padding:8px 12px;border-radius:12px;border:1px solid #e5e7eb;font-size:13px">
+          <button class="btn-pill btn-primary">Filter</button>
         </div>
       </div>
 
-      <section class="panel">
-        <h2>Template List</h2>
-        <div class="muted">Manage, edit, and preview your templates in one place.</div>
-
-        <div class="list" id="templateList"></div>
-      </section>
-    </main>
-
+      <div class="card">
+  <div class="card-header">
+    <div class="card-header-left">Templates</div>
+    <div class="card-header-right" id="recordCount">0 records</div>
   </div>
 
-  <!-- Modal Root -->
-  <div id="modalRoot"></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Sr. No.</th>
+        <th>Template Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- JS will dynamically insert template rows here -->
+    </tbody>
+  </table>
+</div>
 
-  <!-- External JS -->
+        
+
+        <div id="successMsg" style="display:none;color:green;margin-top:10px;">
+          Success! Action completed.
+        </div>
+
+        <div id="errorMsg" style="display:none;color:red;margin-top:10px;">
+          Something went wrong. Please try again.
+        </div>
+      </div>
+    </main>
+  </div>
+  
+
+  <!-- JS -->
   <script src="dashboard.js"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
   <title>Admin Panel — Certificates</title>
 
   <!-- External CSS -->
+   
   <link rel="stylesheet" href="certificate.css">
 </head>
 
@@ -24,7 +25,7 @@
         <div class="nav-item"><span class="icon">📄</span><span>Create Templates</span></div>
         <div class="nav-item active"><span class="icon">📜</span><span>Certificates</span></div>
       </nav>
-      <div class="sidebar-bottom"><span class="icon">🔙</span><strong style="margin-left:6px;font-size:16px">Logout</strong></div>
+      <div class="sidebar-bottom" id="logoutBtn"><span class="icon">🔙</span><strong style="margin-left:6px;font-size:16px">Logout</strong></div>
     </aside>
 
     <main class="main">
@@ -76,10 +77,30 @@
               </td>
               <td>
                 <div class="actions-cell">
-                  <button class="btn-pill btn-primary">Download</button>
-                  <button class="btn-pill btn-ghost">Email Certificate</button>
-                  <button class="btn-pill btn-ghost">Edit Certificate</button>
-                  <button class="btn-pill btn-danger">Delete</button>
+                  <button 
+  class="btn-pill btn-primary download-btn"
+  data-id="<?= $row['id'] ?>">
+  Download
+</button>
+
+<button 
+  class="btn-pill btn-ghost email-btn"
+  data-id="<?= $row['id'] ?>">
+  Email Certificate
+</button>
+
+<button 
+  class="btn-pill btn-ghost edit-btn"
+  data-id="<?= $row['id'] ?>">
+  Edit Certificate
+</button>
+
+<button 
+  class="btn-pill btn-danger delete-btn"
+  data-id="<?= $row['id'] ?>">
+  Delete
+</button>
+
                 </div>
               </td>
             </tr>

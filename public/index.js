@@ -1,25 +1,59 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("loginForm");
-    const msg  = document.getElementById("successMsg");
-    const erMsg  = document.getElementById("errorMsg");
+document.addEventListener("DOMContentLoaded", () => {
 
-    form.addEventListener("submit", function(e) {
-        e.preventDefault(); // stop normal form submit
+    const erMsg = document.getElementById("errorMsg");
 
-        const formData = new URLSearchParams();
-        formData.append("action", "login");
-        formData.append("email", document.getElementById("email").value);
-        formData.append("pswd", document.getElementById("pswd").value);
+    // ------------------ check if user already logged in ------------------
 
-        fetch("../backend/api/auth.php", {
+    const checkForm = new FormData();
+    checkForm.append('action', 'check');
+
+    fetch('./../backend/api/auth.php', {
+        method: 'POST',
+        body: checkForm
+    } )
+    .then(res => res.json())
+    .then(data => {
+        if( data.status === 'success' ) {
+            console.log('Index page: user logged in!');
+            alert(data.message, ' Redirecting to Dashboard...');
+            window.location.href ='./dashboard.html';
+        }
+        console.info('Index page: User not logged in yet.');
+    })
+    .catch(err => {
+        erMsg.textContent = 'Error At Server, Login May not work.'; 
+        console.error('Index page: ', err.message);
+    })
+
+    // ------------------ Login form submission ------------------
+
+    const form  = document.getElementById("loginForm");
+
+    if (!form) return;
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        erMsg.textContent = "";
+
+        const emailIn = document.getElementById("email").value;
+        const pswdIn = document.getElementById("pswd").value;
+
+        // Use URLSearchParams for x-www-form-urlencoded
+        const formData = new FormData();
+        formData.append('action', 'login');
+        formData.append('email', emailIn);
+        formData.append('pswd', pswdIn);
+
+        // Use absolute path from localhost root
+        fetch("./../backend/api/auth.php", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: formData.toString()
+            body: formData
         })
-        .then(res => res.json())
+        .then(res => res.json()) // directly parse JSON
         .then(data => {
+            console.log('Index page: ', data.message);
             if (data.status === "success") {
-                msg.textContent = "Login successful! Redirecting...";
+                alert("Login successful! Redirecting...");
 
                 // short delay to show message before redirect
                 setTimeout(() => {
@@ -27,7 +61,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 }, 500);
 
             } else {
-                erMsg.textContent = data.message || "Invalid credentials";
+                erMsg.style.display = "block";
+                erMsg.textContent = data.message || "Login failed";
             }
         })
         .catch(err => {
@@ -37,4 +72,3 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
-

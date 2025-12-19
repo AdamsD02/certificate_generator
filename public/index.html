@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Certify Admin Login</title>
   <link rel="stylesheet" href="index.css" />
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
   <!-- Login Page Start -->
@@ -19,10 +21,10 @@
 
       <form id="loginForm">
         <label for="email">Email Address</label>
-        <input name="email" type="email" id="email" placeholde ="admin@company.com"required/>
+        <input name="email" type="email" id="email" placeholder="admin@company.com" required />
 
         <label for="pswd">Password</label>
-        <input name="pswd" type="password" id="pswd" placeholder= "Enter Yours Password"required/>
+        <input name="pswd" type="password" id="pswd" placeholder="Enter Yours Password" required />
 
         <!-- <div class="options">
           <label><input type="checkbox" /> Remember me</label>
@@ -36,42 +38,14 @@
       <footer>© 2021 Certify Admin. All rights reserved.</footer>
     </div>
   </div>
-  <div id="successMsg" style="display:none; color: green;">
-    Success! Your action was completed.
-</div>
 
-<div id="errorMsg" style="display:none; color: red;">
+  <div id="errorMsg" style="display:none; color: red;">
     Something went wrong. Please try again.
-</div>
+  </div>
   <!-- Login Page End -->
 
-  <script>
-    window.addEventListener('load', () => {
-      // check if loged-in
-      fetch("../backend/api/auth.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: "action=check"  // <-- sending the POST action
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success") {
-          alert('User Logged In, redirecting...');
-          // msg.textContent = "Login successful! Redirecting...";
-          window.location.href = "./dashboard.html";
-        } else {
-          // msg.textContent = data.message || "Invalid credentials";
-          console.log('User not logged in.');
-        }
-      })
-      .catch(err => {
-        // msg.textContent = "Error connecting to server";
-        console.log('Error connecting to server');
-      });
-
-
-    });
-  </script>
   <script src="index.js"></script>
+  
 </body>
+
 </html>

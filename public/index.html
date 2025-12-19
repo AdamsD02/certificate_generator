@@ -44,49 +44,8 @@
   </div>
   <!-- Login Page End -->
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("loginForm");
-      const erMsg = document.getElementById("errorMsg");
-
-      if (!form) return;
-
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        erMsg.style.display = "none";
-        erMsg.textContent = "";
-
-        const formData = new URLSearchParams({
-          action: "login",
-          email: document.getElementById("email").value,
-          pswd: document.getElementById("pswd").value
-        });
-
-        fetch("/certificate_generator/backend/api/auth.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: formData.toString()
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data.status === "success") {
-              // Only redirect after successful login
-              window.location.href = "/certificate_generator/public/dashboard.html";
-            } else {
-              erMsg.style.display = "block";
-              erMsg.textContent = data.message || "Login failed";
-            }
-          })
-          .catch(err => {
-            console.error("Login error:", err);
-            erMsg.style.display = "block";
-            erMsg.textContent = "Server error";
-          });
-      });
-    });
-  </script>
-
   <script src="index.js"></script>
+  
 </body>
 
 </html>

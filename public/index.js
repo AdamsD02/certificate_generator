@@ -1,6 +1,33 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const form  = document.getElementById("loginForm");
+
     const erMsg = document.getElementById("errorMsg");
+
+    // ------------------ check if user already logged in ------------------
+
+    const checkForm = new FormData();
+    checkForm.append('action', 'check');
+
+    fetch('./../backend/api/auth.php', {
+        method: 'POST',
+        body: checkForm
+    } )
+    .then(res => res.json())
+    .then(data => {
+        if( data.status === 'success' ) {
+            console.log('Index page: user logged in!');
+            alert(data.message, ' Redirecting to Dashboard...');
+            window.location.href ='./dashboard.html';
+        }
+        console.info('Index page: User not logged in yet.');
+    })
+    .catch(err => {
+        erMsg.textContent = 'Error At Server, Login May not work.'; 
+        console.error('Index page: ', err.message);
+    })
+
+    // ------------------ Login form submission ------------------
+
+    const form  = document.getElementById("loginForm");
 
     if (!form) return;
 
@@ -24,8 +51,9 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(res => res.json()) // directly parse JSON
         .then(data => {
+            console.log('Index page: ', data.message);
             if (data.status === "success") {
-                msg.textContent = "Login successful! Redirecting...";
+                alert("Login successful! Redirecting...");
 
                 // short delay to show message before redirect
                 setTimeout(() => {

@@ -10,7 +10,27 @@ function formatDate(dateStr) {
 
 
 //------ Download/Export AJAX handler ------ 
-function startDownload(id) { }
+function startDownload(id) {
+    const formData = new FormData();
+    formData.append('action', 'download');
+    formData.append('id', id);
+
+    fetch('../backend/api/export.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data.message);
+            if (data.status !== 'success') {
+                alert(data.message);
+            }
+        })
+        .catch(err => {
+            console.log('Error connecting to server');
+            window.location.href = './index.html';
+        });
+ }
 
 
 //------ Email Handler ------ 

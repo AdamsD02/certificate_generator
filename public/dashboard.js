@@ -10,6 +10,8 @@ async function checkLogin() {
         });
         const data = await res.json();
 
+        console.log('Dashboard: ', data.message)
+
         if (data.status !== "success") {
             alert('User not Logged In, redirecting...');
             window.location.href = "index.html";
@@ -75,7 +77,7 @@ async function loadTemplateList() {
             tbody.appendChild(tr);
         });
 
-        // ✅ Only after rows are added
+        // Only after rows are added
         attachActionEvents();
 
     } catch (err) {
@@ -88,12 +90,9 @@ async function loadTemplateList() {
 // ===============================
 // BUTTON ACTIONS (AJAX)
 // ===============================
-function downloadTemplate(id) {
-    window.location.href = `../backend/api/templates.php?action=download&id=${id}`;
-}
 
-function emailTemplate(id) {
-    const fd = new URLSearchParams();
+function useTemplate(id) {
+    const fd = new FormData();
     fd.append("action", "use");
     fd.append("id", id);
 
@@ -101,7 +100,7 @@ function emailTemplate(id) {
         .then(res => res.json())
         .then(data => {
             if (data.status === "success") {
-                window.location.href = "email_editor.html";
+                window.location.href = "./create_certificate.html";
             } else {
                 alert(data.message || "Email failed");
             }
@@ -109,7 +108,7 @@ function emailTemplate(id) {
 }
 
 function editTemplate(id) {
-    const fd = new URLSearchParams();
+    const fd = new FormData();
     fd.append("action", "use");
     fd.append("id", id);
 
@@ -127,7 +126,7 @@ function editTemplate(id) {
 function deleteTemplate(id) {
     if (!confirm("Do you really want to delete this template?")) return;
 
-    const fd = new URLSearchParams();
+    const fd = new FormData();
     fd.append("action", "delete");
     fd.append("id", id);
 
@@ -135,8 +134,28 @@ function deleteTemplate(id) {
         .then(res => res.json())
         .then(data => {
             alert(data.message);
-            if (data.status === "success") loadDashboardList();
+            if (data.status === "success") loadTemplateList();
         });
+}
+
+//------ Button Action Handler ------
+function attachActionEvents() {
+    document.querySelectorAll("button[data-action]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const id = btn.dataset.id;
+            const action = btn.dataset.action;
+
+            if (action === "use") {
+                useTemplate(id);
+            }
+            else if (action === "edit") {
+                editTemplate(id);
+            }
+            else if (action === "delete") {
+                deleteTemplate(id);
+            }
+        });
+    });
 }
 
 // ===============================
@@ -157,5 +176,5 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
 // ===============================
 document.addEventListener("DOMContentLoaded", async () => {
     await checkLogin();      // ✅ check login first
-    await loadDashboardList(); // ✅ then load template list
+    await loadTemplateList(); // ✅ then load template list
 });

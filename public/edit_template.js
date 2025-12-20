@@ -175,6 +175,10 @@ function applyOrientation() {
 // ------------------------------
 // EVENT LISTENERS
 // ------------------------------
+document.getElementById("backBtn")?.addEventListener("click", () => {
+  window.location.href = "./dashboard.html";
+});
+
 nameInput.addEventListener("input", updateIframeContent);
 htmlInput.addEventListener("input", () => {
   refreshPlaceholders();
@@ -184,6 +188,7 @@ orientationInputs.forEach(r => r.addEventListener("change", applyOrientation));
 tagsInput.addEventListener("input", updateIframeContent);
 opacityInput.addEventListener("input", updateIframeContent);
 bgInput.addEventListener("change", updateIframeContent);
+
 
 // ------------------------------
 // NO RESET BUTTON IN EDIT PAGE

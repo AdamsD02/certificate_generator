@@ -1,205 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Create Template</title>
   <link rel="stylesheet" href="Create_template.css">
 </head>
+
 <body>
-<div class="page">
-  <!-- LEFT: form -->
-   
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <button class="icon-btn" type="button" aria-label="Back">←</button>
-      <div>
-        <h1>Create Template</h1>
-        <p class="subtitle">Design and configure your certificate template</p>
-      </div>
-    </div>
+  <div class="page">
+    <!-- LEFT: form -->
 
-    <form id="templateForm" class="form" novalidate>
-      <div class="field">
-        <label for="t_name">Template Name</label>
-        <input id="t_name" name="t_name" type="text" placeholder="Untitled Template" />
-        <div id="err_name" class="error"></div>
-      </div>
-
-      <div class="field">
-        <label for="html_code">HTML Template Code</label>
-        <textarea id="html_code" name="html_code"
-          placeholder="Paste or write your HTML template code here..."></textarea>
-        <p class="helper">
-          Use placeholders like {{name}}, {{date}}, {{course}} in your HTML.
-        </p>
-        <div id="err_html" class="error"></div>
-      </div>
-
-      <div class="field">
-        <label>Orientation</label>
-        <div class="options-inline">
-          <label><input type="radio" name="orientation" value="portrait" checked> Portrait</label>
-          <label><input type="radio" name="orientation" value="landscape"> Landscape</label>
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <button class="icon-btn" type="button" aria-label="Back">←</button>
+        <div>
+          <h1>Create Template</h1>
+          <p class="subtitle">Design and configure your certificate template</p>
         </div>
-        <div id="err_orientation" class="error"></div>
       </div>
 
-      <div class="field">
-        <label for="bg_img">Background Image</label>
-        <input id="bg_img" name="bg_img" type="file" accept="image/*" />
-        <div id="err_bg" class="error"></div>
-      </div>
-
-      <div class="field">
-        <label for="opacity">Background Opacity</label>
-        <div class="range-row">
-          <input id="opacity" name="opacity" type="range" min="0" max="100" value="35">
-          <span id="opacityValue">35%</span>
+      <!-- <form id="templateForm" class="form" novalidate> -->
+      <form id="templateForm" class="form">
+        <div class="field">
+          <label for="t_name">Template Name</label>
+          <input id="t_name" name="t_name" type="text" placeholder="Untitled Template" />
+          <div id="err_name" class="error"></div>
         </div>
-        <div class="helper">Opacity is applied only to the background image.</div>
-      </div>
 
-      <div class="field">
-        <label for="description">Description</label>
-        <textarea id="description" name="description"
-          placeholder="Short description of this template"></textarea>
-        <div id="err_description" class="error"></div>
-      </div>
+        <div class="field">
+          <label for="html_code">HTML Template Code</label>
+          <textarea id="html_code" name="html_code"
+            placeholder="Paste or write your HTML template code here..."></textarea>
+          <p class="helper">
+            Use placeholders like {{name}}, {{date}}, {{course}} in your HTML.
+          </p>
+          <div id="err_html" class="error"></div>
+        </div>
 
-      <div class="field">
-        <label for="tags">Tags</label>
-        <input id="tags" name="tags" type="text" placeholder="e.g. completion, workshop" />
-        <div id="err_tags" class="error"></div>
-      </div>
+        <div class="field">
+          <label>Orientation</label>
+          <div class="options-inline">
+            <label><input type="radio" name="orientation" value="portrait" checked> Portrait</label>
+            <label><input type="radio" name="orientation" value="landscape"> Landscape</label>
+          </div>
+          <div id="err_orientation" class="error"></div>
+        </div>
 
-      <div class="field">
-        <label>Detected Placeholders</label>
-        <div id="placeholdersList" class="status-ok">No placeholders found yet.</div>
-      </div>
+        <div class="field">
+          <label for="bg_img">Background Image</label>
+          <input id="bg_img" name="bg_img" type="file" accept="image/*" />
+          <div id="err_bg" class="error"></div>
+        </div>
 
-      <div class="btn-row">
-        <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
-        <button type="submit" class="btn-primary">Save template</button>
-        <button type="button" id="cancelBtn">Cancel</button>
-      </div>
+        <div class="field">
+          <label for="opacity">Background Opacity</label>
+          <div class="range-row">
+            <input id="opacity" name="opacity" type="range" min="0" max="100" value="35">
+            <span id="opacityValue">35%</span>
+          </div>
+          <div class="helper">Opacity is applied only to the background image.</div>
+        </div>
 
-      <div id="submitStatus"></div>
-    </form>
-  </aside>
+        <div class="field">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" placeholder="Short description of this template"></textarea>
+          <div id="err_description" class="error"></div>
+        </div>
 
-  <!-- RIGHT: preview -->
-  <main class="preview-area">
-    <header class="preview-top">
-      <div>
-        <h2>Template Preview</h2>
-        <p class="subtitle">Live preview of your certificate template</p>
-      </div>
-      <span class="pill pill-draft">Draft</span>
-    </header>
+        <div class="field">
+          <label for="tags">Tags</label>
+          <input id="tags" name="tags" type="text" placeholder="e.g. completion, workshop" />
+          <div id="err_tags" class="error"></div>
+        </div>
 
-    <section class="preview-shell">
-      <!-- for template details  -->
-      <div id="temp_data"></div>
-      <!-- for template preview  -->
-      <div class="preview-card" id="previewCanvas">
-        <iframe id="previewFrame" class="preview-iframe"></iframe>
-      </div>
-    </section>
-  </main>
-</div>
+        <div class="field">
+          <label>Detected Placeholders</label>
+          <div id="placeholdersList" class="status-ok">No placeholders found yet.</div>
+        </div>
 
-<script>
-window.addEventListener('load', () => {
+        <div class="btn-row">
+          <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
+          <button type="submit" class="btn-primary">Save template</button>
+          <button type="button" id="cancelBtn">Cancel</button>
+        </div>
 
-  // Check login
-  fetch("../backend/api/auth.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: "action=check"
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log(data.message);
-    if (data.status !== "success") {
-      alert("User not logged in.");
-      window.location.href = "./index.html";
-    }
-  })
-  .catch(() => {
-    alert("Error connecting to server");
-    window.location.href = "./index.html";
-  });
+        <div id="submitStatus"></div>
+      </form>
+    </aside>
 
-  // Form submission
-  document.getElementById("templateForm").addEventListener("submit", e => {
-    e.preventDefault();
+    <!-- RIGHT: preview -->
+    <main class="preview-area">
+      <header class="preview-top">
+        <div>
+          <h2>Template Preview</h2>
+          <p class="subtitle">Live preview of your certificate template</p>
+        </div>
+        <span class="pill pill-draft">Draft</span>
+      </header>
 
-    const t_name = document.getElementById("t_name").value.trim();
-    const html_code = document.getElementById("html_code").value.trim();
-    const orientation = document.querySelector("input[name='orientation']:checked");
-    const bg_img = document.getElementById("bg_img").files[0];
-    const opacity = document.getElementById("opacity").value;
-    const description = document.getElementById("description").value.trim();
-    const tags = document.getElementById("tags").value.trim();
+      <section class="preview-shell">
+        <!-- for template details  -->
+        <div id="temp_data"></div>
+        <!-- for template preview  -->
+        <div class="preview-card" id="previewCanvas">
+          <iframe id="previewFrame" class="preview-iframe"></iframe>
+        </div>
+      </section>
+    </main>
+  </div>
 
-    // VALIDATION
-    if (!t_name) return alert("Template name is required.");
-    if (!html_code) return alert("HTML code is required.");
-    if (!orientation) return alert("Orientation is required.");
+  <script>
+    window.addEventListener('load', () => {
 
-    if (bg_img) {
-      const allowed = ["image/png", "image/jpeg", "image/webp"];
-      if (!allowed.includes(bg_img.type)) {
-        return alert("Only PNG, JPG or WEBP allowed.");
-      }
-    }
+      // Check login
 
-    if (description.length > 200) {
-      return alert("Description must be less than 200 characters.");
-    }
 
-    if (tags && !/^[a-zA-Z0-9,\s-]+$/.test(tags)) {
-      return alert("Tags must be comma-separated words.");
-    }
+      // Form submission
+      document.getElementById("templateForm").addEventListener("submit", e => {
+        e.preventDefault();
 
-    // Correct FormData (required for images)
-    const formData = new FormData();
-    formData.append("action", "create");
-    formData.append("t_name", t_name);
-    formData.append("html_code", html_code);
-    formData.append("orientation", orientation.value);
-    formData.append("opacity", opacity);
-    formData.append("des", description);
-    formData.append("tags", tags);
+        const t_name = document.getElementById("t_name").value.trim();
+        const html_code = document.getElementById("html_code").value.trim();
+        const orientation = document.querySelector("input[name='orientation']:checked");
+        const bg_img = document.getElementById("bg_img").files[0];
+        const opacity = document.getElementById("opacity").value;
+        const description = document.getElementById("description").value.trim();
+        const tags = document.getElementById("tags").value.trim();
 
-    if (bg_img) {
-      formData.append("bg_img", bg_img);
-    }
+        // VALIDATION
+        if (!t_name) return alert("Template name is required.");
+        if (!html_code) return alert("HTML code is required.");
+        if (!orientation) return alert("Orientation is required.");
 
-    fetch("./../backend/api/templates.php", {
-      method: "POST",
-      body: formData  // NO CONTENT-TYPE HEADER
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data.message)
-      if (data.status === "success") {
-        alert(data.message || "Template created successfully");
-        window.location.href = "./dashboard.html";
-      } else {
-        alert(data.message || "Failed to create template.");
-      }
-    })
-    .catch(err => {
-      console.log(err.message);
-      alert("Error connecting to server: " + err.message);
+        if (bg_img) {
+          const allowed = ["image/png", "image/jpeg", "image/webp"];
+          if (!allowed.includes(bg_img.type)) {
+            return alert("Only PNG, JPG or WEBP allowed.");
+          }
+        }
+
+        if (description.length > 200) {
+          return alert("Description must be less than 200 characters.");
+        }
+
+        if (tags && !/^[a-zA-Z0-9,\s-]+$/.test(tags)) {
+          return alert("Tags must be comma-separated words.");
+        }
+
+        // Correct FormData (required for images)
+        const formData = new FormData();
+        formData.append("action", "create");
+        formData.append("t_name", t_name);
+        formData.append("html_code", html_code);
+        formData.append("orientation", orientation.value);
+        formData.append("opacity", opacity);
+        formData.append("des", description);
+        formData.append("tags", tags);
+
+        if (bg_img) {
+          formData.append("bg_img", bg_img);
+        }
+
+        fetch("./../backend/api/templates.php", {
+          method: "POST",
+          body: formData  // NO CONTENT-TYPE HEADER
+        })
+          .then(res => res.json())
+          .then(data => {
+            console.log(data.message)
+            if (data.status === "success") {
+              alert(data.message || "Template created successfully");
+              window.location.href = "./dashboard.html";
+            } else {
+              alert(data.message || "Failed to create template.");
+            }
+          })
+          .catch(err => {
+            console.log(err.message);
+            alert("Error connecting to server: " + err.message);
+          });
+
+      });
+
     });
+  </script>
 
-  });
-
-});
-</script>
-
-<script src="Create_template.js"></script>
+  <script src="Create_template.js"></script>
 </body>
+
 </html>

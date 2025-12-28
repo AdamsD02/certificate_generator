@@ -183,6 +183,7 @@ window.addEventListener("load", () => {
   })
   .then(res => res.json())
   .then(data => {
+    console.log('load templ-data msg: ', data.message);
     if (data.status === "success") {
       const template = data.data;
       t_id = template.t_id;
@@ -257,6 +258,8 @@ window.addEventListener("load", () => {
     formData.append("course", course);
     formData.append("issue_date", issueDate);
     formData.append("purpose", purpose);
+    
+    console.log('Cert Save form: ', JSON.stringify(formData));
 
     // Add placeholders
     Object.keys(placeholders).forEach(k => {
@@ -272,6 +275,7 @@ window.addEventListener("load", () => {
       alert(data.message);
       if (data.status === "success") {
         const c_id = data.data.c_id;
+        console.log('begin export pdf for cid-', c_id);
         const certForm = new FormData();
         certForm.append("action", "create");
         certForm.append("c_id", c_id);

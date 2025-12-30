@@ -156,81 +156,103 @@ form.addEventListener('submit', e => {
   updateIframeContent();
   refreshPlaceholders();
 
-
-
-  const tNameValidate = () => {
-    const t_name = document.getElementById('t_name');
-    if (t_name.value === '') {
-
-    }
-  }
-  
-
-  document.addEventListener('DOMContentLoaded', () => {
-    // check user login
-    fetch("../backend/api/auth.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "action=check"
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data.message);
-        if (data.status !== "success") {
-          alert("User not logged in.");
-          window.location.href = "./index.html";
-        }
-      })
-      .catch(() => {
-        alert("Error connecting to server");
-        window.location.href = "./index.html";
-      });
-
-    // check form submission 
-    const templateForm = document.getElementById('templateForm');
-    templateForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-
-      if (tNameValidate())
-  });
-
-    const t_nameVal = nameInput.value.trim();
-    const htmlVal = htmlInput.value.trim();
-    const orientationVal = getOrientation();
-    const bgFile = bgInput.files[0];
-    const opacityVal = opacityInput.value;
-    const descVal = descInput.value.trim();
-    const tagsVal = tagsInput.value.trim();
-
-    // Validation
-    if (!t_nameVal) return alert("Template name is required.");
-    if (!htmlVal) return alert("HTML code is required.");
-    if (!orientationVal) return alert("Orientation is required.");
-    if (bgFile && !['image/png', 'image/jpeg', 'image/webp'].includes(bgFile.type)) return alert("Only PNG, JPG or WEBP allowed.");
-    if (descVal.length > 200) return alert("Description must be less than 200 characters.");
-    if (tagsVal && !/^[a-zA-Z0-9,\s-]+$/.test(tagsVal)) return alert("Tags must be comma-separated words.");
-
-    const formData = new FormData();
-    formData.append('action', 'create');
-    formData.append('t_name', t_nameVal);
-    formData.append('html_code', htmlVal);
-    formData.append('orientation', orientationVal);
-    formData.append('opacity', opacityVal);
-    formData.append('des', descVal);
-    formData.append('tags', tagsVal);
-    if (bgFile) formData.append('bg_img', bgFile);
-
-    fetch("./../backend/api/templates.php", { method: "POST", body: formData })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          alert(data.message || "Template created successfully!");
-          window.location.href = 'dashboard.html';
-        } else {
-          alert(data.message || "Failed to create template.");
-        }
-      })
-      .catch(err => alert("Error connecting to server: " + err.message));
-  });
 });
+
+const tNameValidate = () => {
+  const t_name = document.getElementById('t_name').value.trim();
+  console.log('t_name:', t_name);
+
+  // 1. Not blank
+  if (t_name === '') {
+    return false;
+  }
+
+  // 2. Must start with alphabet, followed by alphabets/numbers/underscore
+  const validPattern = /^[A-Za-z][A-Za-z0-9_]*$/;
+  if (!validPattern.test(t_name)) {
+    return false;
+  }
+
+  // 3. Block HTML / JS / PHP / SQL injection-like patterns
+  const forbiddenPattern = /(<[^>]*>|script|javascript:|php|sql|select|insert|update|delete|drop|--|;)/i;
+  if (forbiddenPattern.test(t_name)) {
+    return false;
+  }
+
+  // Passed all checks
+  return true;
+};
+
+// check form submission 
+const templateForm = document.getElementById('templateForm');
+templateForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  if (!tNameValidate()) {
+    alert('Invalid Template name');
+    return;
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  // check user login
+  const checkForm = new FormData();
+  checkForm.append('action', 'check');
+  fetch("../backend/api/auth.php", {
+    method: "POST",
+    body: checkForm
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data.message);
+      if (data.status !== "success") {
+        alert("User not logged in.");
+        window.location.href = "./index.html";
+      }
+    })
+    .catch(() => {
+      alert("Error connecting to server");
+      window.location.href = "./index.html";
+    });
+
+});
+
+const t_nameVal = nameInput.value.trim();
+const htmlVal = htmlInput.value.trim();
+const orientationVal = getOrientation();
+const bgFile = bgInput.files[0];
+const opacityVal = opacityInput.value;
+const descVal = descInput.value.trim();
+const tagsVal = tagsInput.value.trim();
+
+// Validation
+if (!t_nameVal) return alert("Template name is required.");
+if (!htmlVal) return alert("HTML code is required.");
+if (!orientationVal) return alert("Orientation is required.");
+if (bgFile && !['image/png', 'image/jpeg', 'image/webp'].includes(bgFile.type)) return alert("Only PNG, JPG or WEBP allowed.");
+if (descVal.length > 200) return alert("Description must be less than 200 characters.");
+if (tagsVal && !/^[a-zA-Z0-9,\s-]+$/.test(tagsVal)) return alert("Tags must be comma-separated words.");
+
+const formData = new FormData();
+formData.append('action', 'create');
+formData.append('t_name', t_nameVal);
+formData.append('html_code', htmlVal);
+formData.append('orientation', orientationVal);
+formData.append('opacity', opacityVal);
+formData.append('des', descVal);
+formData.append('tags', tagsVal);
+if (bgFile) formData.append('bg_img', bgFile);
+
+fetch("./../backend/api/templates.php", { method: "POST", body: formData })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'success') {
+      alert(data.message || "Template created successfully!");
+      window.location.href = 'dashboard.html';
+    } else {
+      alert(data.message || "Failed to create template.");
+    }
+  })
+  .catch(err => alert("Error connecting to server: " + err.message));
+// });
+// });

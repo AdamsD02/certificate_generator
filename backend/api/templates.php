@@ -1,11 +1,10 @@
-<?php
+<?php 
 session_start();
 
 require_once __DIR__ . '/../config/db_config.php';
 
 // common json response handler
-function return_json($status, $msg, $data = null)
-{
+function return_json($status, $msg, $data = null) {
     header('Content-Type: application/json');
     echo json_encode([
         'status' => $status,
@@ -21,33 +20,31 @@ try {
         switch ($action) {
             case 'create':
                 # Save template in DB
-                if (
-                    empty($_POST['t_name']) ||
-                    empty($_POST['orientation']) ||
-                    empty($_POST['html_code'])
-                ) {
+                if ( empty($_POST['t_name']) || empty($_POST['orientation']) || empty($_POST['html_code']) ) {
                     return_json('error', 'Required field missing.');
+                    
                 }
                 save_template($conn);
                 break;
 
             case 'edit':
-                # Update template in DB
+    // Use POST id
+    $id = $_POST['id'] ?? null;
+    if (!$id) return_json('error', 'Template ID missing.');
 
-                if (empty($_POST['id'])) {
-                    return_json('error', 'Template not passed.');
-                }
-                if (empty($_POST['tname']) || empty($_POST['orientation']) || empty($_POST['html_code'])) {
-                    return_json('error', 'Required fields missing.');
-                }
+    // Validate fields
+    if (empty($_POST['t_name']) || empty($_POST['orientation']) || empty($_POST['html_code'])) {
+        return_json('error', 'Required fields missing.');
+    }
 
-                update_template($conn);
-                break;
+    update_template($conn, $id);
+    break;
 
             case 'delete':
                 # Delete template from DB
                 if (!isset($_POST['id'])) {
                     return_json('error', 'Template not passed.');
+                    
                 }
 
                 delete_template($conn);
@@ -65,12 +62,13 @@ try {
                     $_SESSION['use_id'] = $_POST['id'];
 
                     return_json('success', 'Template ready.');
+
                 }
 
                 return_json('error', 'Template not passed.');
 
                 break;
-
+            
             case 'unuse':
                 # resets the Template-ID in Session
 
@@ -91,27 +89,27 @@ try {
                 return_json('error', 'Template not passed.');
 
                 break;
-
+            
             default:
                 return_json('error', 'Invalid action.');
 
                 break;
         }
     }
-} catch (\Throwable $th) {
+} 
+catch (\Throwable $th) {
     //throw $th;
     return_json('error', 'Error thrown by Server.' . $th->getMessage());
 }
 
-function save_template($conn)
-{
+function save_template($conn) {
 
     $tname       = $_POST['t_name'];
     $orientation = $_POST['orientation'];
     $html_code   = $_POST['html_code'];
     $opacity     = $_POST['opacity'] ?? '';
     $desc        = $_POST['des'] ?? '';
-    // $tags         = $_POST['tags'] ?? '';
+    $tags         = $_POST['tags'] ?? '';
     $u_id        = $_SESSION['uid'];
 
     // Upload bg image if exists
@@ -127,20 +125,13 @@ function save_template($conn)
         $bg_img = $fileName;
     }
 
-    $query = "INSERT INTO templates (t_name, orientation, html_code, bg_img, opacity, description, u_id)
-              VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO templates (t_name, orientation, html_code, bg_img, opacity, description, tags, u_id)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param(
-        'sssssssi',
-        $tname,
-        $orientation,
-        $html_code,
-        $bg_img,
-        $opacity,
-        $desc,
-        // $tags,
-        $u_id
+    $stmt->bind_param('sssssssi', 
+        $tname, $orientation, $html_code, $bg_img, 
+        $opacity, $desc, $tags, $u_id
     );
 
     if ($stmt->execute()) {
@@ -150,10 +141,9 @@ function save_template($conn)
     return_json('error', 'Failed to save template.');
 }
 
-function get_template($conn)
-{
+function get_template($conn) {
     $id = $_SESSION['use_id'];
-
+    
     $query = 'SELECT * FROM templates WHERE t_id = ?';
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $id);
@@ -162,23 +152,24 @@ function get_template($conn)
 
     if (!$row = $result->fetch_assoc()) {
         return_json('error', 'No Template Data available.');
+        
     }
 
     $data = [
-        't_id' => $id,
-        'tname' => $row['t_name'],
-        'orientation' => $row['orientation'],
-        'html_code' => $row['html_code'],
-        'bg_img' => $row['bg_img'] ?? '',
-        'opacity' => $row['opacity'] ?? '',
-        'desc' => $row['description'] ?? '',
-        // 'tags' => $row['tags'] ?? ''
+            't_id' => $id,
+            'tname' => $row['t_name'],
+            'orientation' => $row['orientation'],
+            'html_code' => $row['html_code'],
+            'bg_img' => $row['bg_img'] ?? '',
+            'opacity' => $row['opacity'] ?? '',
+            'desc' => $row['description'] ?? '',
+            'tags' => $row['tags'] ?? ''
     ];
     return_json('success', 'Retrieved Template Successfuly.', $data);
+
 }
 
-function delete_template($conn)
-{
+function delete_template($conn) {
 
     $id = $_POST['id'];
 
@@ -191,6 +182,7 @@ function delete_template($conn)
 
     if (!$result->fetch_assoc()) {
         return_json('error', 'Template does not exist.');
+        
     }
 
     // Delete query
@@ -200,27 +192,20 @@ function delete_template($conn)
 
     if ($stmt->execute()) {
         return_json('success', 'Template deleted successfully.');
+        
     } else {
         return_json('error', 'Failed to delete template.');
+        
     }
 }
 
-
-function update_template($conn)
-{
-
-    if (!isset($_SESSION['id'])) {
-        return_json('error', 'Template ID missing.');
-    }
-
-    $id = $_SESSION['id'];
-
-    // Fetch existing template first
+function update_template($conn, $id) {
+    // Fetch existing template
     $get = $conn->prepare("SELECT bg_img FROM templates WHERE t_id=?");
     $get->bind_param("i", $id);
     $get->execute();
     $old = $get->get_result()->fetch_assoc();
-    $existing_bg = $old['bg_img'];
+    $existing_bg = $old['bg_img'] ?? '';
 
     // Posted fields
     $tname       = $_POST['t_name'];
@@ -228,41 +213,26 @@ function update_template($conn)
     $html_code   = $_POST['html_code'];
     $opacity     = $_POST['opacity'] ?? '';
     $desc        = $_POST['des'] ?? '';
-    // $tags         = $_POST['tags'] ?? '';
+    $tags        = $_POST['tags'] ?? '';
 
-    // ---------- Handle bg_img ----------
+    // Handle bg image
     if (!empty($_FILES['bg_img']['name'])) {
-        // New image uploaded
         $fileName = time() . "_" . basename($_FILES["bg_img"]["name"]);
         $target = "./../../uploads/background/" . $fileName;
-
         if (!move_uploaded_file($_FILES["bg_img"]["tmp_name"], $target)) {
             return_json("error", "Failed to upload background image.");
         }
-
         $bg_img = $fileName;
     } else {
-        // User did NOT upload a new file → keep old one
         $bg_img = $existing_bg;
     }
 
-    // ---------- Perform update ----------
+    // Update query
     $query = "UPDATE templates 
-              SET t_name=?, orientation=?, html_code=?, bg_img=?, opacity=?, description=?
+              SET t_name=?, orientation=?, html_code=?, bg_img=?, opacity=?, description=?, tags=? 
               WHERE t_id=?";
-
     $stmt = $conn->prepare($query);
-    $stmt->bind_param(
-        'ssssssi',
-        $tname,
-        $orientation,
-        $html_code,
-        $bg_img,
-        $opacity,
-        $desc,
-        // $tags,
-        $id
-    );
+    $stmt->bind_param('sssssssi', $tname, $orientation, $html_code, $bg_img, $opacity, $desc, $tags, $id);
 
     if ($stmt->execute()) {
         return_json('success', 'Template updated successfully.');
@@ -271,8 +241,9 @@ function update_template($conn)
     return_json('error', 'Failed to update template.');
 }
 
-function list_templates($conn)
-{
+
+
+function list_templates($conn) {
 
     $query = "SELECT t_id, t_name, orientation, bg_img, opacity FROM templates";
     $stmt = $conn->prepare($query);
@@ -282,6 +253,7 @@ function list_templates($conn)
     // Check if no records found
     if ($result->num_rows === 0) {
         return_json('error', 'No templates found.');
+        
     }
 
     // Fetch all templates
@@ -290,4 +262,7 @@ function list_templates($conn)
         $templates[] = $row;
     }
     return_json('success', 'Templates retrieved successfully.', $templates);
+
 }
+
+?>

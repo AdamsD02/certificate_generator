@@ -21,14 +21,15 @@
       <div class="field">
         <label for="t_name">Template Name</label>
         <input id="t_name" name="t_name" type="text" placeholder="Template Name" />
-        <div id="err_name" class="error"></div>
       </div>
 
       <div class="field">
         <label for="html_code">HTML Template Code</label>
-        <textarea id="html_code" name="html_code" placeholder="Edit your HTML template code here..."></textarea>
-        <p class="helper">Use placeholders like {{name}}, {{date}}, {{course}} in your HTML.</p>
-        <div id="err_html" class="error"></div>
+        <textarea id="html_code" name="html_code"
+          placeholder="Edit your HTML template code here..."></textarea>
+        <p class="helper">
+          Use placeholders like {{name}}, {{date}}, {{course}} in your HTML.
+        </p>
       </div>
 
       <div class="field">
@@ -37,13 +38,11 @@
           <label><input type="radio" name="orientation" value="portrait"> Portrait</label>
           <label><input type="radio" name="orientation" value="landscape"> Landscape</label>
         </div>
-        <div id="err_orientation" class="error"></div>
       </div>
 
       <div class="field">
         <label for="bg_img">Background Image</label>
         <input id="bg_img" name="bg_img" type="file" accept="image/*" />
-        <div id="err_bg" class="error"></div>
       </div>
 
       <div class="field">
@@ -52,19 +51,17 @@
           <input id="opacity" name="opacity" type="range" min="0" max="100" value="35">
           <span id="opacityValue">35%</span>
         </div>
-        <div class="helper">Opacity is applied only to the background image.</div>
       </div>
 
       <div class="field">
-        <label for="des">Description</label>
-        <textarea id="des" name="des" placeholder="Short description of this template"></textarea>
-        <div id="err_description" class="error"></div>
+        <label for="description">Description</label>
+        <textarea id="description" name="description"
+          placeholder="Short description of this template"></textarea>
       </div>
 
       <div class="field">
         <label for="tags">Tags</label>
         <input id="tags" name="tags" type="text" placeholder="e.g. completion, workshop" />
-        <div id="err_tags" class="error"></div>
       </div>
 
       <div class="field">
@@ -73,7 +70,6 @@
       </div>
 
       <div class="btn-row">
-        <!-- RESET REMOVED -->
         <button type="submit" class="btn-primary">Update Template</button>
         <button type="button" id="cancelBtn">Cancel</button>
       </div>
@@ -93,13 +89,13 @@
     </header>
 
     <section class="preview-shell">
-      <!-- for template details  -->
       <div id="temp_data"></div>
       <div class="preview-card" id="previewCanvas"></div>
     </section>
   </main>
 </div>
 
-<script src="edit_template.js"></script>
+<!-- Link your JS -->
+<script src="Edit_template.js"></script>
 </body>
 </html>

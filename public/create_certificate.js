@@ -272,7 +272,8 @@ window.addEventListener("load", () => {
     })
     .then(res => res.json())
     .then(data => {
-      alert(data.message);
+      console.log(data.message);
+      // alert(data.message);
       if (data.status === "success") {
         const c_id = data.data.c_id;
         console.log('begin export pdf for cid-', c_id);
@@ -290,7 +291,7 @@ window.addEventListener("load", () => {
         })
         .catch(err => console.error("Export error:", err));
 
-        setTimeout(() => window.location.href = "./certificate.html", 500);
+        setTimeout(() => {window.location.href = "./certificate.html"}, 20000);
       }
     })
     .catch(err => alert("Server error: " + err.message));

@@ -133,6 +133,7 @@ form.addEventListener('submit', (e) => {
     })
         .then(res => res.json())
         .then(data => {
+            console.log(data.message);
             alert(data.message);
             if (data.status === "success") {
                 window.location.href = "dashboard.html";
@@ -143,6 +144,8 @@ form.addEventListener('submit', (e) => {
 
 // Auto login check
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("Create template loaded.");
+
     fetch("../backend/api/auth.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -150,6 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
     })
         .then(res => res.json())
         .then(data => {
+            console.log(data.message);
+
             if (data.status !== "success") {
                 alert("Please login first.");
                 window.location.href = "./index.html";

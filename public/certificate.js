@@ -14,10 +14,12 @@ function startDownload(id) {
 
     const formData = new FormData();
     formData.append('action', 'download');
-    formData.append('id', id);
+    formData.append('c_id', id);
 
     fetch('../backend/api/export.php', { method: 'POST', body: formData })
         .then(res => {
+            const data = (res) => {return res.json();};
+            console.log(data.message);
             if (!res.ok) throw new Error("Network response not ok");
             return res.blob();
         })
@@ -47,6 +49,7 @@ function emailProcess(id) {
     fetch('../backend/api/certificate.php', { method: 'POST', body: formData })
         .then(res => res.json())
         .then(data => {
+            console.log(data.message);
             if (data.status === 'success') {
                 console.log('Certificate ID set for email.');
                 window.location.href = './email_editor.html';
@@ -71,6 +74,7 @@ function editProcess(id) {
     fetch('../backend/api/certificate.php', { method: 'POST', body: formData })
         .then(res => res.json())
         .then(data => {
+            console.log(data.message);
             if (data.status === 'success') {
                 console.log('Certificate ID set for edit.');
                 window.location.href = './edit_certificate.html';
@@ -97,6 +101,7 @@ function deleteProcess(id) {
     fetch('../backend/api/certificate.php', { method: 'POST', body: formData })
         .then(res => res.json())
         .then(data => {
+            console.log(data.message);
             alert(data.message);
             if (data.status === 'success') getCertList();
         })
@@ -132,6 +137,7 @@ async function checkLogin() {
             body: "action=check"
         });
         const data = await res.json();
+        console.log(data.message);
         if (data.status !== "success") {
             alert('User not logged in, redirecting...');
             window.location.href = './index.html';
@@ -151,6 +157,8 @@ async function getCertList() {
             body: "action=list"
         });
         const data = await res.json();
+        console.log(data.message);
+
         const tbody = document.querySelector("table tbody");
         tbody.innerHTML = "";
 
@@ -233,6 +241,7 @@ document.getElementById("logoutBtn")?.addEventListener("click", () => {
     })
     .then(res => res.json())
     .then(data => {
+        console.log(data.message);
         if (data.status === "success") {
             alert("Logout Successful!");
             window.location.href = './index.html';
@@ -248,6 +257,7 @@ document.getElementById("logoutBtn")?.addEventListener("click", () => {
 
 // ----------------- Init -----------------
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Certificate.js:');
     await checkLogin();
     await getCertList();
 });

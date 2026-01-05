@@ -254,6 +254,22 @@ document.getElementById("logoutBtn")?.addEventListener("click", () => {
         window.location.href = './index.html';
     });
 });
+// ----------------- Search Certificates -----------------
+document.addEventListener("input", function (e) {
+    if (e.target.matches('input[placeholder="Search certificates..."]')) {
+        const searchValue = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll("table tbody tr");
+
+        rows.forEach(row => {
+            const rowText = row.innerText.toLowerCase();
+            if (rowText.includes(searchValue)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+});
 
 // ----------------- Init -----------------
 document.addEventListener('DOMContentLoaded', async () => {

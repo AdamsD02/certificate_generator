@@ -1,4 +1,9 @@
 // ===============================
+// GLOBAL VARIABLE
+// ===============================
+let allTemplates = []; // 🔹 store all templates for search
+
+// ===============================
 // CHECK USER LOGIN
 // ===============================
 async function checkLogin() {
@@ -40,9 +45,8 @@ document.querySelectorAll('.sidebar .nav-item').forEach(item => {
     });
 });
 
-
 // ===============================
-// LOAD TEMPLATE LIST (FIXED)
+// LOAD TEMPLATE LIST
 // ===============================
 async function loadTemplateList() {
     const tbody = document.querySelector("table tbody");
@@ -61,24 +65,10 @@ async function loadTemplateList() {
             return;
         }
 
-        data.data.forEach((row, index) => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${row.t_name}</td>
-                <td>
-                    <div class="actions-cell">
-                        <button class="btn-pill btn-primary" data-id="${row.t_id}" data-action="use">Use</button>
-                        <button class="btn-pill btn-ghost" data-id="${row.t_id}" data-action="edit">Edit</button>
-                        <button class="btn-pill btn-danger" data-id="${row.t_id}" data-action="delete">Delete</button>
-                    </div>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
+        // 🔹 save all templates globally for search
+        allTemplates = data.data;
 
-        // Only after rows are added
-        attachActionEvents();
+        renderTemplates(allTemplates);
 
     } catch (err) {
         console.error("Server error:", err);
@@ -86,11 +76,44 @@ async function loadTemplateList() {
     }
 }
 
+// ===============================
+// RENDER TEMPLATES FUNCTION
+// ===============================
+function renderTemplates(list) {
+    const tbody = document.querySelector("table tbody");
+    tbody.innerHTML = "";
+
+    if (!list.length) {
+        tbody.innerHTML = `<tr>
+            <td colspan="3" style="text-align:center;padding:20px">
+                No matching templates found
+            </td>
+        </tr>`;
+        return;
+    }
+
+    list.forEach((row, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${row.t_name}</td>
+            <td>
+                <div class="actions-cell">
+                    <button class="btn-pill btn-primary" data-id="${row.t_id}" data-action="use">Use</button>
+                    <button class="btn-pill btn-ghost" data-id="${row.t_id}" data-action="edit">Edit</button>
+                    <button class="btn-pill btn-danger" data-id="${row.t_id}" data-action="delete">Delete</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    attachActionEvents();
+}
 
 // ===============================
 // BUTTON ACTIONS (AJAX)
 // ===============================
-
 function useTemplate(id) {
     const fd = new FormData();
     fd.append("action", "use");
@@ -138,7 +161,9 @@ function deleteTemplate(id) {
         });
 }
 
-//------ Button Action Handler ------
+// ===============================
+// BUTTON ACTION HANDLER
+// ===============================
 function attachActionEvents() {
     document.querySelectorAll("button[data-action]").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -170,6 +195,23 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
         body: "action=logout"
     }).then(() => location.href = "index.html");
 });
+
+// ===============================
+// SEARCH FUNCTIONALITY
+// ===============================
+const searchInput = document.querySelector('input[placeholder="Search template..."]');
+
+if (searchInput) {
+    searchInput.addEventListener("input", () => {
+        const value = searchInput.value.toLowerCase();
+
+        const filtered = allTemplates.filter(t =>
+            t.t_name.toLowerCase().includes(value)
+        );
+
+        renderTemplates(filtered);
+    });
+}
 
 // ===============================
 // INIT

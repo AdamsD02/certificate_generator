@@ -223,94 +223,99 @@ window.addEventListener("load", () => {
     document.querySelectorAll(".pldr-field .pldr-val").forEach(inp => inp.value = '');
     updateIframeContent();
   });
+// SAVE CERTIFICATE
+certSubmitBtn.addEventListener("click", () => {
+  const r_name = recipientInput.value.trim();
+  const course = courseInput.value.trim();
+  const issueDate = dateInput.value;
+  const purpose = purposeInput.value.trim();
 
-  // SAVE CERTIFICATE
-  certSubmitBtn.addEventListener("click", () => {
-    const r_name = recipientInput.value.trim();
-    const course = courseInput.value.trim();
-    const issueDate = dateInput.value;
-    const purpose = purposeInput.value.trim();
+  if (!t_name.trim()) return alert("Certificate template name missing.");
+  if (!html_code.trim()) html_code = default_html_code;
+  if (!r_name) return alert("Recipient name required.");
+  if (!course) return alert("Course name required.");
+  if (!issueDate) return alert("Issue date required.");
 
-    if (!t_name.trim()) return alert("Certificate template name missing.");
-    if (!html_code.trim()) html_code = default_html_code;
-    if (!r_name) return alert("Recipient name required.");
-    if (!course) return alert("Course name required.");
-    if (!issueDate) return alert("Issue date required.");
-
-    // Collect placeholders
-    const placeholders = {};
-    document.querySelectorAll(".pldr-field").forEach(row => {
-      const keyNode = row.querySelector(".pldr-key").childNodes[0];
-      const key = keyNode ? keyNode.nodeValue.trim() : '';
-      const val = row.querySelector(".pldr-val").value.trim();
-      if (key) placeholders[key] = val;
-    });
-
-    const formData = new FormData();
-    formData.append("action", "create");
-    formData.append("t_id", t_id || '');
-    formData.append("tname", t_name);
-    formData.append("orientation", orientation);
-    formData.append("html_code", html_code);
-    formData.append("bg_img", bg_img);
-    formData.append("opacity", opacity);
-    formData.append("r_name", r_name);
-    formData.append("course", course);
-    formData.append("issue_date", issueDate);
-    formData.append("purpose", purpose);
-    
-    console.log('Cert Save form: ', JSON.stringify(formData));
-
-    // Add placeholders
-    Object.keys(placeholders).forEach(k => {
-      formData.append(`pldrs[${k}]`, placeholders[k]);
-    });
-
-    fetch("../backend/api/certificate.php", {
-      method: "POST",
-      body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data.message);
-      // alert(data.message);
-      if (data.status === "success") {
-        const c_id = data.data.c_id;
-        console.log('begin export pdf for cid-', c_id);
-        const certForm = new FormData();
-        certForm.append("action", "create");
-        certForm.append("c_id", c_id);
-
-        fetch("../backend/api/export.php", {
-          method: "POST",
-          body: certForm
-        })
-        .then(res2 => res2.json())
-        .then(data2 => {
-          console.log("Success: " + data2.message);
-        })
-        .catch(err => console.error("Export error:", err));
-
-        setTimeout(() => {window.location.href = "./certificate.html"}, 20000);
-      }
-    })
-    .catch(err => alert("Server error: " + err.message));
+  // Collect placeholders
+  const placeholders = {};
+  document.querySelectorAll(".pldr-field").forEach(row => {
+    const keyNode = row.querySelector(".pldr-key").childNodes[0];
+    const key = keyNode ? keyNode.nodeValue.trim() : '';
+    const val = row.querySelector(".pldr-val").value.trim();
+    if (key) placeholders[key] = val;
   });
 
-  // CANCEL
-  cancelBtn.addEventListener('click', () => {
-    fetch("../backend/api/templates.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "action=unuse"
-    })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message);
-      if (data.status === "success") {
-        window.location.href = "./dashboard.html";
-      }
-    })
-    .catch(err => alert("Server error: " + err.message));
+  const formData = new FormData();
+  formData.append("action", "create");
+  formData.append("t_id", t_id || '');
+  formData.append("tname", t_name);
+  formData.append("orientation", orientation);
+  formData.append("html_code", html_code);
+  formData.append("bg_img", bg_img);
+  formData.append("opacity", opacity);
+  formData.append("r_name", r_name);
+  formData.append("course", course);
+  formData.append("issue_date", issueDate);
+  formData.append("purpose", purpose);
+
+  // Add placeholders
+  Object.keys(placeholders).forEach(k => {
+    formData.append(`pldrs[${k}]`, placeholders[k]);
   });
+
+  // FETCH TO SAVE
+  fetch("../backend/api/certificate.php", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === "success") {
+      alert("Certificate successfully saved ✅");
+
+      const c_id = data.data?.c_id;
+      if (!c_id) {
+        console.warn("Certificate saved but c_id not returned from server.");
+        return;
+      }
+
+      const certForm = new FormData();
+      certForm.append("action", "create");
+      certForm.append("c_id", c_id);
+
+      fetch("../backend/api/export.php", {
+        method: "POST",
+        body: certForm
+      })
+      .then(res2 => res2.json())
+      .then(data2 => console.log("Export Success: " + data2.message))
+      .catch(err => console.error("Export error:", err));
+
+      setTimeout(() => {
+        window.location.href = "./certificate.html";
+      }, 2000);
+
+    } else {
+      alert("Error saving certificate: " + data.message);
+    }
+  })
+  .catch(err => alert("Server error: " + err.message));
+});
+
+// CANCEL BUTTON LISTENER (OUTSIDE)
+cancelBtn.addEventListener('click', () => {
+  fetch("../backend/api/templates.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "action=unuse"
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message);
+    if (data.status === "success") {
+      window.location.href = "./dashboard.html";
+    }
+  })
+  .catch(err => alert("Server error: " + err.message));
+});
 });

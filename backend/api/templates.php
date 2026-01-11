@@ -231,10 +231,10 @@ function update_template($conn, $id)
 
     // Update query
     $query = "UPDATE templates 
-              SET t_name=?, orientation=?, html_code=?, bg_img=?, opacity=?, description=?, tags=? 
+              SET t_name=?, orientation=?, html_code=?, bg_img=?, opacity=?, description=?
               WHERE t_id=?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('sssssssi', $tname, $orientation, $html_code, $bg_img, $opacity, $desc, $tags, $id);
+    $stmt->bind_param('ssssssi', $tname, $orientation, $html_code, $bg_img, $opacity, $desc, $id);
 
     if ($stmt->execute()) {
         return_json('success', 'Template updated successfully.');

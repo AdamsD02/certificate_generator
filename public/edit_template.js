@@ -165,7 +165,7 @@ function updateIframeContent() {
     container.style.display = "flex";
     container.style.justifyContent = "center";
     container.style.alignItems = "center";
-    container.innerHTML = `<div>${html_code}</div>`;
+    container.innerHTML = `${html_code}`;
 
     if (bgFile) {
         const reader = new FileReader();

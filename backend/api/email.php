@@ -8,6 +8,7 @@ require __DIR__ . "/../lib/PHPMailer/src/Exception.php";
 require_once __DIR__ . '/../lib/dompdf/autoload.inc.php';
 
 require_once __DIR__ . '/../config/db_config.php';
+require_once __DIR__ . '/../config/config.php'; 
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -62,8 +63,8 @@ if ($_POST['action'] === 'send') {
         // when using Gmail for email
         $mail->Host       = 'smtp.gmail.com';    // your SMTP host
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'your-email@gmail.com';
-        $mail->Password   = 'your-app-password'; // NOT Gmail password, 16-digit pswd generated 
+        $mail->Username   = GMAIL_USER;  
+        $mail->Password   = GMAIL_PASS;  
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 

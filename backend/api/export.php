@@ -24,14 +24,14 @@ try {
         $action = $_POST['action'];
         switch ($action) {
             case 'create':
-                if(!isset($_POST['id'])) {
+                if(!isset($_POST['c_id'])) {
                     return_json('error', 'Certificate was not passed.');
                 }
                 generate_pdf($conn);
                 break;
             
             case 'download':
-                if(!isset($_POST['id'])) {
+                if(!isset($_POST['c_id'])) {
                     return_json('error', 'Certificate was not passed.');
                 }
                 download_cert($conn);
@@ -49,7 +49,7 @@ try {
 // apply dompdf 
 function generate_pdf($conn) {
     // get certificate data from db
-    $c_id = (int)$_POST['id'];
+    $c_id = (int)$_POST['c_id'];
     $query = 'SELECT * FROM certificates WHERE c_id = ?';
     $q_stmt = $conn->prepare($query);
     $q_stmt->bind_param('i', $c_id);
@@ -168,7 +168,7 @@ function generate_pdf($conn) {
 
 function download_cert($conn) {
 
-    $c_id = (int)$_POST['id'];
+    $c_id = (int)$_POST['c_id'];
 
     // Get certificate row
     $stmt = $conn->prepare("SELECT r_name, course, issue_date FROM certificates WHERE c_id = ?");

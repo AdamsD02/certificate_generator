@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             if (data.status === "success") {
                 msg.textContent = "Login successful! Redirecting...";
-                window.location.href = "./dashboard.html";
+                window.location.href = "./dashboard/dashboard.html";
             } else {
                 msg.textContent = data.message || "Invalid credentials";
             }
@@ -32,4 +32,3 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
-

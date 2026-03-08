@@ -15,8 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(data => {
         if( data.status === 'success' ) {
             console.log('Index page: user logged in!');
-            alert(data.message, ' Redirecting to Dashboard...');
-            window.location.href ='./dashboard.html';
+            alert(data.message + ' Redirecting to Dashboard...');
+            window.location.href ='./dashboard/dashboard.html';
         }
         console.info('Index page: User not logged in yet.');
     })
@@ -57,7 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // short delay to show message before redirect
                 setTimeout(() => {
-                    window.location.href = "./dashboard.html";
+                    // window.location.href = "./dashboard.html";
+                    window.location.href = "./dashboard/dashboard.html";
                 }, 500);
 
             } else {

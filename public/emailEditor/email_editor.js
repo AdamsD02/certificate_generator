@@ -15,7 +15,7 @@ let c_id = '';
 //---- Ajax to Check user Login ----
 
 function checkLogin() {
-  return fetch("../backend/api/auth.php", {
+  return fetch("../../backend/api/auth.php", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: "action=check"
@@ -25,12 +25,12 @@ function checkLogin() {
       console.log(data.message);
       if (data.status !== "success") {
         alert("User not logged in.");
-        window.location.href = "./index.html";
+        window.location.href = "../index.html";
       }
     })
     .catch(() => {
       alert("Error connecting to server");
-      window.location.href = "./index.html";
+      window.location.href = "../index.html";
     });
 }
 
@@ -38,7 +38,7 @@ function checkLogin() {
 //---- Ajax to Get Certificate Data ----
 
 function getData() {
-  return fetch("../backend/api/certificate.php", {
+  return fetch("../../backend/api/certificate.php", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: "action=id_selected"
@@ -48,7 +48,7 @@ function getData() {
       console.log(data.message);
       if (data.status !== "success") {
         alert("Failed to get certificate specific data.");
-        window.location.href = "./certificate.html";
+        window.location.href = "../certificates/certificate.html";
       }
 
       const cert_data = data.data;
@@ -72,7 +72,7 @@ function getData() {
     })
     .catch(() => {
       alert("Error connecting to server");
-      window.location.href = "./dashboard.html";
+      window.location.href = "../dashboard/dashboard.html";
     });
 }
 
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     formData.append('bcc_email', bcc_email);
 
     // AJAX POST request
-    fetch('../backend/api/email.php', {
+    fetch('../../backend/api/email.php', {
       method: 'POST',
       body: formData
     })
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           statusMessage.textContent = 'Email sent successfully!';
           statusMessage.style.color = '#15803d';
 
-          setTimeout(() => { window.location.href = './certificate.html'; }, 500);
+          setTimeout(() => { window.location.href = '../certificates/certificate.html'; }, 500);
 
         } else {
           statusMessage.textContent = data.message || 'Failed to send email.';
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   //---- Cancel Btn ----
 
   document.getElementById('cancel').addEventListener('click', () => {
-    fetch('./../backend/api/certificate.php', {
+    fetch('../../backend/api/certificate.php', {
       method: 'POST',
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "action=unuse"
@@ -159,13 +159,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (data.status !== "success") {
           alert("Cert-id still in session");
         }
-        window.location.href = "./certificate.html";
+        window.location.href = "../certificate.html";
       })
       .catch(() => {
         alert("Error connecting to server");
-        window.location.href = "./certificate.html";
+        window.location.href = "../certificates/certificate.html";
       });
   });
 
 });
-

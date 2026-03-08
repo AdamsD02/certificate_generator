@@ -93,7 +93,7 @@ resetBtn.addEventListener('click', () => {
 });
 
 cancelBtn.addEventListener('click', () => {
-    window.location.href = 'dashboard.html';
+    window.location.href = '../dashboard/dashboard.html';
 });
 
 // Submit - Save Template
@@ -127,7 +127,7 @@ form.addEventListener('submit', (e) => {
     formData.append("tags", tagsVal);
     if (bgFile) formData.append("bg_img", bgFile);
 
-    fetch("./../backend/api/templates.php", {
+    fetch("../../backend/api/templates.php", {
         method: "POST",
         body: formData
     })
@@ -136,7 +136,7 @@ form.addEventListener('submit', (e) => {
             console.log(data.message);
             alert(data.message);
             if (data.status === "success") {
-                window.location.href = "dashboard.html";
+                window.location.href = "../dashboard/dashboard.html";
             }
         })
         .catch(err => alert("Server error: " + err.message));
@@ -146,7 +146,7 @@ form.addEventListener('submit', (e) => {
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Create template loaded.");
 
-    fetch("../backend/api/auth.php", {
+    fetch("../../backend/api/auth.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "action=check"
@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (data.status !== "success") {
                 alert("Please login first.");
-                window.location.href = "./index.html";
+                window.location.href = "../index.html";
             }
         })
         .catch(() => alert("Unable to verify login!"));

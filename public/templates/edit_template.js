@@ -3,7 +3,7 @@
 // ===============================
 async function checkLogin() {
     try {
-        const res = await fetch("../backend/api/auth.php", {
+        const res = await fetch("../../backend/api/auth.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: "action=check"
@@ -14,11 +14,11 @@ async function checkLogin() {
 
         if (data.status !== "success") {
             alert('User not Logged In, redirecting...');
-            window.location.href = "index.html";
+            window.location.href = "../index.html";
         }
     } catch (err) {
         console.error("Error connecting to server", err);
-        window.location.href = "index.html";
+        window.location.href = "../index.html";
     }
 }
 // ------------------------------
@@ -62,7 +62,7 @@ let templateId = null;
 // ------------------------------
 async function loadTemplateFromServer() {
     try {
-        const res = await fetch("../backend/api/templates.php", {
+        const res = await fetch("../../backend/api/templates.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: "action=id_selected"
@@ -80,12 +80,12 @@ async function loadTemplateFromServer() {
             loadExistingTemplate(data.data);
         } else {
             alert("No template selected or session expired. Redirecting to dashboard.");
-            window.location.href = "dashboard.html";
+            window.location.href = "../dashboard/dashboard.html";
         }
     } catch (err) {
         console.error(err);
         alert("Server error while fetching template.");
-        window.location.href = "dashboard.html";
+        window.location.href = "../dashboard/dashboard.html";
     }
 }
 
@@ -209,7 +209,7 @@ function applyOrientation() {
 // EVENT LISTENERS
 // ------------------------------
 document.getElementById("backBtn")?.addEventListener("click", () => {
-    window.location.href = "dashboard.html";
+    window.location.href = "../dashboard/dashboard.html";
 });
 
 nameInput.addEventListener("input", updateIframeContent);
@@ -223,7 +223,7 @@ opacityInput.addEventListener("input", () => {
 bgInput.addEventListener("change", updateIframeContent);
 
 cancelBtn.addEventListener('click', () => {
-    window.location.href = 'dashboard.html';
+    window.location.href = '../dashboard/dashboard.html';
 });
 
 // ------------------------------
@@ -234,7 +234,7 @@ form.addEventListener("submit", async e => {
 
     if (!templateId) {
         alert("Template ID missing. Please select a template from the dashboard first.");
-        window.location.href = "dashboard.html";
+        window.location.href = "../dashboard/dashboard.html";
         return;
     }
 
@@ -251,19 +251,19 @@ form.addEventListener("submit", async e => {
     if (bgInput.files[0]) fd.append("bg_img", bgInput.files[0]);
 
     try {
-        const res = await fetch("../backend/api/templates.php", { method: "POST", body: fd });
+        const res = await fetch("../../backend/api/templates.php", { method: "POST", body: fd });
         const data = await res.json();
 
         if (data.status === "success") {
             submitStatus.textContent = "Template updated successfully!";
             setTimeout(() => {
                 // Reset session template ID
-                fetch("../backend/api/templates.php", {
+                fetch("../../backend/api/templates.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     body: "action=unuse"
                 });
-                window.location.href = "dashboard.html";
+                window.location.href = "../dashboard/dashboard.html";
             }, 1000);
         } else {
             submitStatus.textContent = data.message || "Failed to update template.";

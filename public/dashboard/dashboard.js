@@ -33,6 +33,7 @@ async function checkLogin() {
 document.querySelectorAll(".sidebar .nav-item").forEach((item) => {
   item.addEventListener("click", () => {
     const text = item.querySelector("span:nth-child(2)").innerText.trim();
+    console.log("Item Clicked: ", text);
 
     document
       .querySelectorAll(".sidebar .nav-item")
@@ -41,8 +42,8 @@ document.querySelectorAll(".sidebar .nav-item").forEach((item) => {
     item.classList.add("active");
 
     if (text === "Dashboard") location.href = "dashboard.html";
-    if (text === "Create Templates") location.href = "create_template.html";
-    if (text === "Certificates") location.href = "certificate.html";
+    if (text === "Create Templates") location.href = "./../templates/Create_template.html";
+    if (text === "Certificates") location.href = "./../certificates/certificate.html";
   });
 });
 

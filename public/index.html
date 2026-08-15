@@ -1,51 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certify Admin Login</title>
+    <link rel="stylesheet" href="index.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Certify Admin Login</title>
-  <link rel="stylesheet" href="index.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-</head>
+  <body>
+    <!-- Login Page Start -->
+    <div class="login-container">
+      <div class="login-box">
+        <img src="logo.png" alt="Logo" class="logo" />
 
-<body>
+        <h2>Welcome Back</h2>
+        <p>Sign in to access your admin dashboard</p>
 
-  <!-- Login Page Start -->
-  <div class="login-container">
-    <div class="login-box">
-      <img src="logo.png" alt="Logo" class="logo" />
+        <form id="loginForm">
+          <label for="email">Email Address</label>
+          <input
+            name="email"
+            type="email"
+            id="email"
+            placeholder="admin@company.com"
+            required />
 
-      <h2>Welcome Back</h2>
-      <p>Sign in to access your admin dashboard</p>
+          <label for="pswd">Password</label>
+          <input
+            name="pswd"
+            type="password"
+            id="pswd"
+            placeholder="Enter Yours Password"
+            required />
 
-      <form id="loginForm">
-        <label for="email">Email Address</label>
-        <input name="email" type="email" id="email" placeholder="admin@company.com" required />
+          
 
-        <label for="pswd">Password</label>
-        <input name="pswd" type="password" id="pswd" placeholder="Enter Yours Password" required />
+          <button type="submit">Sign In</button>
+        </form>
 
-        <!-- <div class="options">
-          <label><input type="checkbox" /> Remember me</label>
-          <a href="#">Forgot password?</a>
-        </div> -->
-
-        <button type="submit">Sign In</button>
-      </form>
-
-      <!-- <p id="msg"></p> -->
-      <footer>© 2021 Certify Admin. All rights reserved.</footer>
+        <!-- <p id="msg"></p> -->
+        <div id="errorMsg" style="display: none; color: red">
+          Something went wrong. Please try again.
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div id="errorMsg" style="display:none; color: red;">
+    <!-- <div id="errorMsg" style="display:none; color: red;">
     Something went wrong. Please try again.
-  </div>
-  <!-- Login Page End -->
+  </div> -->
+    <footer>© 2021 Certify Admin. All rights reserved.</footer>
+    <!-- Login Page End -->
 
-  <script src="index.js"></script>
-  
-</body>
-
+    <script src="index.js"></script>
+  </body>
 </html>

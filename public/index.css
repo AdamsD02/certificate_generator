@@ -4,6 +4,7 @@ body {
   background-color: #121212;
   color: #fff;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -85,6 +86,13 @@ button {
 
 button:hover {
   background-color: #3399ff;
+}
+
+#errorMsg {
+  display: none;
+  color: red;
+  margin: auto;
+  margin-top: 20px;
 }
 
 footer {

@@ -1,3 +1,5 @@
+console.log("index.js loaded");
+
 document.addEventListener("DOMContentLoaded", () => {
   const erMsg = document.getElementById("errorMsg");
 
@@ -31,11 +33,20 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!form) return;
 
   form.addEventListener("submit", (e) => {
+    console.log("SUBMIT EVENT FIRED");
     e.preventDefault();
     erMsg.textContent = "";
 
     const emailIn = document.getElementById("email").value;
     const pswdIn = document.getElementById("pswd").value;
+    const emailField = document.getElementById("email");
+    const pswdField = document.getElementById("pswd");
+
+    emailField.disabled = true;
+    pswdField.disabled = true;
+
+    setTimeout(() => {
+      console.log("Waiting...");
 
     // Use URLSearchParams for x-www-form-urlencoded
     const formData = new FormData();
@@ -57,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // short delay to show message before redirect
           setTimeout(() => {
             window.location.href = "./dashboard/dashboard.html";
-          }, 500);
+          }, 3000);
         } else {
           erMsg.style.display = "block";
           erMsg.textContent = data.message || "Login failed";
@@ -67,5 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Error caught at login-submit ", err.message);
         erMsg.textContent = "Error caught at login-submit.";
       });
+    }, 500);
   });
 });

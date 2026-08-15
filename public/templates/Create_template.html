@@ -13,7 +13,7 @@
 
     <aside class="sidebar">
       <div class="sidebar-header">
-        <button class="icon-btn" type="button" aria-label="Back">←</button>
+        <!-- <button class="icon-btn" type="button" aria-label="Back">←</button> -->
         <div>
           <h1>Create Template</h1>
           <p class="subtitle">Design and configure your certificate template</p>
@@ -74,10 +74,10 @@
           <div id="err_tags" class="error"></div>
         </div>
 
-        <div class="field">
+        <!-- <div class="field">
           <label>Detected Placeholders</label>
           <div id="placeholdersList" class="status-ok">No placeholders found yet.</div>
-        </div>
+        </div> -->
 
         <div class="btn-row">
           <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
@@ -101,7 +101,12 @@
 
       <section class="preview-shell">
         <!-- for template details  -->
-        <div id="temp_data"></div>
+        <div id="temp_data">
+          <div class="field">
+          <label>Detected Placeholders</label>
+          <div id="placeholdersList" class="status-ok">No placeholders found yet.</div>
+        </div>
+        </div>
         <!-- for template preview  -->
         <div class="preview-card" id="previewCanvas">
           <iframe id="previewFrame" class="preview-iframe"></iframe>
